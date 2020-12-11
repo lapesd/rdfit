@@ -1,0 +1,10 @@
+### IDEs
+.idea/
+.project
+.cproject
+*.iml
+*.ipr
+.attach_*
+### Maven template
+target/
+dependency-reduced-pom.xml
