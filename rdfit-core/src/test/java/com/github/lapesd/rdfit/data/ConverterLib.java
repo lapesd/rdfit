@@ -4,9 +4,9 @@ import com.github.lapesd.rdfit.components.Converter;
 import com.github.lapesd.rdfit.components.annotations.Accepts;
 import com.github.lapesd.rdfit.components.annotations.Outputs;
 import com.github.lapesd.rdfit.components.converters.BaseConverter;
+import com.github.lapesd.rdfit.errors.ConversionException;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -62,8 +62,7 @@ public class ConverterLib {
 
     @Accepts(TripleMock2.class) @Outputs(TripleMock1.class)
     public static class TripleMock1Converter extends BaseMockConverter {
-        @Override public @Nullable Object convert(@Nullable Object input) {
-            if (input == null) return null;
+        @Override public @Nonnull Object convert(@Nonnull Object input) {
             TripleMock2 t2 = (TripleMock2) input;
             return new TripleMock1(t2.getSubject(), t2.getPredicate(), t2.getObject());
         }
@@ -71,8 +70,7 @@ public class ConverterLib {
 
     @Accepts(TripleMock1.class) @Outputs(TripleMock2.class)
     public static class TripleMock2Converter extends BaseMockConverter {
-        @Override public @Nullable Object convert(@Nullable Object input) {
-            if (input == null) return null;
+        @Override public @Nonnull Object convert(@Nonnull Object input) {
             TripleMock1 t1 = (TripleMock1) input;
             return new TripleMock2(t1.getSubject(), t1.getPredicate(), t1.getObject());
         }
@@ -80,8 +78,7 @@ public class ConverterLib {
 
     @Accepts({TripleMock1.class, TripleMock2.class}) @Outputs(TripleMock3.class)
     public static class TripleMock3Converter extends BaseMockConverter {
-        @Override public @Nullable Object convert(@Nullable Object input) {
-            if (input == null) return null;
+        @Override public @Nonnull Object convert(@Nonnull Object input) throws ConversionException {
             if (input instanceof TripleMock1) {
                 TripleMock1 t = (TripleMock1) input;
                 return new TripleMock3(t.getSubject(), t.getPredicate(), t.getObject());
@@ -89,7 +86,7 @@ public class ConverterLib {
                 TripleMock2 t = (TripleMock2) input;
                 return new TripleMock3(t.getSubject(), t.getPredicate(), t.getObject());
             }
-            return null;
+            throw new ConversionException(input, this, "Unexpected input");
         }
     }
 
@@ -98,8 +95,7 @@ public class ConverterLib {
             super(singletonList(TripleMock3.class), TripleMock1.class);
         }
 
-        @Override public @Nullable Object convert(@Nullable Object input) {
-            if (input == null) return null;
+        @Override public @Nonnull Object convert(@Nonnull Object input) {
             TripleMock3 t = (TripleMock3) input;
             return new TripleMock1(t.getSubject(), t.getPredicate(), t.getObject());
         }
@@ -110,8 +106,7 @@ public class ConverterLib {
             super(singletonList(TripleMock3.class), TripleMock2.class);
         }
 
-        @Override public @Nullable Object convert(@Nullable Object input) {
-            if (input == null) return null;
+        @Override public @Nonnull Object convert(@Nonnull Object input) {
             TripleMock3 t = (TripleMock3) input;
             return new TripleMock2(t.getSubject(), t.getPredicate(), t.getObject());
         }
@@ -122,8 +117,7 @@ public class ConverterLib {
             super(singletonList(QuadMock1.class), TripleMock1.class);
         }
 
-        @Override public @Nullable  Object convert(@Nullable Object input) {
-            if (input == null) return null;
+        @Override public @Nonnull Object convert(@Nonnull Object input) {
             TripleMock triple = SplitMockQuad.split(input).getTriple();
             assert  outputClass().isInstance(triple);
             return triple;
@@ -135,8 +129,7 @@ public class ConverterLib {
             super(singletonList(QuadMock2.class), TripleMock2.class);
         }
 
-        @Override public @Nullable Object convert(@Nullable Object input) {
-            if (input == null) return null;
+        @Override public @Nonnull Object convert(@Nonnull Object input) {
             TripleMock triple = SplitMockQuad.split(input).getTriple();
             assert outputClass().isInstance(triple);
             return triple;
@@ -148,8 +141,7 @@ public class ConverterLib {
             super(singletonList(QuadMock2.class), QuadMock1.class);
         }
 
-        @Override public @Nullable Object convert(@Nullable Object input) {
-            if (input == null) return null;
+        @Override public @Nonnull Object convert(@Nonnull Object input) {
             QuadMock2 q = (QuadMock2) input;
             TripleMock1 triple = new TripleMock1(q.getSubject(), q.getPredicate(), q.getObject());
             return new QuadMock1(q.getGraph(), triple);
@@ -161,8 +153,7 @@ public class ConverterLib {
             super(singletonList(QuadMock1.class), QuadMock2.class);
         }
 
-        @Override public @Nullable Object convert(@Nullable Object input) {
-            if (input == null) return null;
+        @Override public @Nonnull Object convert(@Nonnull Object input) {
             QuadMock1 q = (QuadMock1) input;
             TripleMock1 t = q.getTriple();
             return new QuadMock2(q.getGraph(), t.getSubject(), t.getPredicate(), t.getObject());
@@ -174,8 +165,7 @@ public class ConverterLib {
      */
     @Accepts(QuadMock2.class) @Outputs(QuadMock3.class)
     public static class QuadMock2QuadMock3Converter extends BaseMockConverter {
-        @Override public @Nullable Object convert(@Nullable Object input) {
-            if (input == null) return null;
+        @Override public @Nonnull Object convert(@Nonnull Object input) {
             QuadMock2 q = (QuadMock2) input;
             TripleMock3 t = new TripleMock3(q.getSubject(), q.getPredicate(), q.getObject());
             return new QuadMock3(q.getGraph(), t);

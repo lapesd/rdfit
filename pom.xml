@@ -23,6 +23,7 @@
     <module>rdfit-core</module>
     <module>rdfit-jena</module>
     <module>rdfit-jena-parsers</module>
+    <module>rdfit-hdt</module>
   </modules>
 
   <build>

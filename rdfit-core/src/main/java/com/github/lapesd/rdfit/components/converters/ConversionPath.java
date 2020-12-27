@@ -1,15 +1,20 @@
 package com.github.lapesd.rdfit.components.converters;
 
 import com.github.lapesd.rdfit.components.Converter;
+import com.github.lapesd.rdfit.errors.ConversionException;
+import com.github.lapesd.rdfit.errors.ConversionPathException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
-public class ConversionPath implements Function<Object, Object> {
+public class ConversionPath {
+    private static final Logger logger = LoggerFactory.getLogger(ConversionPath.class);
+
     private final @Nonnull List<Converter> path;
     public static final @Nonnull ConversionPath EMPTY
             = new ConversionPath(Collections.emptyList());
@@ -18,15 +23,28 @@ public class ConversionPath implements Function<Object, Object> {
         this.path = path;
     }
 
-    @Override public @Nullable Object apply(@Nullable Object o) {
-        return o == null ? null : convert(o);
-    }
-
-    public @Nullable Object convert(@Nonnull Object input) {
+    /**
+     * Apply the {@link Converter} in this path serially to input.
+     *
+     * @param input object to be converted
+     * @return Converted object
+     * @throws ConversionException if thrown by a Converter
+     */
+    public @Nonnull Object convert(@Nonnull Object input)  throws ConversionException {
         Object object = input;
-        for (Converter converter : path) {
-            if ((object = converter.convert(object)) == null) break;
+        try {
+            for (Converter converter : path) {
+                try {
+                    object = converter.convert(object);
+                } catch (ClassCastException e) {
+                    throw new ConversionException(e, object, converter, converter.outputClass(),
+                                                  e.getMessage());
+                }
+            }
+        } catch (ConversionException e) {
+            throw new ConversionPathException(this, e);
         }
+
         return object;
     }
 

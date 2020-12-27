@@ -3,6 +3,7 @@ package com.github.lapesd.rdfit.components.converters.util;
 import com.github.lapesd.rdfit.components.converters.ConversionFinder;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
 import com.github.lapesd.rdfit.components.converters.ConversionPath;
+import com.github.lapesd.rdfit.errors.ConversionException;
 import com.github.lapesd.rdfit.errors.InconvertibleException;
 import com.github.lapesd.rdfit.util.Utils;
 
@@ -34,21 +35,27 @@ public class ConversionPathSingletonCache implements ConversionCache {
         if (outputClass.isInstance(in))
             return in; // no work
 
-        Object out = null;
-        if (conversionPath != null && conversionPath.canConvert(in)) // try cached path
-            out = conversionPath.convert(in);
+        ConversionException first = null;
+        try {
+            if (conversionPath != null && conversionPath.canConvert(in)) // try cached path
+                return conversionPath.convert(in);
+        } catch (ConversionException e) {
+            first = e;
+        }
 
-        if (out == null) { // explore all paths from the start
-            ConversionFinder finder = conversionManager.findPath(in, outputClass);
-            while (finder.hasNext() && out == null) {
-                if ((out = finder.convert(in)) != null)
-                    conversionPath = finder.getConversionPath();
+
+        ConversionFinder finder = conversionManager.findPath(in, outputClass);
+        while (finder.hasNext()) {
+            try {
+                Object out = finder.convert(in);
+                conversionPath = finder.getConversionPath();
+                return out;
+            } catch (ConversionException e) {
+                if (first == null) first = e;
             }
         }
 
-        if (out == null) //exhausted
-            throw new InconvertibleException(source, in, outputClass);
-        return out;
+        throw new InconvertibleException(source, in, outputClass);
     }
 
     @Override public @Nonnull String toString() {

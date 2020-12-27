@@ -1,3 +1,4 @@
+
 rdfit - Agnostic and decoupled iteration over RDF data. 
 =====
 
@@ -318,7 +319,7 @@ See the next question: ["How do I write RDF data?"](#how-do-i-write-rdf-data).
 Writing usually occurs to a single destination in a single syntax. Thus using 
 the writer in your preferred RDF library will be simpler than using
 an indirection layer. There are several ways to do this:
-- Direct feeding the `RDFIt<>`:
+- Direct feeding the `RDFIt<>` to:
   - Jena's `RDFDataMgr.writeTriples()`/`writeQuads()`
   - hdt-java's `HDTManager.generateHDT()`/`getHDTWriter()`
 - Wrapping a callback

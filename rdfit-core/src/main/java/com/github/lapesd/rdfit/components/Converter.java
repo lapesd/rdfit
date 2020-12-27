@@ -1,6 +1,7 @@
 package com.github.lapesd.rdfit.components;
 
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
+import com.github.lapesd.rdfit.errors.ConversionException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -27,17 +28,17 @@ public interface Converter extends Component {
      * Convert the given input into a {@link #outputClass()} instance.
      *
      * @param input the input object
-     * @return the converted instance, or null if input is null or the particular instance
-     *         could not be handled.
+     * @return the converted instance
+     * @throws ConversionException if input cannot be converted
      */
-    @Nullable Object convert(@Nullable Object input);
+    @Nonnull Object convert(@Nonnull Object input) throws ConversionException;
 
     /**
      * Returns whether the converter will likely be able to handle this instance
      * (i.e., {@link #convert(Object)} will return non-null).
      *
      * @param input the instance to check
-     * @return false if {@link #convert(Object)} would return null, true if it may return non-null
+     * @return false if {@link #convert(Object)} would throw, true if it may return non-null
      */
     boolean canConvert(@Nullable Object input);
 }

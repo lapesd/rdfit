@@ -3,6 +3,7 @@ package com.github.lapesd.rdfit.components.jena.converters;
 import com.github.lapesd.rdfit.components.converters.ConversionFinder;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
 import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
+import com.github.lapesd.rdfit.errors.ConversionException;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
@@ -62,7 +63,8 @@ public class JenaConvertersTest {
     }
 
     @Test(dataProvider = "testData")
-    public void test(@Nonnull Object in, @Nonnull Class<?> desired, @Nonnull Object expected) {
+    public void test(@Nonnull Object in, @Nonnull Class<?> desired, @Nonnull Object expected)
+            throws ConversionException {
         ConversionFinder path = mgr.findPath(in, desired);
         assertTrue(path.hasNext());
         assertEquals(path.convert(in), expected);

@@ -3,7 +3,6 @@ package com.github.lapesd.rdfit.components.parsers.impl.iterator;
 import com.github.lapesd.rdfit.iterator.IterationElement;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
 import java.util.Iterator;
 
 public class IterableItParser extends BaseJavaItParser {
@@ -12,6 +11,6 @@ public class IterableItParser extends BaseJavaItParser {
     }
 
     @Override protected @Nonnull Iterator<?> createIterator(@Nonnull Object source) {
-        return ((Collection<?>) source).iterator();
+        return ((Iterable<?>) source).iterator();
     }
 }

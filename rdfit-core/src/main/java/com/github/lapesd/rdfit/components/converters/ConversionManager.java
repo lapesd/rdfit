@@ -3,7 +3,6 @@ package com.github.lapesd.rdfit.components.converters;
 import com.github.lapesd.rdfit.components.Converter;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
 public interface ConversionManager {
@@ -35,5 +34,5 @@ public interface ConversionManager {
      * @param desired the desired class.
      * @return the conversion finder object
      */
-    @Nonnull ConversionFinder findPath(@Nullable Object input, @Nonnull Class<?> desired);
+    @Nonnull ConversionFinder findPath(@Nonnull Object input, @Nonnull Class<?> desired);
 }

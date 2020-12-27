@@ -1,11 +1,13 @@
 package com.github.lapesd.rdfit.source;
 
 import com.github.lapesd.rdfit.errors.RDFItException;
+import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import com.github.lapesd.rdfit.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -21,8 +23,16 @@ public class RDFFile extends RDFInputStream {
         this(file, false);
     }
 
+    public RDFFile(@Nonnull File file, @Nullable RDFLang lang) {
+        this(file, lang, false);
+    }
+
     public RDFFile(@Nonnull File file, boolean deleteOnClose) {
-        super(null, null, null, true);
+        this(file, null, deleteOnClose);
+    }
+    public RDFFile(@Nonnull File file, @Nullable RDFLang lang, boolean deleteOnClose) {
+        super(null, lang,
+              file.toURI().toString().replaceFirst("^file:", "file://"), true);
         this.file = file;
         this.deleteOnClose = deleteOnClose;
     }

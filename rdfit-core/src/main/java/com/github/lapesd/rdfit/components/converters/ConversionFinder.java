@@ -1,7 +1,8 @@
 package com.github.lapesd.rdfit.components.converters;
 
+import com.github.lapesd.rdfit.errors.ConversionException;
+
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public interface ConversionFinder {
     /**
@@ -13,12 +14,10 @@ public interface ConversionFinder {
      * Convert the given object using the current path.
      *
      * @param input the object to convert from
-     * @return the result of conversion, which can be null if input is null or a converter in the
-     *         {@link #getConversionPath()} refused to convert its input.
+     * @return the result of conversion
+     * @throws ConversionException if the current path could not handle the conversion.
      */
-    @Nullable Object convert(@Nullable Object input);
-
-
+    @Nonnull Object convert(@Nonnull Object input) throws ConversionException;
 
     /**
      * Advance to the next conversion path.

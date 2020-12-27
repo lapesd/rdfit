@@ -2,6 +2,7 @@ package com.github.lapesd.rdfit.components.converters;
 
 import com.github.lapesd.rdfit.components.Converter;
 import com.github.lapesd.rdfit.data.*;
+import com.github.lapesd.rdfit.errors.ConversionException;
 import com.github.lapesd.rdfit.iterator.Ex;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -10,7 +11,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
@@ -23,9 +23,6 @@ public abstract class ConversionManagerTestBase {
     @DataProvider public Object[][] testData() {
         return Stream.of(
                 asList("No",          emptyList(), Ex.T1, TripleMock1.class, Ex.T1),
-                asList("Null triple", emptyList(), null,  TripleMock1.class, null),
-                asList("Null Object", emptyList(), null,  Object.class,      null),
-                asList("Null Lock",   emptyList(), null,  Lock.class,        null),
 
                 // triple convserions
                 asList("T1 -> U1",                  ConverterLib.TRIPLE_CONVERTERS, Ex.T1, TripleMock2.class, Ex.U1),
@@ -85,15 +82,18 @@ public abstract class ConversionManagerTestBase {
     }
 
     @Test(dataProvider = "testData")
-    public void test(@Nonnull String ignored, @Nonnull Collection<? extends Converter> converters,
-                     @Nullable Object input, @Nonnull Class<?> desired, @Nullable Object expected) {
+    public void test(@Nonnull String testName, @Nonnull Collection<? extends Converter> converters,
+                     @Nonnull Object input, @Nonnull Class<?> desired, @Nullable Object expected) {
         ConversionManager mgr = createManager();
         for (Converter c : converters)
             mgr.register(c);
         ConversionFinder finder = mgr.findPath(input, desired);
         Object result = null;
-        while (finder.hasNext() && result == null)
-            result = finder.convert(input);
+        while (finder.hasNext() && result == null) {
+            try {
+                result = finder.convert(input);
+            } catch (ConversionException ignored) {  }
+        }
         assertEquals(result, expected);
     }
 

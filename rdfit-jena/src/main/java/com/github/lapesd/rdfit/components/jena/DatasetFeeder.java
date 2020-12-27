@@ -1,6 +1,7 @@
 package com.github.lapesd.rdfit.components.jena;
 
 import com.github.lapesd.rdfit.components.jena.converters.JenaConverters;
+import com.github.lapesd.rdfit.errors.ConversionException;
 import com.github.lapesd.rdfit.errors.RDFItException;
 import com.github.lapesd.rdfit.listener.RDFListenerBase;
 import com.github.lapesd.rdfit.util.Utils;
@@ -30,23 +31,26 @@ public class DatasetFeeder extends RDFListenerBase<Statement, Quad> {
 
     @Override public void quad(@Nonnull Quad quad) {
         if (quad.isDefaultGraph()) {
-            Statement stmt = (Statement) JenaConverters.Quad2Statement.INSTANCE.convert(quad);
-            assert stmt != null;
-            triple(stmt);
-            return;
+            try {
+                Statement stmt = (Statement) JenaConverters.Quad2Statement.INSTANCE.convert(quad);
+                triple(stmt);
+            } catch (ConversionException e) {
+                throw new RDFItException("Unexpected ConversionException", e);
+            }
+        } else {
+            Node graph = quad.getGraph();
+            if (!graph.isURI())
+                throw new RDFItException(source, "Graph "+graph+" in quad "+quad+"is not an IRI");
+            String uri = graph.getURI();
+            Model model = dataset.getNamedModel(uri);
+            if (model == null) {
+                logger.debug("Creating a new graph {} in dataset", uri);
+                dataset.addNamedModel(uri, ModelFactory.createDefaultModel());
+                model = dataset.getNamedModel(uri);
+                assert model != null;
+            }
+            model.getGraph().add(quad.asTriple());
         }
-        Node graph = quad.getGraph();
-        if (!graph.isURI())
-            throw new RDFItException(source, "Graph "+graph+" in quad "+quad+"is not an IRI");
-        String uri = graph.getURI();
-        Model model = dataset.getNamedModel(uri);
-        if (model == null) {
-            logger.debug("Creating a new graph {} in dataset", uri);
-            dataset.addNamedModel(uri, ModelFactory.createDefaultModel());
-            model = dataset.getNamedModel(uri);
-            assert model != null;
-        }
-        model.getGraph().add(quad.asTriple());
     }
 
     public @Nonnull Dataset getDataset() {

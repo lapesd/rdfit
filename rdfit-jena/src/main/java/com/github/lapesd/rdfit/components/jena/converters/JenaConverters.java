@@ -6,6 +6,7 @@ import com.github.lapesd.rdfit.components.annotations.Accepts;
 import com.github.lapesd.rdfit.components.annotations.Outputs;
 import com.github.lapesd.rdfit.components.converters.BaseConverter;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
+import com.github.lapesd.rdfit.errors.ConversionException;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.ResourceFactory;
@@ -54,16 +55,16 @@ public class JenaConverters {
     @Accepts(Quad.class) @Outputs(Triple.class)
     public static class Quad2Triple extends BaseConverter {
         public static final @Nonnull Quad2Triple INSTANCE = new Quad2Triple();
-        @Override public @Nullable Object convert(@Nullable Object input) {
-            return input == null ? null : ((Quad) input).asTriple();
+        @Override public @Nonnull Object convert(@Nonnull Object input) {
+            return ((Quad) input).asTriple();
         }
     }
 
     @Accepts(Statement.class) @Outputs(Triple.class)
     public static class Statement2Triple extends BaseConverter {
         public static final @Nonnull Statement2Triple INSTANCE = new Statement2Triple();
-        @Override public @Nullable Object convert(@Nullable Object input) {
-            return input == null ? null : ((Statement)input).asTriple();
+        @Override public @Nonnull Object convert(@Nonnull Object input) {
+            return ((Statement)input).asTriple();
         }
     }
 
@@ -79,9 +80,9 @@ public class JenaConverters {
                                                && t.getObject().isConcrete();
         }
 
-        @Override public @Nullable Object convert(@Nullable Object input) {
-            if (input == null) return null;
-            assert canConvert(input);
+        @Override public @Nonnull Object convert(@Nonnull Object input) throws ConversionException {
+            if (!canConvert(input))
+                throw new ConversionException(input, this, "triple has variables");
             Triple t = (Triple) input;
             ResourceImpl s = new ResourceImpl(t.getSubject(), null);
             PropertyImpl p = new PropertyImpl(t.getPredicate(), null);
@@ -104,16 +105,15 @@ public class JenaConverters {
             return Triple2Statement.INSTANCE.canConvert(((Quad)input).asTriple());
         }
 
-        @Override public @Nullable Object convert(@Nullable Object in) {
-            return in == null ? null : Triple2Statement.INSTANCE.convert(((Quad)in).asTriple());
+        @Override public @Nonnull Object convert(@Nonnull Object in) throws ConversionException {
+            return Triple2Statement.INSTANCE.convert(((Quad)in).asTriple());
         }
     }
 
     @Accepts(Triple.class) @Outputs(Quad.class)
     public static class Triple2Quad extends BaseConverter {
         public static final @Nonnull Triple2Quad INSTANCE = new Triple2Quad();
-        @Override public @Nullable Object convert(@Nullable Object input) {
-            if (input == null) return null;
+        @Override public @Nonnull Object convert(@Nonnull Object input) {
             return new Quad(Quad.defaultGraphIRI, (Triple)input);
         }
     }
@@ -121,8 +121,7 @@ public class JenaConverters {
     @Accepts(Statement.class) @Outputs(Quad.class)
     public static class Statement2Quad extends BaseConverter {
         public static final @Nonnull Statement2Quad INSTANCE = new Statement2Quad();
-        @Override public @Nullable Object convert(@Nullable Object input) {
-            if (input == null) return null;
+        @Override public @Nonnull Object convert(@Nonnull Object input) {
             return new Quad(Quad.defaultGraphIRI, ((Statement)input).asTriple());
         }
     }

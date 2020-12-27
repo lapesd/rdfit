@@ -4,6 +4,7 @@ import com.github.lapesd.rdfit.components.Converter;
 import com.github.lapesd.rdfit.components.converters.ConversionFinder;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
 import com.github.lapesd.rdfit.components.converters.ConversionPath;
+import com.github.lapesd.rdfit.errors.ConversionException;
 import com.github.lapesd.rdfit.util.TypeDispatcher;
 
 import javax.annotation.Nonnull;
@@ -69,8 +70,8 @@ public class DefaultConversionManager implements ConversionManager {
     }
 
     @Override
-    public @Nonnull ConversionFinder findPath(@Nullable Object input, @Nonnull Class<?> desired) {
-        if (input == null || desired.isInstance(input))
+    public @Nonnull ConversionFinder findPath(@Nonnull Object input, @Nonnull Class<?> desired) {
+        if (desired.isInstance(input))
             return new TrivialConversionFinder();
 
         HashSet<Converter> visited = new HashSet<>();
@@ -86,8 +87,8 @@ public class DefaultConversionManager implements ConversionManager {
                 return conversionPath;
             }
 
-            @Override public @Nullable Object convert(@Nullable Object input) {
-                if (input == null) return null;
+            @Override public @Nonnull Object
+            convert(@Nonnull Object input) throws ConversionException {
                 return getConversionPath().convert(input);
             }
 
