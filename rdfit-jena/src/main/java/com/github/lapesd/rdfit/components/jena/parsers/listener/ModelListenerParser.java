@@ -20,7 +20,7 @@ public class ModelListenerParser extends BaseListenerParser {
     @Override
     public void parse(@Nonnull Object source, @Nonnull RDFListener<?, ?> listener)
             throws InterruptParsingException {
-        try (ListenerFeeder feeder = new ListenerFeeder(listener).setSource(source)) {
+        try (ListenerFeeder feeder = createListenerFeeder(listener, source)) {
             try {
                 StmtIterator it = ((Model) source).listStatements();
                 while (it.hasNext())
@@ -29,7 +29,7 @@ public class ModelListenerParser extends BaseListenerParser {
             } catch (InterruptParsingException e) {
                 throw e;
             } catch (Throwable t) {
-                if (!listener.notifySourceError(source, RDFItException.wrap(source, t)))
+                if (!listener.notifySourceError(RDFItException.wrap(source, t)))
                     throw new InterruptParsingException();
             }
         }

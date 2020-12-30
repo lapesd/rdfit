@@ -91,6 +91,9 @@ public class CookieTest {
                           .then("AB").strict().save()
                           .then("CD").then("EF").strict().ignoreCase().save().save()
                           .build();
+        Cookie c3 = Cookie.builder("XY").strict()
+                          .then("AB").strict().skipWhitespace().save()
+                          .build();
         return Stream.of(
                 asList(c1, "XYAB", true),
                 asList(c1, " XY", false),
@@ -114,7 +117,14 @@ public class CookieTest {
                 asList(c2, "XYCCDef", true),
                 asList(c2, "XYEFCDEF", true),
                 asList(c2, "XYEFCD EF", false),
-                asList(c2, "XYEFCDEEF", false)
+                asList(c2, "XYEFCDEEF", false),
+                asList(c3, "XYAB", true),
+                asList(c3, "XY|AB", false),
+                asList(c3, "XYAAB", false),
+                asList(c3, "XY AB", true),
+                asList(c3, "XY  AB", true),
+                asList(c3, "XY \t\r\n AB", true),
+                asList(c3, "XY \t\r\n ABX", true)
         ).map(List::toArray).toArray(Object[][]::new);
     }
 

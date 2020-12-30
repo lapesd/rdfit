@@ -24,6 +24,8 @@
     <module>rdfit-jena</module>
     <module>rdfit-jena-parsers</module>
     <module>rdfit-hdt</module>
+    <module>rdfit-rdf4j</module>
+    <module>rdfit-rdf4j-parsers</module>
   </modules>
 
   <build>

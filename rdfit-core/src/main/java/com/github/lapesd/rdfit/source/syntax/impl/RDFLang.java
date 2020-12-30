@@ -20,4 +20,5 @@ public interface RDFLang {
         return "." + getMainExtension();
     }
     @Nonnull Collection<String> getExtensions();
+    boolean isBinary();
 }

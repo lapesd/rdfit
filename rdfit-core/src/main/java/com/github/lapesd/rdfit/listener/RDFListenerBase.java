@@ -45,8 +45,18 @@ public abstract class RDFListenerBase<T, Q> implements RDFListener<T, Q> {
         throw new InterruptParsingException();
     }
 
+    @Override public boolean notifyParseWarning(@Nonnull String message) {
+        logger.warn("Ignoring warning parsing source {}: {}", source, message);
+        return true;
+    }
+
+    @Override public boolean notifyParseError(@Nonnull String message) {
+        logger.warn("Ignoring recoverable error parsing source {}: {}", source, message);
+        return true;
+    }
+
     @Override
-    public boolean notifySourceError(@Nonnull Object source, @Nonnull RDFItException e) {
+    public boolean notifySourceError(@Nonnull RDFItException e) {
         logger.error("{}.notifySourceError(): Failed to parse {}. Stopping", this, source, e);
         return false; //do not parse next sources
     }

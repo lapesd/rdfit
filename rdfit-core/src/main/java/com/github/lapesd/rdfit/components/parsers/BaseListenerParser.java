@@ -1,6 +1,9 @@
 package com.github.lapesd.rdfit.components.parsers;
 
 import com.github.lapesd.rdfit.components.ListenerParser;
+import com.github.lapesd.rdfit.components.converters.ConversionManager;
+import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
+import com.github.lapesd.rdfit.listener.RDFListener;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,6 +25,13 @@ public abstract class BaseListenerParser extends BaseParser implements ListenerP
         this.quadClass = quadClass;
         if (tripleClass == null && quadClass == null)
             throw new IllegalArgumentException("Both tripleClass and quadClass are null");
+    }
+
+    protected @Nonnull ListenerFeeder createListenerFeeder(@Nonnull RDFListener<?,?> listener,
+                                                           @Nonnull Object source) {
+        ConversionManager mgr = parserRegistry == null ? DefaultConversionManager.get()
+                                                       : parserRegistry.getConversionManager();
+        return new ListenerFeeder(listener, mgr).setSource(source);
     }
 
     @Override public @Nullable Class<?> tripleType() {

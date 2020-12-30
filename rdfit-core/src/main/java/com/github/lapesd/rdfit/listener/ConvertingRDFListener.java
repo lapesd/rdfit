@@ -128,21 +128,26 @@ public class ConvertingRDFListener<T, Q> implements RDFListener<T, Q> {
         target.finish(source);
     }
 
-    @Override
-    public boolean notifyInconvertibleTriple(@Nonnull InconvertibleException e)
+    @Override public boolean notifyInconvertibleTriple(@Nonnull InconvertibleException e)
             throws InterruptParsingException {
         return target.notifyInconvertibleTriple(e);
     }
 
-    @Override
-    public boolean notifyInconvertibleQuad(@Nonnull InconvertibleException e)
+    @Override public boolean notifyInconvertibleQuad(@Nonnull InconvertibleException e)
             throws InterruptParsingException {
         return target.notifyInconvertibleQuad(e);
     }
 
-    @Override
-    public boolean notifySourceError(@Nonnull Object source, @Nonnull RDFItException exception) {
-        return target.notifySourceError(source, exception);
+    @Override public boolean notifyParseWarning(@Nonnull String message) {
+        return target.notifyParseWarning(message);
+    }
+
+    @Override public boolean notifyParseError(@Nonnull String message) {
+        return target.notifyParseError(message);
+    }
+
+    @Override public boolean notifySourceError(@Nonnull RDFItException exception) {
+        return target.notifySourceError(exception);
     }
 
     @Override public void finish() {

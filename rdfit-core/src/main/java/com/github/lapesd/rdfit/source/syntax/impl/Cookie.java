@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static java.lang.Character.isWhitespace;
+
 public class Cookie {
     private final @Nonnull byte[] bytes;
-    private final boolean strict, ignoreCase, skipBOM;
+    private final boolean strict, ignoreCase, skipBOM, skipWhitespace;
     private final @Nonnull List<Cookie> successors;
 
     public static class Builder {
@@ -18,6 +20,7 @@ public class Cookie {
         private final byte[] bytes;
         private boolean strict;
         private boolean ignoreCase;
+        private boolean skipWhitespace = false;
         private boolean skipBOM = true;
         private @Nonnull List<Cookie> successors = Collections.emptyList();
 
@@ -31,6 +34,14 @@ public class Cookie {
         }
         public @Nonnull Builder strict(boolean value) {
             this.strict = value;
+            return this;
+        }
+
+        public @Nonnull Builder skipWhitespace() {
+            return skipWhitespace(true);
+        }
+        public @Nonnull Builder skipWhitespace(boolean value) {
+            this.skipWhitespace = value;
             return this;
         }
 
@@ -77,7 +88,7 @@ public class Cookie {
             return doBuild();
         }
         public @Nonnull Cookie doBuild() {
-            return new Cookie(bytes, strict, ignoreCase, skipBOM, successors);
+            return new Cookie(bytes, strict, ignoreCase, skipBOM, skipWhitespace, successors);
         }
     }
 
@@ -92,7 +103,7 @@ public class Cookie {
     }
 
     public Cookie(@Nonnull byte[] bytes, boolean strict, boolean ignoreCase, boolean skipBOM,
-                  @Nonnull List<Cookie> successors) {
+                  boolean skipWhitespace, @Nonnull List<Cookie> successors) {
         if (ignoreCase) {
             byte[] copy = new byte[bytes.length];
             for (int i = 0, size = bytes.length; i < size; i++)
@@ -103,6 +114,7 @@ public class Cookie {
         this.strict = strict;
         this.ignoreCase = ignoreCase;
         this.skipBOM = skipBOM;
+        this.skipWhitespace = skipWhitespace;
         this.successors = successors;
     }
 
@@ -150,6 +162,8 @@ public class Cookie {
         public boolean feed(byte value) {
             if (feedBOM(value))
                 return true; //value is (likely) part of the BOM
+            if (skipWhitespace && index == 0 && isWhitespace(value))
+                return true;
             if (ignoreCase)
                 value = (byte) Character.toLowerCase((char) value);
             if      (index < 0)             return false;
@@ -229,7 +243,6 @@ public class Cookie {
     public @Nonnull Matcher createMatcher() {
         return new Matcher();
     }
-
 
     public @Nonnull byte[] getBytes() {
         return bytes;

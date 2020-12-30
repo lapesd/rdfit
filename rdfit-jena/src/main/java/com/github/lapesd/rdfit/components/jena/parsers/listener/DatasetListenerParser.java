@@ -26,12 +26,9 @@ public class DatasetListenerParser extends BaseListenerParser {
         super(CLASSES, null, Quad.class);
     }
 
-    @Override
-    public void parse(@Nonnull Object source,
+    public void parse(@Nonnull Object source, @Nonnull DatasetGraph dsg,
                       @Nonnull RDFListener<?, ?> listener) throws InterruptParsingException {
-        DatasetGraph dsg = source instanceof DatasetGraph ? (DatasetGraph) source
-                                                          : ((Dataset)source).asDatasetGraph();
-        try (ListenerFeeder feeder = new ListenerFeeder(listener).setSource(source)) {
+        try (ListenerFeeder feeder = createListenerFeeder(listener, source)) {
             try {
                 Iterator<Quad> it = dsg.find();
                 while (it.hasNext()) {
@@ -41,9 +38,17 @@ public class DatasetListenerParser extends BaseListenerParser {
             } catch (InterruptParsingException e) {
                 throw e;
             } catch (Throwable t) {
-                if (!listener.notifySourceError(source, RDFItException.wrap(source, t)))
+                if (!listener.notifySourceError(RDFItException.wrap(source, t)))
                     throw new InterruptParsingException();
             }
         }
+    }
+
+    @Override
+    public void parse(@Nonnull Object source,
+                      @Nonnull RDFListener<?, ?> listener) throws InterruptParsingException {
+        DatasetGraph dsg = source instanceof DatasetGraph ? (DatasetGraph) source
+                                                          : ((Dataset)source).asDatasetGraph();
+        parse(source, dsg, listener);
     }
 }

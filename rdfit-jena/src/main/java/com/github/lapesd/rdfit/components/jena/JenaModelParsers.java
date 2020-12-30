@@ -10,6 +10,7 @@ import com.github.lapesd.rdfit.components.jena.parsers.iterator.ModelItParser;
 import com.github.lapesd.rdfit.components.jena.parsers.listener.DatasetListenerParser;
 import com.github.lapesd.rdfit.components.jena.parsers.listener.GraphListenerParser;
 import com.github.lapesd.rdfit.components.jena.parsers.listener.ModelListenerParser;
+import com.github.lapesd.rdfit.components.jena.parsers.listener.QueryExecutionListenerParser;
 import com.github.lapesd.rdfit.components.parsers.JavaParsers;
 import com.github.lapesd.rdfit.components.parsers.ParserRegistry;
 import org.apache.jena.graph.Triple;
@@ -27,7 +28,8 @@ public class JenaModelParsers {
     private static final @Nonnull List<ItParser> IT_PARSERS = asList(
             new DatasetItParser(), new GraphItParser(), new ModelItParser()) ;
     private static final @Nonnull List<ListenerParser> LISTENER_PARSERS = asList(
-            new DatasetListenerParser(), new GraphListenerParser(), new ModelListenerParser());
+            new DatasetListenerParser(), new GraphListenerParser(), new ModelListenerParser(),
+            new QueryExecutionListenerParser());
     private static final @Nonnull List<Parser> PARSERS;
 
     static {

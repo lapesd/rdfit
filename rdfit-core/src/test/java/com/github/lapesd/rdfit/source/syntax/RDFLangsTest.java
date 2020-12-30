@@ -16,9 +16,11 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,4 +113,30 @@ public class RDFLangsTest {
         }
     }
 
+    @DataProvider public Object[][] testGuessTurtleFamilyDetectorData() {
+        Object[][] data = new TurtleFamilyDetectorTest().testData();
+        Object[][] filtered = new Object[data.length][];
+        int i = 0;
+        for (Object[] row : data) {
+            if (RDFLangs.isKnown((RDFLang) row[2]))
+                filtered[i++] = row;
+        }
+        return filtered;
+    }
+
+    @Test(dataProvider = "testGuessTurtleFamilyDetectorData")
+    public void testGuessTurtleFamilyDetector(@Nullable byte[] prepend,
+                                              @Nonnull Object input,
+                                              @Nonnull RDFLang expected) throws IOException {
+        byte[] bytes = input instanceof byte[] ? (byte[]) input : input.toString().getBytes(UTF_8);
+        if (prepend != null) {
+            byte[] utf8 = bytes;
+            bytes = new byte[prepend.length + utf8.length];
+            System.arraycopy(prepend, 0, bytes, 0, prepend.length);
+            System.arraycopy(utf8, 0, bytes, prepend.length, utf8.length);
+        }
+        try (InputStream is = new ByteArrayInputStream(bytes)) {
+            assertEquals(RDFLangs.guess(is, Integer.MAX_VALUE), expected);
+        }
+    }
 }

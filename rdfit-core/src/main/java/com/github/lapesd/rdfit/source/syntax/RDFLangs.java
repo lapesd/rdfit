@@ -18,17 +18,19 @@ public class RDFLangs {
     private static final @Nonnull Map<RDFLang, LangDetector> EXTRA_DETECTORS
             = Collections.synchronizedMap(new HashMap<>());
 
-    public static final @Nonnull RDFLang NT      = new SimpleRDFLang("N-Triples",        asList("nt",  "ntriples"));
-    public static final @Nonnull RDFLang NQ      = new SimpleRDFLang("N-Quads",          asList("nq",  "nquads"));
-    public static final @Nonnull RDFLang TTL     = new SimpleRDFLang("Turtle",           asList("ttl", "turtle"));
-    public static final @Nonnull RDFLang TRIG    = new SimpleRDFLang("TriG",      singletonList("trig"));
-    public static final @Nonnull RDFLang RDFXML  = new SimpleRDFLang("RDF/XML",          asList("rdf", "xml"));
-    public static final @Nonnull RDFLang OWL     = new SimpleRDFLang("OWL/XML",          asList("owl", "xml"));
-    public static final @Nonnull RDFLang TRIX    = new SimpleRDFLang("TRIX",      singletonList("trix"));
-    public static final @Nonnull RDFLang JSONLD  = new SimpleRDFLang("JSON-LD",   singletonList("jsonld"));
-    public static final @Nonnull RDFLang RDFJSON = new SimpleRDFLang("RDF/JSON",  singletonList("rj"));
-    public static final @Nonnull RDFLang THRIFT  = new SimpleRDFLang("Thrift",           asList("trdf", "rt"));
-    public static final @Nonnull RDFLang HDT     = new SimpleRDFLang("HDT",       singletonList("hdt"));
+    public static final @Nonnull RDFLang NT      = new SimpleRDFLang("N-Triples",        asList("nt",  "ntriples"), false);
+    public static final @Nonnull RDFLang NQ      = new SimpleRDFLang("N-Quads",          asList("nq",  "nquads"), false);
+    public static final @Nonnull RDFLang TTL     = new SimpleRDFLang("Turtle",           asList("ttl", "turtle"), false);
+    public static final @Nonnull RDFLang TRIG    = new SimpleRDFLang("TriG",      singletonList("trig"), false);
+    public static final @Nonnull RDFLang RDFXML  = new SimpleRDFLang("RDF/XML",          asList("rdf", "xml"), false);
+    public static final @Nonnull RDFLang RDFA    = new SimpleRDFLang("RDFa",            asList("html", "xhtml"), false);
+    public static final @Nonnull RDFLang OWL     = new SimpleRDFLang("OWL/XML",          asList("owl", "xml"), false);
+    public static final @Nonnull RDFLang TRIX    = new SimpleRDFLang("TRIX",      singletonList("trix"), false);
+    public static final @Nonnull RDFLang JSONLD  = new SimpleRDFLang("JSON-LD",   singletonList("jsonld"), false);
+    public static final @Nonnull RDFLang RDFJSON = new SimpleRDFLang("RDF/JSON",  singletonList("rj"), false);
+    public static final @Nonnull RDFLang THRIFT  = new SimpleRDFLang("Thrift",           asList("trdf", "rt"), true);
+    public static final @Nonnull RDFLang BRF     = new SimpleRDFLang("BinaryRDF", singletonList("brf"), true);
+    public static final @Nonnull RDFLang HDT     = new SimpleRDFLang("HDT",       singletonList("hdt"), true);
     public static final @Nonnull RDFLang UNKNOWN = new UnknownRDFLang();
 
     static {
@@ -38,11 +40,13 @@ public class RDFLangs {
         list.add(TTL);
         list.add(TRIG);
         list.add(RDFXML);
+        list.add(RDFA);
         list.add(OWL);
         list.add(TRIX);
         list.add(JSONLD);
         list.add(RDFJSON);
         list.add(THRIFT);
+        list.add(BRF);
         list.add(HDT);
         LANGS = BUILTIN_LANGS = Collections.unmodifiableList(list);
 
@@ -53,7 +57,10 @@ public class RDFLangs {
                            .then("<Ontology").ignoreCase().save().build(), OWL);
         cd.addCookie(Cookie.builder("<rdf:").strict().ignoreCase().build(), RDFXML);
         cd.addCookie(Cookie.builder("<Ontology").strict().ignoreCase().build(), OWL);
-        cd.addCookie(Cookie.builder("{").strict().build(), JSONLD);
+        cd.addCookie(Cookie.builder("{").skipWhitespace().strict().build(), JSONLD);
+        cd.addCookie(Cookie.builder("[").skipWhitespace().strict()
+                           .then("{").skipWhitespace().strict().save()
+                           .build(), JSONLD);
 //        cd.addCookie(Cookie.builder(new byte[]{0x1c, 0x18}).includeBOM().strict().build(), THRIFT);
         cd.addCookie(Cookie.builder("$HDT").includeBOM().strict().build(), HDT);
         cd.addCookie(Cookie.builder("<TriX").ignoreCase().build(), TRIX);
@@ -66,6 +73,14 @@ public class RDFLangs {
 
     public static boolean isKnown(@Nullable RDFLang lang) {
         return lang != null && !UNKNOWN.equals(lang);
+    }
+
+    public static boolean isTriGSubset(@Nullable RDFLang lang) {
+        return lang != null && (lang.equals(NT) || lang.equals(TTL) || lang.equals(TRIG));
+    }
+
+    public static boolean isNQSubset(@Nullable RDFLang lang) {
+        return lang != null && (lang.equals(NT) || lang.equals(NQ));
     }
 
     /**

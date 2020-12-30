@@ -26,6 +26,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import static com.github.lapesd.rdfit.iterator.IterationElement.QUAD;
 import static com.github.lapesd.rdfit.iterator.IterationElement.TRIPLE;
@@ -39,8 +40,13 @@ public class DefaultRDFItFactory implements RDFItFactory {
     protected @Nonnull ConversionManager conversionMgr;
     private final @Nonnull ThreadPoolExecutor executor;
 
+    public DefaultRDFItFactory() {
+        this(new DefaultParserRegistry(), new DefaultConversionManager());
+        parserRegistry.setConversionManager(getConverterManager());
+    }
+
     public DefaultRDFItFactory(@Nonnull ParserRegistry parserRegistry,
-                                  @Nonnull ConversionManager conversionManager) {
+                               @Nonnull ConversionManager conversionManager) {
         this.parserRegistry = parserRegistry;
         this.conversionMgr = conversionManager;
         int availableProcessors = Runtime.getRuntime().availableProcessors();
@@ -93,47 +99,67 @@ public class DefaultRDFItFactory implements RDFItFactory {
         Object source = sources[0];
         if (source == null)
             return new EmptyRDFIt<>(valueClass, itElement, NoSource.INSTANCE);
+
+        return iterateSource(itElement, tripleClass, quadLifter, valueClass, source);
+    }
+
+    private @Nonnull RDFIt<Object> iterateSource(@Nonnull IterationElement itElement,
+                                                 @Nullable Class<?> tripleClass,
+                                                 @Nullable QuadLifter quadLifter,
+                                                 @Nonnull Class<?> valueClass, @Nonnull Object in) {
         RDFIt<Object> it;
-        ItParser itParser = parserRegistry.getItParser(source);
-        if (itParser != null) {
-            if (itElement.isQuad() && itParser.iterationElement().isTriple()) {
-                it = itParser.parse(source);
-                if (quadLifter == null) {
-                    // no quad lifter, try using a converter
+        ItParser itParser = parserRegistry.getItParser(in, itElement);
+        if (itParser == null) {
+            IterationElement other = itElement.toggle();
+            itParser = parserRegistry.getItParser(in, other);
+            if (itParser == null) {
+                it = parse2It(itElement, quadLifter, valueClass, in);
+            } else {
+                it = itParser.parse(in);
+                if (valueClass.isAssignableFrom(it.valueClass())) {
+                    it = new TransformingRDFIt<>(valueClass, itElement, it, Function.identity());
+                } else if (quadLifter == null) {
                     it = new ConvertingRDFIt<>(valueClass, itElement, it, conversionMgr);
                 } else {
+                    assert tripleClass != null;
                     if (!tripleClass.isAssignableFrom(itParser.valueClass()))
                         it = new ConvertingRDFIt<>(tripleClass, TRIPLE, it, conversionMgr);
                     it = new TransformingRDFIt<>(valueClass, QUAD, it, quadLifter::lift);
                 }
-            } else {
-                it = itParser.parse(source);
-                if (!valueClass.isAssignableFrom(it.valueClass()))
-                    it = new ConvertingRDFIt<>(valueClass, itElement, it, conversionMgr);
             }
         } else {
-            ListenerParser cbParser = parserRegistry.getCallbackParser(source);
-            if (cbParser == null)
-                throw new NoParserException(source);
-
-            ListenerRDFIt<Object> cbIt = new ListenerRDFIt<>(source, valueClass, itElement,
-                                                             quadLifter, conversionMgr);
-            executor.execute(() -> {
-                try {
-                    cbParser.parse(source, cbIt.getListener());
-                    cbIt.getListener().finish();
-                } catch (InterruptParsingException ignored) {
-                } catch (RDFItException e) {
-                    cbIt.addException(e);
-                } catch (RuntimeException e) {
-                    cbIt.addException(new RDFItException(source, e));
-                }
-            });
-            it = cbIt;
+            it = itParser.parse(in);
+            if (!valueClass.isAssignableFrom(it.valueClass()))
+                it = new ConvertingRDFIt<>(valueClass, itElement, it, conversionMgr);
         }
 
         assert it.itElement() == itElement;
         assert it.valueClass().equals(valueClass);
+        return it;
+    }
+
+    private @Nonnull RDFIt<Object> parse2It(@Nonnull IterationElement itElement,
+                                           @Nullable QuadLifter quadLifter,
+                                           @Nonnull Class<?> valueClass, @Nonnull Object source) {
+        RDFIt<Object> it;
+        ListenerParser cbParser = parserRegistry.getCallbackParser(source);
+        if (cbParser == null)
+            throw new NoParserException(source);
+
+        ListenerRDFIt<Object> cbIt = new ListenerRDFIt<>(source, valueClass, itElement,
+                quadLifter, conversionMgr);
+        executor.execute(() -> {
+            try {
+                cbParser.parse(source, cbIt.getListener());
+                cbIt.getListener().finish();
+            } catch (InterruptParsingException ignored) {
+            } catch (RDFItException e) {
+                cbIt.addException(e);
+            } catch (RuntimeException e) {
+                cbIt.addException(new RDFItException(source, e));
+            }
+        });
+        it = cbIt;
         return it;
     }
 
@@ -176,7 +202,7 @@ public class DefaultRDFItFactory implements RDFItFactory {
                     RDFItException e = t instanceof RDFItException ? (RDFItException)t
                                      : new RDFItException("Unexpected exception parsing "+s, t);
                     // triple and quad conversion exceptions are notified inside parseSource
-                    if (!listener.notifySourceError(s, e))
+                    if (!listener.notifySourceError(e))
                         break; // stop parsing
                 }
             }
@@ -196,9 +222,12 @@ public class DefaultRDFItFactory implements RDFItFactory {
             cb = ConvertingRDFListener.createIf(cb, cbP, conversionMgr);
             cbP.parse(source, cb);
         } else {
-            ItParser itP = parserRegistry.getItParser(source);
-            if (itP == null)
-                throw new NoParserException(source);
+            ItParser itP = parserRegistry.getItParser(source, QUAD);
+            if (itP == null) {
+                itP = parserRegistry.getItParser(source, TRIPLE);
+                if (itP == null)
+                    throw new NoParserException(source);
+            }
             IterationElement itElement = itP.iterationElement();
             boolean isTriple = itElement.isTriple();
             Class<?> offTriple =           isTriple ? itP.valueClass() : null;
@@ -219,7 +248,7 @@ public class DefaultRDFItFactory implements RDFItFactory {
                     else          cb.quad(next);
                 }
             } catch (RDFItException e) {
-                if (!cb.notifySourceError(source, e))
+                if (!cb.notifySourceError(e))
                     throw new InterruptParsingException();
             } finally {
                 cb.finish(source);

@@ -55,16 +55,32 @@ public interface RDFListener<T, Q> {
 
 
     /**
+     * Notify a wanrning issued by the underlying parser while parsing the current source.
+     *
+     * @return true if parsing of this source should continue. If false, parsing of the source
+     *         will terminate but {@link #notifySourceError(RDFItException)} will not be called.
+     */
+    boolean notifyParseWarning(@Nonnull String message);
+
+    /**
+     * Notify about a recoverable error when parsing the input at the source.
+     *
+     * @return true if parsing of this source should continue. If false, parsing of the source
+     *         will terminate but {@link #notifySourceError(RDFItException)} will not be called.
+     */
+    boolean notifyParseError(@Nonnull String message);
+
+
+    /**
      * Notify that an exception occurred when parsing the given source.
      *
      * Parsing for the offending source terminates, but further sources may still be parsed.
      *
-     * @param source the offending source
      * @param exception the exception
      * @return if true, parsing of subsequent sources will continue normally, else no
      *         more sources will be parsed.
      */
-    boolean notifySourceError(@Nonnull Object source, @Nonnull RDFItException exception);
+    boolean notifySourceError(@Nonnull RDFItException exception);
 
     /**
      * This method is called for every triple. If {@link #quadType()} is null, a
@@ -100,14 +116,14 @@ public interface RDFListener<T, Q> {
     /**
      * Notifies that a source finished parsing.
      *
-     * This method is not called after a {@link #notifySourceError(Object, RDFItException)}
+     * This method is not called after a {@link #notifySourceError(RDFItException)}
      * call for the same source.
      */
     void finish(@Nonnull Object source);
 
     /**
      * Notifies that parsing of all sources is complete. This method is called even
-     * if {@link #notifySourceError(Object, RDFItException)} was called before, and even
+     * if {@link #notifySourceError(RDFItException)} was called before, and even
      * if parsing was interrupted with {@link InterruptParsingException}.
      */
     void finish();

@@ -4,6 +4,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.annotation.Nonnull;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -23,6 +24,14 @@ public class LiteralParserTest {
                 asList("'asd'", Literal.plain(SINGLE_SINGLE, "asd")),
                 asList("'''asd'''", Literal.plain(MULTI_SINGLE, "asd")),
                 asList("\"\"\"asd\"\"\"", Literal.plain(MULTI_DOUBLE, "asd")),
+
+                //quote variants with simple contents + UTF-8
+                asList("'Süd'", Literal.plain(SINGLE_SINGLE, "Süd")), // ü = c3 bc
+                asList("'€'", Literal.plain(SINGLE_SINGLE, "€")), // € = e2 82 ac
+                asList("'a€b'", Literal.plain(SINGLE_SINGLE, "a€b")), // € = e2 82 ac
+                asList("\"Süd\"", Literal.plain(SINGLE_DOUBLE, "Süd")), // ü = c3 bc
+                asList("\"€\"", Literal.plain(SINGLE_DOUBLE, "€")), // € = e2 82 ac
+                asList("\"a€b\"", Literal.plain(SINGLE_DOUBLE, "a€b")), // € = e2 82 ac
 
                 // quote variants + lang tag
                 asList("'asd'@en", Literal.lang(SINGLE_SINGLE, "asd", "en")),
@@ -81,6 +90,30 @@ public class LiteralParserTest {
         Literal first = parser.parseFirst(in);
         assertEquals(full, expected);
         assertEquals(first, expected);
+    }
+
+    @Test(dataProvider = "testData")
+    public void testUtf8(@Nonnull String in, @Nonnull Literal expected) {
+        LiteralParser parser = new LiteralParser();
+        Literal first = null, second = null;
+        for (byte b : in.getBytes(StandardCharsets.UTF_8)) {
+            if (parser.feedByte(b)) {
+                first = parser.endAndReset();
+                break;
+            }
+        }
+        if (first == null)
+            first = parser.endAndReset();
+        for (byte b : in.getBytes(StandardCharsets.UTF_8)) {
+            if (parser.feedByte(b)) {
+                second = parser.endAndReset();
+                break;
+            }
+        }
+        if (second == null)
+            second = parser.endAndReset();
+        assertEquals(first, expected);
+        assertEquals(second, expected);
     }
 
     @Test(dataProvider = "testData")

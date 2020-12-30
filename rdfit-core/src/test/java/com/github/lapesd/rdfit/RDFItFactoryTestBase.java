@@ -329,7 +329,7 @@ public abstract class RDFItFactoryTestBase {
                 acQuads.add(quad);
             }
             @Override
-            public boolean notifySourceError(@Nonnull Object source, @Nonnull RDFItException e) {
+            public boolean notifySourceError(@Nonnull RDFItException e) {
                 sourceExceptions.add(e);
                 return true;
             }
@@ -429,7 +429,7 @@ public abstract class RDFItFactoryTestBase {
             }
 
             @Override
-            public boolean notifySourceError(@Nonnull Object source, @Nonnull RDFItException e) {
+            public boolean notifySourceError(@Nonnull RDFItException e) {
                 e.printStackTrace();
                 sourceExceptions.add(e);
                 return true;

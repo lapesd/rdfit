@@ -3,12 +3,18 @@ package com.github.lapesd.rdfit.components.parsers;
 import com.github.lapesd.rdfit.components.ItParser;
 import com.github.lapesd.rdfit.components.ListenerParser;
 import com.github.lapesd.rdfit.components.Parser;
+import com.github.lapesd.rdfit.components.converters.ConversionManager;
+import com.github.lapesd.rdfit.iterator.IterationElement;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
 public interface ParserRegistry {
+    @Nonnull ConversionManager getConversionManager();
+
+    void setConversionManager(@Nonnull ConversionManager mgr);
+
     /**
      * Register a parser.
      */
@@ -29,12 +35,20 @@ public interface ParserRegistry {
     }
 
     /**
-     * Get a {@link ItParser} instance whose {@link Parser#canParse(Object)} accepts source.
+     * Get the first {@link ItParser} instance whose {@link Parser#canParse(Object)} accepts
+     * source and whose {@link ItParser#iterationElement()} matches
      *
      * @param source the source to be parsed
      * @return a {@link ItParser} or null if no registered {@link ItParser} accepts the source.
      */
-    @Nullable ItParser getItParser(@Nonnull Object source);
+    @Nullable ItParser getItParser(@Nonnull Object source, @Nullable IterationElement itElem);
+
+    /**
+     * Same as {@link #getItParser(Object, IterationElement)} with null {@link IterationElement};
+     */
+    default @Nullable ItParser getItParser(@Nonnull Object source) {
+        return getItParser(source, null);
+    }
 
     /**
      * Get a {@link ListenerParser} instance whose {@link Parser#canParse(Object)} accepts source.

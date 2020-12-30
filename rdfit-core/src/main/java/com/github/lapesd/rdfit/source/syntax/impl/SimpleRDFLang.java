@@ -9,10 +9,12 @@ import java.util.Objects;
 public class SimpleRDFLang implements RDFLang {
     private final @Nonnull String name;
     private final @Nonnull LinkedHashSet<String> extensions;
+    private final boolean binary;
 
-    public SimpleRDFLang(@Nonnull String name, @Nonnull List<String> extensions) {
+    public SimpleRDFLang(@Nonnull String name, @Nonnull List<String> extensions, boolean isBinary) {
         this.name = name;
         this.extensions = new LinkedHashSet<>(extensions);
+        this.binary = isBinary;
     }
 
     @Override public @Nonnull String name() {
@@ -25,6 +27,10 @@ public class SimpleRDFLang implements RDFLang {
 
     @Override public @Nonnull Collection<String> getExtensions() {
         return extensions;
+    }
+
+    @Override public boolean isBinary() {
+        return binary;
     }
 
     @Override public @Nonnull String toString() {

@@ -9,7 +9,6 @@ import com.github.lapesd.rdfit.components.parsers.impl.iterator.ArrayItParser;
 import com.github.lapesd.rdfit.components.parsers.impl.iterator.IterableItParser;
 import com.github.lapesd.rdfit.components.parsers.impl.listener.IterableListenerParser;
 import com.github.lapesd.rdfit.components.parsers.impl.listener.QuadArrayListenerParser;
-import com.github.lapesd.rdfit.components.parsers.impl.listener.StreamListenerParser;
 import com.github.lapesd.rdfit.components.parsers.impl.listener.TripleArrayListenerParser;
 import com.github.lapesd.rdfit.iterator.IterationElement;
 
@@ -25,7 +24,7 @@ import static java.util.Arrays.asList;
 public class JavaParsers {
     private static final @Nonnull Set<Class<?>> CLASSES = new HashSet<>(asList(
             IterableItParser.class, ArrayItParser.class, IterableListenerParser.class,
-            StreamListenerParser.class, TripleArrayListenerParser.class,
+            TripleArrayListenerParser.class,
             QuadArrayListenerParser.class));
 
     /**
@@ -83,7 +82,6 @@ public class JavaParsers {
         registry.register(new IterableItParser(memberClass, IterationElement.TRIPLE));
         registry.register(new ArrayItParser(memberClass, IterationElement.TRIPLE));
         registry.register(new IterableListenerParser(memberClass, null));
-        registry.register(new StreamListenerParser(memberClass, null));
         registry.register(new TripleArrayListenerParser(memberClass));
     }
 
@@ -92,7 +90,6 @@ public class JavaParsers {
         registry.register(new IterableItParser(memberClass, IterationElement.QUAD));
         registry.register(new ArrayItParser(memberClass, IterationElement.QUAD));
         registry.register(new IterableListenerParser(null, memberClass));
-        registry.register(new StreamListenerParser(null, memberClass));
         registry.register(new TripleArrayListenerParser(memberClass));
     }
 

@@ -17,13 +17,13 @@ import javax.annotation.Nonnull;
 
 import static java.lang.String.format;
 
-public class StreamRDFListener implements StreamRDF {
-    private static final Logger logger = LoggerFactory.getLogger(StreamRDFListener.class);
+public class ListenerStreamRDF implements StreamRDF {
+    private static final Logger logger = LoggerFactory.getLogger(ListenerStreamRDF.class);
 
     private final @Nonnull RDFListener<?, ?> target;
     private final @Nonnull Object source;
 
-    public StreamRDFListener(@Nonnull RDFListener<?, ?> target,
+    public ListenerStreamRDF(@Nonnull RDFListener<?, ?> target,
                              @Nonnull Object source) {
         Class<?> tt = target.tripleType(), qt = target.quadType();
         if (tt == null && qt == null)
@@ -52,7 +52,6 @@ public class StreamRDFListener implements StreamRDF {
                 ((RDFListener<Triple, ?>) target).triple(triple);
             } else if (tt.equals(Statement.class)) {
                 Statement stmt = (Statement) Triple2Statement.INSTANCE.convert(triple);
-                assert stmt != null;
                 ((RDFListener<Statement, ?>) target).triple(stmt);
             } else {
                 throw new IllegalStateException("target requires " + tt + " for triples");
@@ -63,7 +62,7 @@ public class StreamRDFListener implements StreamRDF {
         } catch (InterruptParsingException e) {
             throw e;
         } catch (Throwable t) {
-            if (target.notifySourceError(source, RDFItException.wrap(source, t)))
+            if (target.notifySourceError(RDFItException.wrap(source, t)))
                 throw new InterruptJenaParsingException();
             else
                 throw new InterruptParsingException();
@@ -79,7 +78,6 @@ public class StreamRDFListener implements StreamRDF {
                     ((RDFListener<Triple, ?>) target).triple(quad.asTriple());
                 } else if (tt.equals(Statement.class)) {
                     Statement stmt = (Statement) Triple2Statement.INSTANCE.convert(quad.asTriple());
-                    assert stmt != null;
                     ((RDFListener<Statement, ?>) target).triple(stmt);
                 } else {
                     throw new IllegalStateException("target requires " + tt + " for triples");
@@ -92,7 +90,6 @@ public class StreamRDFListener implements StreamRDF {
                         ((RDFListener<Triple, ?>)target).triple(triple);
                     } else {
                         Statement stmt = (Statement) Triple2Statement.INSTANCE.convert(triple);
-                        assert stmt != null;
                         ((RDFListener<Statement, ?>)target).triple(stmt);
                     }
                 } else {
@@ -107,7 +104,7 @@ public class StreamRDFListener implements StreamRDF {
         } catch (InterruptParsingException e) {
             throw e;
         } catch (Throwable t) {
-            if (target.notifySourceError(source, RDFItException.wrap(source, t)))
+            if (target.notifySourceError(RDFItException.wrap(source, t)))
                 throw new InterruptJenaParsingException();
             else
                 throw new InterruptParsingException();

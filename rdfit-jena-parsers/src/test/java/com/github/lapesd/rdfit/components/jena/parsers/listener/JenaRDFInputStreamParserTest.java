@@ -1,9 +1,7 @@
 package com.github.lapesd.rdfit.components.jena.parsers.listener;
 
 import com.github.lapesd.rdfit.DefaultRDFItFactory;
-import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
 import com.github.lapesd.rdfit.components.jena.JenaParsers;
-import com.github.lapesd.rdfit.components.parsers.DefaultParserRegistry;
 import com.github.lapesd.rdfit.errors.InconvertibleException;
 import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;
@@ -156,8 +154,7 @@ public class JenaRDFInputStreamParserTest {
     public void testFactory(@Nonnull Object input, @Nullable RDFLang lang, @Nullable String baseURI,
                             @Nonnull Class<?> tripleClass, @Nonnull Class<?> quadClass,
                             @Nonnull Collection<?> exTriples, @Nonnull Collection<?> exQuads) {
-        DefaultRDFItFactory factory = new DefaultRDFItFactory(
-                new DefaultParserRegistry(), new DefaultConversionManager());
+        DefaultRDFItFactory factory = new DefaultRDFItFactory();
         JenaParsers.registerAll(factory);
         List<Object> acTriples = new ArrayList<>(), acQuads = new ArrayList<>();
         List<Exception> exceptions = new ArrayList<>();
@@ -184,7 +181,7 @@ public class JenaRDFInputStreamParserTest {
             }
 
             @Override
-            public boolean notifySourceError(@Nonnull Object source, @Nonnull RDFItException e) {
+            public boolean notifySourceError(@Nonnull RDFItException e) {
                 exceptions.add(e);
                 return true;
             }

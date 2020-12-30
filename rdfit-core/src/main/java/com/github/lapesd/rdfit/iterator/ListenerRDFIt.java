@@ -103,9 +103,9 @@ public class ListenerRDFIt<T> extends EagerRDFIt<T> {
     }
 
     protected class Listener extends RDFListenerBase<Object, Object> {
-        private final @Nonnull ConversionCache lifterInputCache, quad2tripleCache, valueCache;
+        private final @Nonnull ConversionCache lifterInputCache, triple2quadCache;
+        private final @Nonnull ConversionCache quad2tripleCache, valueCache;
         private final @Nullable QuadLifter quadLifter;
-        private long ignoredTriples = 0;
 
         public Listener(@Nullable QuadLifter quadLifter, @Nonnull ConversionManager conMgr) {
             super(Object.class, Object.class);
@@ -113,6 +113,7 @@ public class ListenerRDFIt<T> extends EagerRDFIt<T> {
             this.quadLifter = quadLifter;
             this.lifterInputCache = createCache(conMgr, lifterInput);
             this.quad2tripleCache = createCache(conMgr, valueClass);
+            this.triple2quadCache = createCache(conMgr, valueClass);
             this.valueCache = createCache(conMgr, valueClass);
         }
 
@@ -137,7 +138,7 @@ public class ListenerRDFIt<T> extends EagerRDFIt<T> {
         @Override public void triple(@Nonnull Object triple) {
             if (itElement.isQuad()) {
                 if (quadLifter == null) {
-                    ++ignoredTriples;
+                    deliver(triple2quadCache.convert(source, triple));
                 } else {
                     Object converted = lifterInputCache.convert(source, triple);
                     Object quad = quadLifter.lift(converted);
@@ -181,18 +182,13 @@ public class ListenerRDFIt<T> extends EagerRDFIt<T> {
         }
 
         @Override
-        public boolean notifySourceError(@Nonnull Object source, @Nonnull RDFItException e) {
+        public boolean notifySourceError(@Nonnull RDFItException e) {
             addException(e);
             return false;
         }
 
         @Override public void finish(@Nonnull Object source) {
             super.finish(source);
-            if (ignoredTriples > 0) {
-                logger.info("Ignored {} triples from source {} (no triple2quad given to " +
-                        "QUAD producing CallbackRDFIt", ignoredTriples, source);
-                ignoredTriples = 0;
-            }
         }
 
         @Override public void finish() {

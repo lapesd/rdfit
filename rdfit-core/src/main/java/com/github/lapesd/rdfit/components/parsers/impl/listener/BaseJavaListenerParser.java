@@ -37,17 +37,21 @@ public abstract class BaseJavaListenerParser extends BaseListenerParser {
         return true;
     }
 
+    protected boolean feed(@Nonnull ListenerFeeder feeder, @Nonnull Object element) {
+        return feeder.feed(element);
+    }
+
     @Override public void parse(@Nonnull Object source, @Nonnull RDFListener<?,?> listener) {
-        try (ListenerFeeder feeder = new ListenerFeeder(listener).setSource(source)) {
+        try (ListenerFeeder feeder = createListenerFeeder(listener, source)) {
             try {
                 for (Iterator<?> it = createIterator(source); it.hasNext(); ) {
-                    if (!feeder.feed(it.next()))
+                    if (!feed(feeder, it.next()))
                         break; // stop parsing this source
                 }
             } catch (InterruptParsingException e) {
                 throw e;
             } catch (Throwable t) {
-                if (!listener.notifySourceError(source, RDFItException.wrap(source, t)))
+                if (!listener.notifySourceError(RDFItException.wrap(source, t)))
                     throw new InterruptParsingException();
             }
         }

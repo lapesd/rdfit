@@ -1,4 +1,5 @@
 
+
 rdfit - Agnostic and decoupled iteration over RDF data. 
 =====
 
@@ -225,13 +226,22 @@ try (RDFIt<Triple> it = RIt.iterateTriples(Triple.class,
         Arrays.asList(jenaGraph, rdf4jModel, new File("somewhere.ttl")),
         // SPARQL query: type of query (SELECT/CONSTRUCT/DESCRIBE) is auto-detected
         // for SELECT queries, this will work only if the results have exactly
-        // three (or four) variables, the order of which determines (graph, )
-        // subject, predicate and object.
+        // three (or four) variables, the order of which determines subject, 
+        // predicate,  object (and graph).
         jenaQueryExecution,
-        // an RDF4J CONSTRUCT/DESCRIBE query result
-        rdf4jGraphQueryResult,
         // an RDF4J SELECT query, same caveats (3 or 4 variables) apply:
         rdf4jTupleQueryResult,
+        // an RDF4J CONSTRUCT/DESCRIBE query result
+        rdf4jGraphQueryResult,
+        rdf4jRepositoryResult,
+        // RDF4J Query instances will be evaluate()ed and their *Result 
+        // instances parsed according to the above rules
+        rdf4jTupleQuery,
+        rdf4jGraphQuery,
+        // A RDF4J model, Repository or a RepositoryConnection can also be parsed
+        rdf4jRepository,
+        rdf4jRepositoryConnection,
+        rdf4jModel,
         // rdfit can handle querying itself:
         new SPARQLQuery("SELECT * WHERE {?s ?p ?o}", "http://example.org/sparql/query")
      )) {
@@ -323,8 +333,8 @@ an indirection layer. There are several ways to do this:
   - Jena's `RDFDataMgr.writeTriples()`/`writeQuads()`
   - hdt-java's `HDTManager.generateHDT()`/`getHDTWriter()`
 - Wrapping a callback
-  - `RDFHandlerCallback(rdfWriter)` feeds the given RDF4J `RDFWriter`
-  - `StreamRDFCallback(streamRDF)` feeds the given Jena `StreamRDF`
+  - `RDFHandlerListener(rdfWriter)` feeds the given RDF4J `RDFWriter`
+  - `StreamRDFListener(streamRDF)` feeds the given Jena `StreamRDF`
 - Consolidating data in-memory before writing:
   - Jena:
     - `JenaHelpers.toModel(it)`/`toGraph(it)` builds a `Model`/`Graph` with all 
@@ -337,8 +347,9 @@ an indirection layer. There are several ways to do this:
   - RDF4J:
     - `RDF4JHelpers.toModel(it)` builds a `Model` instace from an iterator 
       of triples or quads
-    - `ModelFeeder(dest)` adds all triples and quads to the given `Model`
-    - `ModelBuilder()`: creates a new in-memory `Model`
+    - `ModelFeeder(dest)`, `RepositoryConnection` and 
+      `RepositoryConnectionFeeder` add all triples and quads to a `Model`, 
+      `Repository` or `RepositoryConnection`.
 
 ### Does it support RDF*?
 RDF4J and Jena do. Import the parser module for the one you prefer. 

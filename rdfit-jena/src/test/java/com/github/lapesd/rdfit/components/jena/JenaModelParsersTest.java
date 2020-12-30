@@ -2,13 +2,15 @@ package com.github.lapesd.rdfit.components.jena;
 
 import com.github.lapesd.rdfit.DefaultRDFItFactory;
 import com.github.lapesd.rdfit.RDFItFactory;
-import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
-import com.github.lapesd.rdfit.components.parsers.DefaultParserRegistry;
+import com.github.lapesd.rdfit.errors.InconvertibleException;
+import com.github.lapesd.rdfit.errors.InterruptParsingException;
+import com.github.lapesd.rdfit.errors.RDFItException;
 import com.github.lapesd.rdfit.listener.RDFListenerBase;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.DatasetFactory;
+import org.apache.jena.query.QueryExecution;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
@@ -26,11 +28,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static org.apache.jena.graph.NodeFactory.createURI;
+import static org.apache.jena.query.QueryExecutionFactory.create;
 import static org.apache.jena.rdf.model.ResourceFactory.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -44,12 +48,11 @@ public class JenaModelParsersTest {
     private DatasetGraph graphDs, namedGraphDs;
     private Statement stmt;
     private Triple triple;
-    private Quad defQuad, exQuad;
+    private Quad defQuad, exQuad, sQuad;
 
     @BeforeClass
     public void setUp() {
-        factory = new DefaultRDFItFactory(new DefaultParserRegistry(),
-                new DefaultConversionManager());
+        factory = new DefaultRDFItFactory();
         JenaHelpers.registerAll(factory);
         model = ModelFactory.createDefaultModel();
         model.add(createResource(EX+"S"), createProperty(EX+"P"), createResource(EX+"O"));
@@ -71,6 +74,7 @@ public class JenaModelParsersTest {
 
         defQuad = new Quad(Quad.defaultGraphIRI, triple);
         exQuad = new Quad(createURI(EX), triple);
+        sQuad = new Quad(createURI(EX+"S"), triple);
     }
 
     @DataProvider public Object[][] iterateData() {
@@ -82,6 +86,16 @@ public class JenaModelParsersTest {
                 asList(graphDs, Statement.class, singletonList(stmt)),
                 asList(namedGraphDs, Statement.class, singletonList(stmt)),
 
+                asList((Supplier<QueryExecution>)()
+                                -> create("SELECT ?s ?p ?o WHERE { ?s ?p ?o }", model),
+                        Statement.class, singletonList(stmt)),
+                asList((Supplier<QueryExecution>)()
+                                -> create("DESCRIBE <"+EX+"S>", model),
+                        Statement.class, singletonList(stmt)),
+                asList((Supplier<QueryExecution>)()
+                                -> create("CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}", model),
+                        Statement.class, singletonList(stmt)),
+
                 asList(model, Triple.class, singletonList(triple)),
                 asList(graph, Triple.class, singletonList(triple)),
                 asList(modelDs, Triple.class, singletonList(triple)),
@@ -89,12 +103,32 @@ public class JenaModelParsersTest {
                 asList(graphDs, Triple.class, singletonList(triple)),
                 asList(namedGraphDs, Triple.class, singletonList(triple)),
 
+                asList((Supplier<QueryExecution>)()
+                                -> create("SELECT ?s ?p ?o WHERE { ?s ?p ?o }", model),
+                        Triple.class, singletonList(triple)),
+                asList((Supplier<QueryExecution>)()
+                                -> create("DESCRIBE <"+EX+"S>", model),
+                        Triple.class, singletonList(triple)),
+                asList((Supplier<QueryExecution>)()
+                                -> create("CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}", model),
+                        Triple.class, singletonList(triple)),
+
                 asList(model, Quad.class, singletonList(defQuad)),
                 asList(graph, Quad.class, singletonList(defQuad)),
                 asList(modelDs, Quad.class, singletonList(defQuad)),
                 asList(namedDs, Quad.class, singletonList(exQuad)),
                 asList(graphDs, Quad.class, singletonList(defQuad)),
-                asList(namedGraphDs, Quad.class, singletonList(exQuad))
+                asList(namedGraphDs, Quad.class, singletonList(exQuad)),
+
+                asList((Supplier<QueryExecution>)()
+                                -> create("SELECT ?s ?p ?o WHERE { ?s ?p ?o }", model),
+                        Quad.class, singletonList(defQuad)),
+                asList((Supplier<QueryExecution>)()
+                                -> create("DESCRIBE <"+EX+"S>", model),
+                        Quad.class, singletonList(defQuad)),
+                asList((Supplier<QueryExecution>)()
+                                -> create("CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}", model),
+                        Quad.class, singletonList(defQuad))
         ).map(List::toArray).toArray(Object[][]::new);
     }
 
@@ -102,6 +136,8 @@ public class JenaModelParsersTest {
     public void testIterate(@Nonnull Object in,
                             @Nonnull Class<?> valueClass,
                             @Nonnull List<?> expected) {
+        if (in instanceof Supplier)
+            in = ((Supplier<?>)in).get();
         assertNotNull(factory);
         List<Object> actual = new ArrayList<>();
         if (valueClass.equals(Quad.class))
@@ -142,7 +178,39 @@ public class JenaModelParsersTest {
                 asList(namedGraphDs, Statement.class, null, singleton(stmt), emptyList()),
                 asList(namedGraphDs, Triple.class, null, singleton(triple), emptyList()),
                 asList(namedGraphDs, Statement.class, Quad.class, emptyList(), singletonList(exQuad)),
-                asList(namedGraphDs, Triple.class, Quad.class, emptyList(), singletonList(exQuad))
+                asList(namedGraphDs, Triple.class, Quad.class, emptyList(), singletonList(exQuad)),
+
+                asList((Supplier<?>)() -> create("SELECT ?s ?p ?o WHERE {?s ?p ?o}", model),
+                        Statement.class, Quad.class, singleton(stmt), emptyList()),
+                asList((Supplier<?>)() -> create("SELECT ?s ?p ?o WHERE {?s ?p ?o}", model),
+                        Triple.class, Quad.class, singleton(triple), emptyList()),
+                asList((Supplier<?>)() -> create("SELECT ?s ?p ?o WHERE {?s ?p ?o}", model),
+                        null, Quad.class, emptyList(), singleton(defQuad)),
+
+                asList((Supplier<?>)() -> create("SELECT ?s ?p ?o ?g WHERE {?s ?p ?o. ?g ?p ?o.}", model),
+                        null, Quad.class, emptyList(), singleton(sQuad)),
+                asList((Supplier<?>)() -> create("SELECT ?s ?p ?o ?g WHERE {?s ?p ?o. ?g ?p ?o.}", model),
+                        Statement.class, Quad.class, emptyList(), singleton(sQuad)),
+                asList((Supplier<?>)() -> create("SELECT ?s ?p ?o ?g WHERE {?s ?p ?o. ?g ?p ?o.}", model),
+                        Statement.class, null, singleton(stmt), emptyList()),
+                asList((Supplier<?>)() -> create("SELECT ?s ?p ?o ?g WHERE {?s ?p ?o. ?g ?p ?o.}", model),
+                        Triple.class, null, singleton(triple), emptyList()),
+
+                asList((Supplier<?>)() -> create("DESCRIBE <"+EX+"S>", model),
+                        Triple.class, null, singleton(triple), emptyList()),
+                asList((Supplier<?>)() -> create("DESCRIBE <"+EX+"S>", model),
+                        Statement.class, null, singleton(stmt), emptyList()),
+                asList((Supplier<?>)() -> create("DESCRIBE <"+EX+"S>", model),
+                        Statement.class, Quad.class, singleton(stmt), emptyList()),
+                asList((Supplier<?>)() -> create("DESCRIBE <"+EX+"S>", model),
+                        null, Quad.class, emptyList(), singleton(defQuad)),
+
+                asList((Supplier<?>)() -> create("CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}", model),
+                        Triple.class, null, singleton(triple), emptyList()),
+                asList((Supplier<?>)() -> create("CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}", model),
+                        Statement.class, null, singleton(stmt), emptyList()),
+                asList((Supplier<?>)() -> create("CONSTRUCT {?s ?p ?o} WHERE {?s ?p ?o}", model),
+                        Statement.class, Quad.class, emptyList(), singleton(defQuad))
         ).map(List::toArray).toArray(Object[][]::new);
     }
 
@@ -150,7 +218,10 @@ public class JenaModelParsersTest {
     public void testParse(@Nonnull Object input, @Nullable Class<?> tripleClass,
                           @Nullable Class<?> quadClass, @Nonnull Collection<?> expectedTriples,
                           @Nonnull Collection<?> expectedQuads) {
+        if (input instanceof Supplier)
+            input = ((Supplier<?>)input).get();
         List<Object> acTriples = new ArrayList<>(), acQuads = new ArrayList<>();
+        List<Exception> exceptions = new ArrayList<>();
 
         //noinspection unchecked
         factory.parse(new RDFListenerBase<Object, Object>(
@@ -162,7 +233,26 @@ public class JenaModelParsersTest {
             @Override public void quad(@Nonnull Object quad) {
                 acQuads.add(quad);
             }
+
+            @Override
+            public boolean notifyInconvertibleTriple(@Nonnull InconvertibleException e) throws InterruptParsingException {
+                exceptions.add(e);
+                return super.notifyInconvertibleTriple(e);
+            }
+
+            @Override
+            public boolean notifyInconvertibleQuad(@Nonnull InconvertibleException e) throws InterruptParsingException {
+                exceptions.add(e);
+                return super.notifyInconvertibleQuad(e);
+            }
+
+            @Override public boolean notifySourceError(@Nonnull RDFItException e) {
+                exceptions.add(e);
+                return super.notifySourceError(e);
+            }
         }, input);
+
+        assertEquals(exceptions, emptyList());
         assertEquals(new HashSet<>(acTriples), new HashSet<>(expectedTriples));
         assertEquals(new HashSet<>(acQuads), new HashSet<>(expectedQuads));
         assertEquals(acTriples.size(), expectedTriples.size());

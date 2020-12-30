@@ -1,6 +1,8 @@
 package com.github.lapesd.rdfit.source.syntax.impl;
 
 import com.github.lapesd.rdfit.source.syntax.LangDetector;
+import com.github.lapesd.rdfit.util.Literal;
+import com.github.lapesd.rdfit.util.LiteralParser;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -130,9 +132,10 @@ public class TurtleFamilyDetector implements LangDetector {
             private static final Set<Byte> LIT_BEGIN;
             private static final Set<Byte> BNODE_CHARS;
             private final StringBuilder buffer = new StringBuilder();
+            private final LiteralParser litParser = new LiteralParser();
             private byte begin = 0;
             boolean needsSpace = false;
-            int termIndex = 0;
+            int termIndex = 0, triples = 0;
 
             static {
                 LIT_CHARS = "falsetrue-+eE.0123456789".chars().boxed().map(Integer::byteValue)
@@ -160,11 +163,8 @@ public class TurtleFamilyDetector implements LangDetector {
                         assert buffer.toString().equals("_");
                         if (value != ':') return UNKNOWN;
                     } else if (isWhitespace(value)) {
-                        if (buffer.toString().endsWith(".")) {
-                            if      (termIndex == 2) return TRIG;
-                            else if (termIndex == 3) return NQ;
-                            else return UNKNOWN;
-                        }
+                        if (buffer.toString().endsWith(".") && termIndex < 2)
+                            return UNKNOWN;
                         endTerm(false);
                         return null;
                     } else if (value == ',' || value == ';') {
@@ -172,8 +172,25 @@ public class TurtleFamilyDetector implements LangDetector {
                     } else if (value >= 0 && !BNODE_CHARS.contains(value)) {
                         return UNKNOWN;
                     }
-                    buffer.append((char)value);
+                    buffer.append((char) value);
                     return null;
+                } else if (begin == '"' || begin == '\'') {
+                    assert termIndex == 2;
+                    if (litParser.feedByte(value)) {
+                        if (value == ',' || value == ';') {
+                            endTerm(false);
+                            return TRIG;
+                        } else {
+                            boolean hadDot = litParser.endsInDot();
+                            Literal literal = litParser.endAndReset();
+                            endTerm(!isWhitespace(value));
+                            if (literal.isPrefixTyped()) return TRIG;
+                            if (hadDot)  {
+                                termIndex = 0;
+                                ++triples;
+                            }
+                        }
+                    }
                 } else if (isWhitespace(value) || value == ',' || value == ';') {
                     int termIndex = this.termIndex;
                     String str = buffer.toString();
@@ -209,22 +226,28 @@ public class TurtleFamilyDetector implements LangDetector {
                 } else if (value == ',' || value == ';') {
                     return termIndex == 3 ? TRIG : UNKNOWN;
                 } else if (value == '.') {
-                    if      (termIndex == 3) return TRIG;
+                    if (termIndex < 3) return UNKNOWN;
                     else if (termIndex == 4) return NQ;
-                    else                     return UNKNOWN;
+                    assert termIndex == 3;
+                    termIndex = 0;
+                    ++triples;
+                    return null;
                 } else if (needsSpace) {
                     return UNKNOWN; // value is not space, ',', '.' nor ';'
                 } else if (value == '{') {
                     // { only appears as a term begin in the <graph URI> { ... } form of TriG
                     return termIndex == 1 ? TRIG : UNKNOWN;
                 } else if (value == '"' || value == '\'') {
-                    if      (termIndex == 3) return NQ;
-                    else if (termIndex == 2) return TRIG;
-                    else                     return UNKNOWN; //non-object predicate or too many terms
+                    if (termIndex != 2) return UNKNOWN;
+                    litParser.reset();
+                    litParser.feed((char)value);
                 } else if (value == '_') {
                     buffer.setLength(0);
-                    buffer.append((char)value);
-                } else if (value != '<') {
+                    buffer.append((char) value);
+                } else if (value == '<') {
+                    if (termIndex == 3)
+                        return NQ;
+                } else {
                     /* Note: if we got here, no @prefix/PREFIX statement was present
                      * in the preamble. Thus we cannot have "ns:.*" or ":.*" terms */
                     buffer.setLength(0);
@@ -255,10 +278,24 @@ public class TurtleFamilyDetector implements LangDetector {
             }
 
             @Override public @Nullable RDFLang end() {
-                if      (termIndex > 4) return UNKNOWN;
-                else if (termIndex == 4) return buffer.length() == 0 ? NQ : UNKNOWN;
-                else if (termIndex == 3) return buffer.length() == 0 ? TRIG : NQ;
-                else                     return TRIG;
+                if (termIndex > 4) {
+                    return UNKNOWN; //triple too large for NQ
+                } else if (termIndex == 4) {
+                    return NQ; // already parsed the graph term, waiting for .
+                } else if (termIndex == 3 && (begin != 0)) {
+                    return NQ; // stopped while parsing the graph term
+                } else if (triples > 1) {
+                    // Got more than one triple without TRIG features. Could be a TRIG, NT or NQ.
+                    // However, if it were a TRIG file the most likely scenario is that it
+                    // would've been detected (prefixes, ',', ';' or '[') by now. Guess NQ since
+                    // any NT file is also an NQ file
+                    return NQ;
+                } else {
+                    // took too long to reach first triple (which is not yet finished or had only
+                    // 3 terms. This large preambles are a characteristic of Turtle/TriG and
+                    // these are more common than NQ, thus guess TriG.
+                    return TRIG;
+                }
             }
         }
 

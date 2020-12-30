@@ -129,14 +129,27 @@ public class TurtleFamilyDetectorTest {
 
             // NQ examples
             if (!ss.get(0).startsWith("_") && !ss.get(1).equals("a")) {
-                line = ss.get(0) + " " + ss.get(0) + " " + ss.get(1) + " " + ss.get(2) + ".\n";
+                line = ss.get(0) + " " + ss.get(1) + " " + ss.get(2) + " " + ss.get(0) + ".\n";
                 rows.add(asList(null, line, NQ));
-                line = ss.get(0) + "\n\t" + ss.get(0) + "\t" + ss.get(1) + "\t" + ss.get(2) + ".";
+                line = ss.get(0) + "\t" + ss.get(1) + "\t" + ss.get(2) + "\n\t" + ss.get(0) + ".";
                 rows.add(asList(null, line, NQ));
-                line = ss.get(0) + "\r\n\t" + ss.get(0) + "\t" + ss.get(1) + "\t" + ss.get(2) + ".";
+                line = ss.get(0) + "\t" + ss.get(1) + "\t" + ss.get(2) + "\r\n\t" + ss.get(0) + ".";
                 rows.add(asList(null, line, NQ));
-                line = ss.get(0) + " " + ss.get(0) + " " + ss.get(1) + " " + ss.get(2) + "\n";
+                line = ss.get(0) + " " + ss.get(1) + " " + ss.get(2) +  " " + ss.get(0) +"\n";
                 rows.add(asList(null, line, NQ));
+
+                line = ss.get(0) + " " + ss.get(1) + " " + ss.get(0) + ".\n" +
+                       ss.get(0) + " " + ss.get(1) + " " + ss.get(2) + " " + ss.get(0);
+                rows.add(asList(null, line, NQ));
+
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < 3; i++) {
+                    builder.append(ss.get(0)).append(' ').append(ss.get(1)).append(' ')
+                           .append(ss.get(2)).append(".\n");
+                }
+                rows.add(asList(null, builder.toString(), NQ));
+                builder.setLength(builder.length()-2);
+                rows.add(asList(null, builder.toString(), NQ));
             }
         }
 
@@ -180,6 +193,10 @@ public class TurtleFamilyDetectorTest {
             rows.add(asList(null, trigToLang(ok, Lang.RDFTHRIFT), UNKNOWN));
             rows.add(asList(null, trigToLang(ok, Lang.RDFXML), UNKNOWN));
         }
+
+        rows.add(asList(null, "{\"@graph\": [ {", UNKNOWN));
+        rows.add(asList(null, "{ \"@graph\": [ {", UNKNOWN));
+        rows.add(asList(null, " { \"@graph\": [ {", UNKNOWN));
 
         // create variations with BOMs
         List<List<Object>> expanded = new ArrayList<>(rows);

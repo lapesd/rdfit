@@ -9,8 +9,12 @@ public class InconvertibleException extends RDFItException {
     private final @Nonnull Class<?> desired;
 
     public InconvertibleException(@Nonnull Object source, @Nonnull Object input, @Nonnull Class<?> desired) {
-        super(source, format("Could not find a conversion path from %s (%s) to %s",
-                                    input, input.getClass(), desired));
+        this(source, input, desired, format("Could not find a conversion path from %s (%s) to %s",
+                                            input, input.getClass(), desired));
+    }
+    public InconvertibleException(@Nonnull Object source, @Nonnull Object input,
+                                  @Nonnull Class<?> desired, @Nonnull String reason) {
+        super(source, reason);
         this.input = input;
         this.desired = desired;
     }

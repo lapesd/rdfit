@@ -1,9 +1,7 @@
 package com.github.lapesd.rdfit.components.hdt.parsers.iterator;
 
 import com.github.lapesd.rdfit.DefaultRDFItFactory;
-import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
 import com.github.lapesd.rdfit.components.hdt.HDTHelpers;
-import com.github.lapesd.rdfit.components.parsers.DefaultParserRegistry;
 import com.github.lapesd.rdfit.errors.InconvertibleException;
 import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;
@@ -107,8 +105,7 @@ public class HDTItParserTest {
 
     @Test(dataProvider = "testData")
     public void testIterate(Object source, @Nonnull List<TripleString> expected) {
-        DefaultRDFItFactory factory = new DefaultRDFItFactory(
-                new DefaultParserRegistry(), new DefaultConversionManager());
+        DefaultRDFItFactory factory = new DefaultRDFItFactory();
         HDTHelpers.registerAll(factory);
         List<TripleString> actual = new ArrayList<>();
         try (RDFIt<TripleString> it = factory.iterateTriples(TripleString.class, source)) {
@@ -120,8 +117,7 @@ public class HDTItParserTest {
 
     @Test(dataProvider = "testData")
     public void testParse(Object source, @Nonnull List<TripleString> expected) {
-        DefaultRDFItFactory factory = new DefaultRDFItFactory(
-                new DefaultParserRegistry(), new DefaultConversionManager());
+        DefaultRDFItFactory factory = new DefaultRDFItFactory();
         HDTHelpers.registerAll(factory);
         List<TripleString> actual = new ArrayList<>();
         List<Exception> exceptions = new ArrayList<>();
@@ -143,7 +139,7 @@ public class HDTItParserTest {
             }
 
             @Override
-            public boolean notifySourceError(@Nonnull Object source, @Nonnull RDFItException e) {
+            public boolean notifySourceError(@Nonnull RDFItException e) {
                 exceptions.add(e);
                 return true;
             }

@@ -23,6 +23,10 @@ public class UnknownRDFLang implements RDFLang {
         return EXTENSIONS;
     }
 
+    @Override public boolean isBinary() {
+        return false;
+    }
+
     @Override public String toString() {
         return name();
     }

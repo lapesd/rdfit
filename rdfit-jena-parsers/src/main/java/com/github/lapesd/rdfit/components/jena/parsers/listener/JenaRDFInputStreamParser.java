@@ -2,7 +2,7 @@ package com.github.lapesd.rdfit.components.jena.parsers.listener;
 
 import com.github.lapesd.rdfit.components.jena.JenaHelpers;
 import com.github.lapesd.rdfit.components.jena.listener.InterruptJenaParsingException;
-import com.github.lapesd.rdfit.components.jena.listener.StreamRDFListener;
+import com.github.lapesd.rdfit.components.jena.listener.ListenerStreamRDF;
 import com.github.lapesd.rdfit.components.parsers.BaseListenerParser;
 import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;
@@ -45,7 +45,7 @@ public class JenaRDFInputStreamParser extends BaseListenerParser {
         try (RDFInputStream ris = (RDFInputStream) source) {
             RDFLang lang = ris.getOrDetectLang();
             Lang jLang = JenaHelpers.toJenaLang(lang);
-            StreamRDFListener adaptor = new StreamRDFListener(listener, source);
+            ListenerStreamRDF adaptor = new ListenerStreamRDF(listener, source);
             if (ris.hasBaseIri())
                 RDFDataMgr.parse(adaptor, ris.getInputStream(), ris.getBaseIRI(), jLang);
             else
@@ -54,7 +54,7 @@ public class JenaRDFInputStreamParser extends BaseListenerParser {
         } catch (IOException e) {
             RDFItException ex = new RDFItException(source, "Could not guess syntax of input " +
                                                            "due to IOException", e);
-            if (!listener.notifySourceError(source, ex))
+            if (!listener.notifySourceError(ex))
                 throw new InterruptParsingException();
         } catch (InterruptJenaParsingException ignored) {
         } catch (InterruptParsingException|RDFItException e) {

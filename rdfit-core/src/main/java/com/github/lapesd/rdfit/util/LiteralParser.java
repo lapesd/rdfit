@@ -9,6 +9,9 @@ public class LiteralParser {
     private final @Nonnull StringBuilder lexicalForm = new StringBuilder();
     private final @Nonnull StringBuilder lang        = new StringBuilder();
     private final @Nonnull StringBuilder typeIRI     = new StringBuilder();
+    private byte[] utf8buf = new byte[4];
+    private char[] utf8decoded = new char[2];
+    private int utf8total = 0, utf8next = 0;
     private char quoteChar = '\0', iriBegin = '\0';
     private int openQuotes, closedQuotes, hats;
     private boolean escaped = false;
@@ -26,6 +29,7 @@ public class LiteralParser {
         openQuotes = closedQuotes = hats = 0;
         escaped = false;
         symbol = Symbol.BEGIN;
+        utf8total = utf8next = 0;
     }
 
     private boolean feed(@Nonnull Symbol symbol, char c) {
@@ -56,6 +60,51 @@ public class LiteralParser {
         } finally {
             reset();
         }
+    }
+
+    public boolean feedByte(byte value) {
+        int bits = value & 0xff;
+        if (utf8total == 0) {
+            int i = value >>> 7;
+            if (bits >>> 7 == 0) {
+                return feed((char)value);
+            } else if ((bits >>> 5) == 0x6) {
+                utf8total = 2;
+            } else if ((bits >>> 4) == 0xe) {
+                utf8total = 3;
+            } else if ((bits >>> 3) == 0x1e) {
+                utf8total = 4;
+            }
+            assert utf8total > 0;
+            utf8next = 0;
+        } else if (bits >> 6 != 0x02) {
+            // invalid UTF-8
+            boolean last = false;
+            for (int i = 0; i < utf8total; i++)
+                last = feed((char)utf8buf[i]);
+            utf8total = 0;
+            return last;
+        }
+
+        utf8buf[utf8next++] = value;
+        if (utf8next != utf8total)
+            return false;
+        int code;
+        if (utf8total == 2) {
+            code = (utf8buf[1] & 0x3f) | ((utf8buf[0] & 0x1f) << 6);
+        } else if (utf8total == 3) {
+            code = (utf8buf[2] & 0x3f) | ((utf8buf[1] & 0x3f) << 6) | ((utf8buf[0] & 0x0f) << 12);
+        } else {
+            assert utf8total == 4;
+            code = (utf8buf[3] & 0x3f) | ((utf8buf[2] & 0x3f) << 6)
+                    | ((utf8buf[1] & 0x3f) << 12) | ((utf8buf[0] & 0x07) << 18);
+        }
+
+        boolean last = false;
+        for (int i = 0, n = Character.toChars(code, utf8decoded, 0); i < n; ++i)
+            last = feed(utf8decoded[i]);
+        utf8total = 0;
+        return last;
     }
 
     public boolean feed(char c) {
@@ -171,8 +220,12 @@ public class LiteralParser {
         return false;
     }
 
+    public boolean endsInDot() {
+        return typeIRI.length() > 0 && typeIRI.charAt(typeIRI.length()-1) == '.';
+    }
+
     public @Nonnull Literal end() {
-        if (typeIRI.length() > 0 && typeIRI.charAt(typeIRI.length()-1) == '.')
+        if (endsInDot())
             typeIRI.setLength(typeIRI.length()-1);
         Literal.QuotationStyle q = Literal.QuotationStyle.fromChar(quoteChar, openQuotes);
         if (q == Literal.QuotationStyle.NONE)
@@ -191,5 +244,11 @@ public class LiteralParser {
         String prefixName = type.substring(0, idx);
         String localName = type.substring(idx + 1);
         return Literal.prefixTyped(q, lexicalForm.toString(), prefixName, localName);
+    }
+
+    public @Nonnull Literal endAndReset() {
+        Literal lit = end();
+        reset();
+        return lit;
     }
 }
