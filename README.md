@@ -59,7 +59,7 @@ On Maven: add this to your pom.xml:
   <groupId>com.github.lapesd.rdfit</groupId>
   <artifactId>rdfit-jena-libs</artifactId> <!-- or rdfit-rdf4j-libs -->
   <version>1.0.0</version>
-  <type>pom</type> <!-- important: this is bundle of multiple modules -->
+  <type>pom</type>                         <!-- not a jar, just deps -->
 </dependency>
 ```
 

@@ -26,6 +26,8 @@
     <module>rdfit-hdt</module>
     <module>rdfit-rdf4j</module>
     <module>rdfit-rdf4j-parsers</module>
+    <module>rdfit-jena-libs</module>
+    <module>rdfit-rdf4j-libs</module>
   </modules>
 
   <build>
