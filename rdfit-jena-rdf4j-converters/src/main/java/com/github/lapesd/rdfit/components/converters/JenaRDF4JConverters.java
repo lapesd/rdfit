@@ -39,14 +39,14 @@ public class JenaRDF4JConverters {
         for (Converter c : INSTANCES) conversionManager.register(c);
     }
     public static void registerAll(@Nonnull RDFItFactory factory) {
-        registerAll(factory.getConverterManager());
+        registerAll(factory.getConversionManager());
     }
 
     public static void unregisterAll(@Nonnull ConversionManager conversionManager) {
         for (Converter c : INSTANCES) conversionManager.unregister(c);
     }
     public static void unregisterAll(@Nonnull RDFItFactory factory) {
-        unregisterAll(factory.getConverterManager());
+        unregisterAll(factory.getConversionManager());
     }
 
     private static final @Nonnull SimpleValueFactory VF = SimpleValueFactory.getInstance();

@@ -2,6 +2,9 @@ package com.github.lapesd.rdfit.components.jena;
 
 import com.github.lapesd.rdfit.DefaultRDFItFactory;
 import com.github.lapesd.rdfit.RDFItFactory;
+import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
+import com.github.lapesd.rdfit.components.normalizers.DefaultSourceNormalizerRegistry;
+import com.github.lapesd.rdfit.components.parsers.DefaultParserRegistry;
 import com.github.lapesd.rdfit.errors.InconvertibleException;
 import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;
@@ -52,7 +55,9 @@ public class JenaModelParsersTest {
 
     @BeforeClass
     public void setUp() {
-        factory = new DefaultRDFItFactory();
+        factory = new DefaultRDFItFactory(new DefaultParserRegistry(),
+                new DefaultConversionManager(), new DefaultSourceNormalizerRegistry());
+        factory.getParserRegistry().setConversionManager(factory.getConversionManager());
         JenaHelpers.registerAll(factory);
         model = ModelFactory.createDefaultModel();
         model.add(createResource(EX+"S"), createProperty(EX+"P"), createResource(EX+"O"));

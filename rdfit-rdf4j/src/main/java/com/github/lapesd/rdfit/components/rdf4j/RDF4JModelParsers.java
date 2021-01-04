@@ -1,4 +1,4 @@
-package com.github.lapesd.rdfit.components.rdf4j.parsers;
+package com.github.lapesd.rdfit.components.rdf4j;
 
 import com.github.lapesd.rdfit.RDFItFactory;
 import com.github.lapesd.rdfit.components.ItParser;

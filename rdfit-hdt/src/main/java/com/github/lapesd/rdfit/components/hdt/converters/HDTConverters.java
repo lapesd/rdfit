@@ -129,7 +129,7 @@ public class HDTConverters {
         JenaConverters.registerAll(mgr);
     }
     public static void registerAll(@Nonnull RDFItFactory factory) {
-        registerAll(factory.getConverterManager());
+        registerAll(factory.getConversionManager());
     }
 
     public static void unregisterAll(@Nonnull ConversionManager mgr) {
@@ -137,6 +137,6 @@ public class HDTConverters {
         JenaConverters.unregisterAll(mgr);
     }
     public static void unregisterAll(@Nonnull RDFItFactory factory) {
-        registerAll(factory.getConverterManager());
+        registerAll(factory.getConversionManager());
     }
 }

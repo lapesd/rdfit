@@ -40,7 +40,7 @@ public class JenaConverters {
     }
 
     public static void registerAll(@Nonnull RDFItFactory factory) {
-        registerAll(factory.getConverterManager());
+        registerAll(factory.getConversionManager());
     }
 
     public static void unregisterAll(@Nonnull ConversionManager mgr) {
@@ -48,7 +48,7 @@ public class JenaConverters {
     }
 
     public static void unregisterAll(@Nonnull RDFItFactory factory) {
-        unregisterAll(factory.getConverterManager());
+        unregisterAll(factory.getConversionManager());
     }
 
     @Accepts(Quad.class) @Outputs(Triple.class)

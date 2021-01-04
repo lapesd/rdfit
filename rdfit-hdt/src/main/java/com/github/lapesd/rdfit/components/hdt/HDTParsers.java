@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.List;
 
-public class HDTHelpers {
+public class HDTParsers {
     private static final List<Parser> PARSERS = Collections.singletonList(new HDTItParser());
 
     public static void registerAll(@Nonnull RDFItFactory factory) {

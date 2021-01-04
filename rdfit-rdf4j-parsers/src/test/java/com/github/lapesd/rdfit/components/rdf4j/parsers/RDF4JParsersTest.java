@@ -2,6 +2,10 @@ package com.github.lapesd.rdfit.components.rdf4j.parsers;
 
 import com.github.lapesd.rdfit.DefaultRDFItFactory;
 import com.github.lapesd.rdfit.RDFItFactory;
+import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
+import com.github.lapesd.rdfit.components.normalizers.DefaultSourceNormalizerRegistry;
+import com.github.lapesd.rdfit.components.parsers.DefaultParserRegistry;
+import com.github.lapesd.rdfit.components.rdf4j.RDF4JParsers;
 import com.github.lapesd.rdfit.errors.InconvertibleException;
 import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;
@@ -45,7 +49,14 @@ public class RDF4JParsersTest {
     private static final Resource G1 = VF.createIRI(EX+"G1");
     private static final Statement T1 = VF.createStatement(S1, P1, O1);
     private static final Statement Q1 = VF.createStatement(S1, P1, O1, G1);
-    private final RDFItFactory factory = new DefaultRDFItFactory();
+    private final RDFItFactory factory;
+
+    public RDF4JParsersTest() {
+        factory = new DefaultRDFItFactory(new DefaultParserRegistry(),
+                                          new DefaultConversionManager(),
+                                          new DefaultSourceNormalizerRegistry());
+        factory.getParserRegistry().setConversionManager(factory.getConversionManager());
+    }
 
     @BeforeClass
     public void beforeClass() {

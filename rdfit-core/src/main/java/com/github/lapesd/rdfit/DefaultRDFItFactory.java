@@ -44,12 +44,6 @@ public class DefaultRDFItFactory implements RDFItFactory {
     protected @Nonnull SourceNormalizerRegistry normalizerRegistry;
     private final @Nonnull ThreadPoolExecutor executor;
 
-    public DefaultRDFItFactory() {
-        this(new DefaultParserRegistry(), new DefaultConversionManager(),
-             new DefaultSourceNormalizerRegistry());
-        parserRegistry.setConversionManager(getConverterManager());
-    }
-
     public DefaultRDFItFactory(@Nonnull ParserRegistry parserRegistry,
                                @Nonnull ConversionManager conversionManager,
                                @Nonnull SourceNormalizerRegistry normalizerRegistry) {
@@ -75,10 +69,11 @@ public class DefaultRDFItFactory implements RDFItFactory {
     }
 
     public static @Nonnull DefaultRDFItFactory get() {
+        RIt.init();
         return INSTANCE;
     }
 
-    @Override public @Nonnull ConversionManager getConverterManager() {
+    @Override public @Nonnull ConversionManager getConversionManager() {
         return conversionMgr;
     }
 

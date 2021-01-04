@@ -1,7 +1,11 @@
 package com.github.lapesd.rdfit.components.hdt.parsers.iterator;
 
 import com.github.lapesd.rdfit.DefaultRDFItFactory;
-import com.github.lapesd.rdfit.components.hdt.HDTHelpers;
+import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
+import com.github.lapesd.rdfit.components.hdt.HDTParsers;
+import com.github.lapesd.rdfit.components.normalizers.CoreSourceNormalizers;
+import com.github.lapesd.rdfit.components.normalizers.DefaultSourceNormalizerRegistry;
+import com.github.lapesd.rdfit.components.parsers.DefaultParserRegistry;
 import com.github.lapesd.rdfit.errors.InconvertibleException;
 import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;
@@ -15,6 +19,7 @@ import org.rdfhdt.hdt.options.HDTSpecification;
 import org.rdfhdt.hdt.rdf.TripleWriter;
 import org.rdfhdt.hdt.triples.TripleString;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -42,6 +47,16 @@ public class HDTItParserTest {
     private static final String O2 = EX+"O2";
 
     private static final List<File> tempFiles = new ArrayList<>();
+    private DefaultRDFItFactory factory;
+
+    @BeforeClass
+    public void beforeClass() {
+        factory = new DefaultRDFItFactory(new DefaultParserRegistry(),
+                new DefaultConversionManager(),
+                new DefaultSourceNormalizerRegistry());
+        CoreSourceNormalizers.registerAll(factory);
+        HDTParsers.registerAll(factory);
+    }
 
     @AfterClass
     public void afterClass() {
@@ -105,8 +120,6 @@ public class HDTItParserTest {
 
     @Test(dataProvider = "testData")
     public void testIterate(Object source, @Nonnull List<TripleString> expected) {
-        DefaultRDFItFactory factory = new DefaultRDFItFactory();
-        HDTHelpers.registerAll(factory);
         List<TripleString> actual = new ArrayList<>();
         try (RDFIt<TripleString> it = factory.iterateTriples(TripleString.class, source)) {
             while (it.hasNext())
@@ -117,8 +130,6 @@ public class HDTItParserTest {
 
     @Test(dataProvider = "testData")
     public void testParse(Object source, @Nonnull List<TripleString> expected) {
-        DefaultRDFItFactory factory = new DefaultRDFItFactory();
-        HDTHelpers.registerAll(factory);
         List<TripleString> actual = new ArrayList<>();
         List<Exception> exceptions = new ArrayList<>();
         factory.parse(new TripleListenerBase<TripleString>(TripleString.class) {

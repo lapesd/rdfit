@@ -17,7 +17,7 @@ public interface RDFItFactory extends AutoCloseable {
     /**
      * Allows configuration of {@link Converter}s that will be transparently used during iteration.
      */
-    @Nonnull ConversionManager getConverterManager();
+    @Nonnull ConversionManager getConversionManager();
 
     /**
      * Allows configuring the available parsers.
