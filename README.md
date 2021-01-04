@@ -267,8 +267,8 @@ Modules
 - **rdfit-rdf4j**: Helpers [RDF4J](https://rdf4j.org/), including a 
   `RDFHandler`/`RDFCallback` adapter.
 - **rdfit-rdf4j-parsers**: `Parser` implementations using RDF4J. 
-- **rdfit-jena-rdf4j**: `Converter` implementations between RDF4J `Statement` 
-  and Jena's `Triple`, `Quad` and `Statement
+- **rdfit-jena-rdf4j-converters**: `Converter` implementations between RDF4J 
+  `Statement` and Jena's `Triple`, `Quad` and `Statement
   
 > Too many modules? Consider **rdfit-jena-libs** or **rdfit-rdf4j-libs** 
 > (shown in the [quickstart](#quickstart)).

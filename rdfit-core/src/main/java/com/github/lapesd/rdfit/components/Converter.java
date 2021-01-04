@@ -4,7 +4,6 @@ import com.github.lapesd.rdfit.components.converters.ConversionManager;
 import com.github.lapesd.rdfit.errors.ConversionException;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Collection;
 
 public interface Converter extends Component {
@@ -40,5 +39,5 @@ public interface Converter extends Component {
      * @param input the instance to check
      * @return false if {@link #convert(Object)} would throw, true if it may return non-null
      */
-    boolean canConvert(@Nullable Object input);
+    boolean canConvert(@Nonnull Object input);
 }

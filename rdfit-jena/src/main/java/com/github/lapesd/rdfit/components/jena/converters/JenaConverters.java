@@ -17,7 +17,6 @@ import org.apache.jena.rdf.model.impl.ResourceImpl;
 import org.apache.jena.sparql.core.Quad;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -72,8 +71,7 @@ public class JenaConverters {
     public static class Triple2Statement extends BaseConverter {
         public static final @Nonnull Triple2Statement INSTANCE = new Triple2Statement();
 
-        @Override public boolean canConvert(@Nullable Object input) {
-            if (input == null) return true;
+        @Override public boolean canConvert(@Nonnull Object input) {
             if (!(input instanceof Triple)) return false;
             Triple t = (Triple) input;
             return t.getSubject().isConcrete() && t.getPredicate().isConcrete()
@@ -99,8 +97,7 @@ public class JenaConverters {
     public static class Quad2Statement extends BaseConverter {
         public static final @Nonnull Quad2Statement INSTANCE = new Quad2Statement();
 
-        @Override public boolean canConvert(@Nullable Object input) {
-            if (input == null) return true;
+        @Override public boolean canConvert(@Nonnull Object input) {
             if (!(input instanceof Quad)) return false;
             return Triple2Statement.INSTANCE.canConvert(((Quad)input).asTriple());
         }

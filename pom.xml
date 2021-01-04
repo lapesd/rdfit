@@ -28,6 +28,7 @@
     <module>rdfit-rdf4j-parsers</module>
     <module>rdfit-jena-libs</module>
     <module>rdfit-rdf4j-libs</module>
+    <module>rdfit-jena-rdf4j-converters</module>
   </modules>
 
   <build>

@@ -52,8 +52,7 @@ public abstract class BaseConverter implements Converter {
         return outputClass;
     }
 
-    @Override public boolean canConvert(@Nullable Object input) {
-        if (input == null) return true;
+    @Override public boolean canConvert(@Nonnull Object input) {
         for (Class<?> cls : acceptedClasses) {
             if (cls.isInstance(input)) return true;
         }
