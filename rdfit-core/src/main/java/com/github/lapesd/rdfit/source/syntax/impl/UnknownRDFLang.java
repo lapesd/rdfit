@@ -27,6 +27,10 @@ public class UnknownRDFLang implements RDFLang {
         return false;
     }
 
+    @Override public @Nonnull String getContentType() {
+        return "*/*";
+    }
+
     @Override public String toString() {
         return name();
     }

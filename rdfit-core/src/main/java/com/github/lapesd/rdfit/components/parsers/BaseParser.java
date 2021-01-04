@@ -1,6 +1,7 @@
 package com.github.lapesd.rdfit.components.parsers;
 
 import com.github.lapesd.rdfit.components.Parser;
+import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import com.github.lapesd.rdfit.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
 public abstract class BaseParser implements Parser {
     private static final Logger logger = LoggerFactory.getLogger(BaseParser.class);
@@ -20,6 +23,10 @@ public abstract class BaseParser implements Parser {
 
     @Override public @Nonnull Collection<Class<?>> acceptedClasses() {
         return acceptedClasses;
+    }
+
+    @Override public @Nonnull Set<RDFLang> parsedLangs() {
+        return Collections.emptySet();
     }
 
     @Override public void attachTo(@Nonnull ParserRegistry registry) {

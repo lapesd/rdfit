@@ -18,19 +18,19 @@ public class RDFLangs {
     private static final @Nonnull Map<RDFLang, LangDetector> EXTRA_DETECTORS
             = Collections.synchronizedMap(new HashMap<>());
 
-    public static final @Nonnull RDFLang NT      = new SimpleRDFLang("N-Triples",        asList("nt",  "ntriples"), false);
-    public static final @Nonnull RDFLang NQ      = new SimpleRDFLang("N-Quads",          asList("nq",  "nquads"), false);
-    public static final @Nonnull RDFLang TTL     = new SimpleRDFLang("Turtle",           asList("ttl", "turtle"), false);
-    public static final @Nonnull RDFLang TRIG    = new SimpleRDFLang("TriG",      singletonList("trig"), false);
-    public static final @Nonnull RDFLang RDFXML  = new SimpleRDFLang("RDF/XML",          asList("rdf", "xml"), false);
-    public static final @Nonnull RDFLang RDFA    = new SimpleRDFLang("RDFa",            asList("html", "xhtml"), false);
-    public static final @Nonnull RDFLang OWL     = new SimpleRDFLang("OWL/XML",          asList("owl", "xml"), false);
-    public static final @Nonnull RDFLang TRIX    = new SimpleRDFLang("TRIX",      singletonList("trix"), false);
-    public static final @Nonnull RDFLang JSONLD  = new SimpleRDFLang("JSON-LD",   singletonList("jsonld"), false);
-    public static final @Nonnull RDFLang RDFJSON = new SimpleRDFLang("RDF/JSON",  singletonList("rj"), false);
-    public static final @Nonnull RDFLang THRIFT  = new SimpleRDFLang("Thrift",           asList("trdf", "rt"), true);
-    public static final @Nonnull RDFLang BRF     = new SimpleRDFLang("BinaryRDF", singletonList("brf"), true);
-    public static final @Nonnull RDFLang HDT     = new SimpleRDFLang("HDT",       singletonList("hdt"), true);
+    public static final @Nonnull RDFLang NT      = new SimpleRDFLang("N-Triples",        asList("nt",  "ntriples"),  "application/n-triples", false);
+    public static final @Nonnull RDFLang NQ      = new SimpleRDFLang("N-Quads",          asList("nq",  "nquads"  ), "application/n-quads", false);
+    public static final @Nonnull RDFLang TTL     = new SimpleRDFLang("Turtle",           asList("ttl", "turtle"  ), "text/turtle", false);
+    public static final @Nonnull RDFLang TRIG    = new SimpleRDFLang("TriG",      singletonList("trig"           ), "application/trig", false);
+    public static final @Nonnull RDFLang RDFXML  = new SimpleRDFLang("RDF/XML",          asList("rdf", "xml"     ), "application/rdf+xml", false);
+    public static final @Nonnull RDFLang RDFA    = new SimpleRDFLang("RDFa",            asList("html", "xhtml"   ), "application/xhtml+xml", false);
+    public static final @Nonnull RDFLang OWL     = new SimpleRDFLang("OWL/XML",          asList("owl", "xml"     ), "application/owl+xml", false);
+    public static final @Nonnull RDFLang TRIX    = new SimpleRDFLang("TRIX",      singletonList("trix"           ), "text/xml", false);
+    public static final @Nonnull RDFLang JSONLD  = new SimpleRDFLang("JSON-LD",   singletonList("jsonld"         ), "application/ld+json", false);
+    public static final @Nonnull RDFLang RDFJSON = new SimpleRDFLang("RDF/JSON",  singletonList("rj"             ), "application/rdf+json", false);
+    public static final @Nonnull RDFLang THRIFT  = new SimpleRDFLang("Thrift",           asList("trdf", "rt"     ), "application/rdf+thrift", true);
+    public static final @Nonnull RDFLang BRF     = new SimpleRDFLang("BinaryRDF", singletonList("brf"            ), "*/*", true);
+    public static final @Nonnull RDFLang HDT     = new SimpleRDFLang("HDT",       singletonList("hdt"            ), " application/vnd.hdt ", true);
     public static final @Nonnull RDFLang UNKNOWN = new UnknownRDFLang();
 
     static {

@@ -5,15 +5,19 @@ import com.github.lapesd.rdfit.components.ListenerParser;
 import com.github.lapesd.rdfit.components.Parser;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
 import com.github.lapesd.rdfit.iterator.IterationElement;
+import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public interface ParserRegistry {
     @Nonnull ConversionManager getConversionManager();
 
     void setConversionManager(@Nonnull ConversionManager mgr);
+
+    @Nonnull Set<RDFLang> getSupportedLangs();
 
     /**
      * Register a parser.

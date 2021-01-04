@@ -6,11 +6,14 @@ import com.github.lapesd.rdfit.components.Parser;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
 import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
 import com.github.lapesd.rdfit.iterator.IterationElement;
+import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import com.github.lapesd.rdfit.util.TypeDispatcher;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.function.Predicate;
 
 public class DefaultParserRegistry implements ParserRegistry {
@@ -28,6 +31,7 @@ public class DefaultParserRegistry implements ParserRegistry {
         }
     };
     private @Nonnull ConversionManager conversionManager;
+    private @Nullable Set<RDFLang> supportedLangs;
 
     public static @Nonnull DefaultParserRegistry get() {
         return INSTANCE;
@@ -49,6 +53,17 @@ public class DefaultParserRegistry implements ParserRegistry {
         this.conversionManager = conversionManager;
     }
 
+    @Override public @Nonnull Set<RDFLang> getSupportedLangs() {
+        Set<RDFLang> set = this.supportedLangs;
+        if (set == null) {
+            set = new HashSet<>();
+            for (ItParser       p : itParsers.getAll()) set.addAll(p.parsedLangs());
+            for (ListenerParser p : cbParsers.getAll()) set.addAll(p.parsedLangs());
+            this.supportedLangs = set;
+        }
+        return set;
+    }
+
     protected <T extends Parser> void register(@Nonnull TypeDispatcher<T> dispatcher,
                                                @Nonnull T parser) {
         for (Class<?> leaf : parser.acceptedClasses())
@@ -57,6 +72,7 @@ public class DefaultParserRegistry implements ParserRegistry {
     }
 
     @Override public void register(@Nonnull Parser parser) {
+        supportedLangs = null;
         if (parser instanceof ItParser)
             register(itParsers, (ItParser) parser);
         if (parser instanceof ListenerParser)
@@ -64,6 +80,7 @@ public class DefaultParserRegistry implements ParserRegistry {
     }
 
     @Override public void unregister(@Nonnull Parser parser) {
+        supportedLangs = null;
         if (parser instanceof ItParser)
             itParsers.remove((ItParser) parser);
         if (parser instanceof ListenerParser)
@@ -71,6 +88,7 @@ public class DefaultParserRegistry implements ParserRegistry {
     }
 
     @Override public void unregisterIf(@Nonnull Predicate<? super Parser> predicate) {
+        supportedLangs = null;
         itParsers.removeIf(predicate);
         cbParsers.removeIf(predicate);
     }

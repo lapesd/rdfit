@@ -1,9 +1,11 @@
 package com.github.lapesd.rdfit.components;
 
 import com.github.lapesd.rdfit.components.parsers.ParserRegistry;
+import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Set;
 
 public interface Parser extends Component {
     /**
@@ -16,6 +18,14 @@ public interface Parser extends Component {
      * instances of these classes.
      */
     @Nonnull Collection<Class<?>> acceptedClasses();
+
+    /**
+     * Collection of RDF languages this parser actively provides support for.
+     *
+     * Model-style parsers (e.g. for query results or in-memory graphs) should return an
+     * empty collection.
+     */
+    @Nonnull Set<RDFLang> parsedLangs();
 
     /**
      * Indicates whether this {@link Parser} implementation can parse the given source.

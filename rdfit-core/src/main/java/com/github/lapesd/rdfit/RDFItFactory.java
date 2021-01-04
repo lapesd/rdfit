@@ -4,6 +4,7 @@ import com.github.lapesd.rdfit.components.Converter;
 import com.github.lapesd.rdfit.components.Parser;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
 import com.github.lapesd.rdfit.components.converters.quad.QuadLifter;
+import com.github.lapesd.rdfit.components.normalizers.SourceNormalizerRegistry;
 import com.github.lapesd.rdfit.components.parsers.ParserRegistry;
 import com.github.lapesd.rdfit.errors.InconvertibleException;
 import com.github.lapesd.rdfit.iterator.RDFIt;
@@ -22,6 +23,11 @@ public interface RDFItFactory extends AutoCloseable {
      * Allows configuring the available parsers.
      */
     @Nonnull ParserRegistry getParserRegistry();
+
+    /**
+     * Allows configuration of how sources are processed before being mapped to a parser.
+     */
+    @Nonnull SourceNormalizerRegistry getNormalizerRegistry();
 
     /**
      * Sequentially iterate all triples in each of the sources. If any quad is met, the

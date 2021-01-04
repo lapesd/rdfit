@@ -122,7 +122,7 @@ public class ConvertingRDFListener<T, Q> implements RDFListener<T, Q> {
     }
 
     @Override public void finish(@Nonnull Object source) {
-        if (!Objects.equals(this.source, source))
+        if (!Objects.equals(this.source, source) && this.source != NoSource.INSTANCE)
             throw new IllegalStateException("finish("+source+"), expected finish("+this.source+")");
         this.source = NoSource.INSTANCE;
         target.finish(source);

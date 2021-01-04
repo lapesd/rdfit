@@ -21,4 +21,5 @@ public interface RDFLang {
     }
     @Nonnull Collection<String> getExtensions();
     boolean isBinary();
+    @Nonnull String getContentType();
 }

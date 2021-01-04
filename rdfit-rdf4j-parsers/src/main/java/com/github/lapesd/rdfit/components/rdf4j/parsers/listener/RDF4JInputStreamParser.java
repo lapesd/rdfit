@@ -7,6 +7,7 @@ import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;
 import com.github.lapesd.rdfit.listener.RDFListener;
 import com.github.lapesd.rdfit.source.RDFInputStream;
+import com.github.lapesd.rdfit.source.syntax.RDFLangs;
 import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.rio.*;
@@ -32,6 +33,16 @@ public class RDF4JInputStreamParser extends BaseListenerParser {
             BasicParserSettings.VERIFY_LANGUAGE_TAGS,
             BasicParserSettings.VERIFY_URI_SYNTAX
     ));
+    private static final @Nonnull Set<RDFLang> PARSED_LANGS;
+    static {
+        Set<RDFLang> set = new HashSet<>();
+        for (RDFLang lang : RDFLangs.getLangs()) {
+            if (RDF4JFormat.toRDF4J(lang) != null)
+                set.add(lang);
+        }
+        PARSED_LANGS = Collections.unmodifiableSet(set);
+    }
+
     private final @Nonnull Set<RioSetting<?>> nonFatalErrors;
 
     public RDF4JInputStreamParser() {
@@ -42,6 +53,10 @@ public class RDF4JInputStreamParser extends BaseListenerParser {
         this.nonFatalErrors = nonFatalErrors instanceof Set
                 ? (Set<RioSetting<?>>)nonFatalErrors
                 : new HashSet<>(nonFatalErrors);
+    }
+
+    @Override public @Nonnull Set<RDFLang> parsedLangs() {
+        return PARSED_LANGS;
     }
 
     @Override public boolean canParse(@Nonnull Object source) {

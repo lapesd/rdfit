@@ -8,6 +8,7 @@ import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;
 import com.github.lapesd.rdfit.listener.RDFListener;
 import com.github.lapesd.rdfit.source.RDFInputStream;
+import com.github.lapesd.rdfit.source.syntax.RDFLangs;
 import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.riot.Lang;
@@ -19,16 +20,33 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
-public class JenaRDFInputStreamParser extends BaseListenerParser {
-    public static final Logger logger = LoggerFactory.getLogger(JenaRDFInputStreamParser.class);
+public class JenaInputStreamParser extends BaseListenerParser {
+    public static final Logger logger = LoggerFactory.getLogger(JenaInputStreamParser.class);
+    public static final @Nonnull Set<RDFLang> PARSED_LANGS;
 
-    public JenaRDFInputStreamParser() {
+    static {
+        Set<RDFLang> set = new HashSet<>();
+        for (RDFLang lang : RDFLangs.getLangs()) {
+            if (JenaHelpers.toJenaLang(lang) != null)
+                set.add(lang);
+        }
+        PARSED_LANGS = Collections.unmodifiableSet(set);
+    }
+
+    public JenaInputStreamParser() {
         super(Collections.singleton(RDFInputStream.class), Triple.class, Quad.class);
     }
 
+    @Override public @Nonnull Set<RDFLang> parsedLangs() {
+        return PARSED_LANGS;
+    }
+
     @Override public boolean canParse(@Nonnull Object source) {
-        if (!super.canParse(source)) return false;
+        if (!super.canParse(source))
+            return false;
         try {
             RDFLang lang = ((RDFInputStream) source).getOrDetectLang();
             return JenaHelpers.toJenaLang(lang) != null;

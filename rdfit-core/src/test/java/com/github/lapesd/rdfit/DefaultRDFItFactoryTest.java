@@ -2,6 +2,8 @@ package com.github.lapesd.rdfit;
 
 import com.github.lapesd.rdfit.components.Parser;
 import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
+import com.github.lapesd.rdfit.components.normalizers.CoreSourceNormalizers;
+import com.github.lapesd.rdfit.components.normalizers.DefaultSourceNormalizerRegistry;
 import com.github.lapesd.rdfit.components.parsers.DefaultParserRegistry;
 import com.github.lapesd.rdfit.data.ConverterLib;
 import com.github.lapesd.rdfit.data.ModelLib;
@@ -16,7 +18,9 @@ public class DefaultRDFItFactoryTest extends RDFItFactoryTestBase {
         parsers.forEach(parserRegistry::register);
         DefaultConversionManager convMgr = new DefaultConversionManager();
         ConverterLib.ALL_CONVERTERS.forEach(convMgr::register);
-        return new DefaultRDFItFactory(parserRegistry, convMgr);
+        DefaultSourceNormalizerRegistry normalizerRegistry = new DefaultSourceNormalizerRegistry();
+        CoreSourceNormalizers.registerAll(normalizerRegistry);
+        return new DefaultRDFItFactory(parserRegistry, convMgr, normalizerRegistry);
     }
 
     @Override protected @Nonnull RDFItFactory createFactoryOnlyCbParsers() {

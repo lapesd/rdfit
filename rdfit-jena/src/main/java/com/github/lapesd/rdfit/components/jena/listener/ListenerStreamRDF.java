@@ -6,6 +6,7 @@ import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;
 import com.github.lapesd.rdfit.listener.RDFListener;
 import com.github.lapesd.rdfit.util.Utils;
+import org.apache.jena.graph.Node;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.system.StreamRDF;
@@ -28,9 +29,9 @@ public class ListenerStreamRDF implements StreamRDF {
         Class<?> tt = target.tripleType(), qt = target.quadType();
         if (tt == null && qt == null)
             throw new IllegalArgumentException("target has no tripleType nor quadType");
-        if (tt != null && !tt.equals(Triple.class) && !tt.equals(Statement.class))
+        if (tt != null && !tt.isAssignableFrom(Triple.class) && !tt.isAssignableFrom(Statement.class))
             throw new IllegalArgumentException("target expects "+tt+" triples");
-        if (qt != null && !qt.equals(Quad.class))
+        if (qt != null && !qt.isAssignableFrom(Quad.class))
             throw new IllegalArgumentException("target expects "+qt+" quads");
         this.target = target;
         this.source = source;
@@ -43,14 +44,14 @@ public class ListenerStreamRDF implements StreamRDF {
 
     @SuppressWarnings("unchecked") @Override public void triple(Triple triple) {
         assert triple != null;
-        Class<?> tt = target.tripleType();
+        Class<?> tt = target.tripleType(), qt = target.quadType();
         try {
             if (tt == null) {
-                assert Quad.class.equals(target.quadType());
+                assert qt != null && qt.isAssignableFrom(Quad.class);
                 ((RDFListener<?, Quad>) target).quad(new Quad(Quad.defaultGraphIRI, triple));
-            } else if (tt.equals(Triple.class)) {
+            } else if (tt.isAssignableFrom(Triple.class)) {
                 ((RDFListener<Triple, ?>) target).triple(triple);
-            } else if (tt.equals(Statement.class)) {
+            } else if (tt.isAssignableFrom(Statement.class)) {
                 Statement stmt = (Statement) Triple2Statement.INSTANCE.convert(triple);
                 ((RDFListener<Statement, ?>) target).triple(stmt);
             } else {
@@ -83,8 +84,9 @@ public class ListenerStreamRDF implements StreamRDF {
                     throw new IllegalStateException("target requires " + tt + " for triples");
                 }
             } else {
-                if (quad.getGraph() == null
-                        && (Triple.class.equals(tt) || Statement.class.equals(tt))) {
+                Node graph = quad.getGraph();
+                boolean defGraph = graph == null || graph.equals(Quad.defaultGraphNodeGenerated);
+                if (defGraph && (Triple.class.equals(tt) || Statement.class.equals(tt))) {
                     Triple triple = quad.asTriple();
                     if (tt.equals(Triple.class)) {
                         ((RDFListener<Triple, ?>)target).triple(triple);
@@ -93,7 +95,7 @@ public class ListenerStreamRDF implements StreamRDF {
                         ((RDFListener<Statement, ?>)target).triple(stmt);
                     }
                 } else {
-                    if (quad.getGraph() == null)
+                    if (defGraph)
                         quad = new Quad(Quad.defaultGraphIRI, quad.asTriple());
                     ((RDFListener<?, Quad>) target).quad(quad);
                 }

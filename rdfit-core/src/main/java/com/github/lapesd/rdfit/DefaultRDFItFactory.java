@@ -5,6 +5,8 @@ import com.github.lapesd.rdfit.components.ListenerParser;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
 import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
 import com.github.lapesd.rdfit.components.converters.quad.QuadLifter;
+import com.github.lapesd.rdfit.components.normalizers.DefaultSourceNormalizerRegistry;
+import com.github.lapesd.rdfit.components.normalizers.SourceNormalizerRegistry;
 import com.github.lapesd.rdfit.components.parsers.DefaultParserRegistry;
 import com.github.lapesd.rdfit.components.parsers.ParserRegistry;
 import com.github.lapesd.rdfit.errors.InterruptParsingException;
@@ -34,21 +36,26 @@ import static com.github.lapesd.rdfit.iterator.IterationElement.TRIPLE;
 public class DefaultRDFItFactory implements RDFItFactory {
     private static final Logger logger = LoggerFactory.getLogger(DefaultRDFItFactory.class);
     private static final @Nonnull DefaultRDFItFactory INSTANCE
-            = new DefaultRDFItFactory(DefaultParserRegistry.get(), DefaultConversionManager.get());
+            = new DefaultRDFItFactory(DefaultParserRegistry.get(), DefaultConversionManager.get(),
+                                      DefaultSourceNormalizerRegistry.get());
 
     protected @Nonnull ParserRegistry parserRegistry;
     protected @Nonnull ConversionManager conversionMgr;
+    protected @Nonnull SourceNormalizerRegistry normalizerRegistry;
     private final @Nonnull ThreadPoolExecutor executor;
 
     public DefaultRDFItFactory() {
-        this(new DefaultParserRegistry(), new DefaultConversionManager());
+        this(new DefaultParserRegistry(), new DefaultConversionManager(),
+             new DefaultSourceNormalizerRegistry());
         parserRegistry.setConversionManager(getConverterManager());
     }
 
     public DefaultRDFItFactory(@Nonnull ParserRegistry parserRegistry,
-                               @Nonnull ConversionManager conversionManager) {
+                               @Nonnull ConversionManager conversionManager,
+                               @Nonnull SourceNormalizerRegistry normalizerRegistry) {
         this.parserRegistry = parserRegistry;
         this.conversionMgr = conversionManager;
+        this.normalizerRegistry = normalizerRegistry;
         int availableProcessors = Runtime.getRuntime().availableProcessors();
         SecurityManager secMgr = System.getSecurityManager();
         executor = new ThreadPoolExecutor(0, availableProcessors * 8,
@@ -79,6 +86,10 @@ public class DefaultRDFItFactory implements RDFItFactory {
         return parserRegistry;
     }
 
+    @Override public @Nonnull SourceNormalizerRegistry getNormalizerRegistry() {
+        return normalizerRegistry;
+    }
+
     private @Nonnull RDFIt<Object>
     iterateSources(@Nonnull IterationElement itElement, @Nullable Class<?> tripleClass,
                    @Nullable Class<?> quadClass, @Nullable QuadLifter quadLifter,
@@ -99,6 +110,7 @@ public class DefaultRDFItFactory implements RDFItFactory {
         Object source = sources[0];
         if (source == null)
             return new EmptyRDFIt<>(valueClass, itElement, NoSource.INSTANCE);
+        source = normalizerRegistry.normalize(source);
 
         return iterateSource(itElement, tripleClass, quadLifter, valueClass, source);
     }
@@ -194,6 +206,7 @@ public class DefaultRDFItFactory implements RDFItFactory {
                 if (s == null)
                     continue;
                 try {
+                    s = normalizerRegistry.normalize(s);
                     //noinspection unchecked
                     parseSource((RDFListener<Object, Object>) listener, s);
                 } catch (InterruptParsingException e) {

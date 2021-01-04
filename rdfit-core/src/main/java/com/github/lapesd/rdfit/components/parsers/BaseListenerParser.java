@@ -14,7 +14,7 @@ public abstract class BaseListenerParser extends BaseParser implements ListenerP
     protected final @Nullable Class<?> quadClass;
 
     public BaseListenerParser(@Nonnull Collection<Class<?>> acceptedClasses,
-                          @Nullable Class<?> tripleClass) {
+                              @Nullable Class<?> tripleClass) {
         this(acceptedClasses, tripleClass, null);
     }
 

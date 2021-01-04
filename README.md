@@ -3,9 +3,8 @@
 rdfit - Agnostic and decoupled iteration over RDF data. 
 =====
 
-RDF is flexible and simple, conceptually. In practice technical details can ruin your day. 
 Suppose you want to iterate over all triples in these sources:
-1. An `InputStream`
+1. An `InputStream` of unknown RDF syntax
 2. All graphs of a local TDB database
 3. An HDT file
 4. All files inside a compressed archive
@@ -22,7 +21,7 @@ RIt.iterateTriples(Triple.class, inputStream, "/path/to/tdb",
 ).forEachRemaining(this::handleTriple);
 ```
 
-... or an `RDFListener`:
+... or an push-style `RDFListener`:
 ```java
 RIt.parse(new TripleListener(Triple.class) {
               @Override public void triple(@Nonnull Triple triple) {
@@ -37,18 +36,28 @@ rdfit provides:
 - Automatic syntax detection (no need to keep track of InputStream syntax)
 - Detecting RDF data, file paths and URIs in Strings
 - Using Java objects as sources (e.g.,
-  RDF4J [Model](https://rdf4j.org/javadoc/latest/org/eclipse/rdf4j/model/Model.html), 
+  RDF4J [Model](https://rdf4j.org/javadoc/latest/org/eclipse/rdf4j/model/Model.html),
+  [Repository](),
+  [RepositoryConnection](),
+  [RepositoryResult](),
+  [TupleQuery](),
+  [TupleQueryResult](),
+  [GraphQuery](),
+  [GraphQueryResult](),
   Jena [Model](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/rdf/model/Model.html), 
   [Graph](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/graph/Graph.html), 
-  [Dataset](https://jena.apache.org/documentation/javadoc/arq/org/apache/jena/query/Dataset.html) and 
-  [HDT](https://github.com/rdfhdt/hdt-java/blob/master/hdt-api/src/main/java/org/rdfhdt/hdt/hdt/HDT.java)).
-- Implicit conversion between triple representations (e.g.,
+  [Dataset](https://jena.apache.org/documentation/javadoc/arq/org/apache/jena/query/Dataset.html), 
+  [DatasetGraph](https://jena.apache.org/documentation/javadoc/arq/org/apache/jena/sparql/core/DatasetGraph.html), 
+  [QueryExecution](https://jena.apache.org/documentation/javadoc/arq/org/apache/jena/query/QueryExecution.html), 
+  hdt-java's [HDT](https://github.com/rdfhdt/hdt-java/blob/master/hdt-api/src/main/java/org/rdfhdt/hdt/hdt/HDT.java)) and
+  `Iterable<T>` or `T[]` where `T` is a triple/quad representation.
+- Implicit conversion between triple/quad representations (e.g.,
   [Statement](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/rdf/model/Statement.html), 
   [Triple](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/graph/Triple.html), 
   [Quad](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/graph/Triple.html), 
   [Statement](https://rdf4j.org/javadoc/latest/org/eclipse/rdf4j/model/Statement.html) or 
   [TripleString](https://github.com/rdfhdt/hdt-java/blob/master/hdt-api/src/main/java/org/rdfhdt/hdt/triples/TripleString.java)).
-- Implicit conversion of control flow (listener pattern vs. iterator pattern)
+- Implicit conversion of control flow (pull-style iterators from push-style parsers and vice-versa)
 
 Quickstart
 ==========
@@ -68,12 +77,11 @@ On gradle, add this to your build.gradle:
 implementation 'com.github.lapesd.rdfit:rdfit-jena-libs:1.0.0'
 ```
 
-> Note: `rdfit-jena-libs` and `rdfit-rdf4j-libs` will import many modules, 
-> which may bring transitive dependencies you won't use. See 
-> [Modules](#modules) below for minimal dependencies.
+> Note: `rdfit-jena-libs` and `rdfit-rdf4j-libs` may bring unwanted transitive 
+> dependencies. See [Modules](#modules) below for minimal dependencies.
 
-Iteration styles and triple/quad types
---------------------------------------
+Iterator (RDFIt<T>)
+-------------------
 
 Iterate over all triples in a file:
 ```java
@@ -104,44 +112,30 @@ What happened:
 - `it.hasNext()`/`it.next()` other than its creation and the recommended 
   try-with block, this behaves like any `java.lang.Iterator<>`
 
-The try/while/hasNext/next bit is classic Java boilerplate. Java method 
-`Iterator.forEachRemaining` can be used instead: the iterator will be closed
-after iteration completes or if an exception is thrown: 
+The try/while/hasNext/next bit is classic Java boilerplate. To save keystrokes:
 
-```java
-RIt.iterateTriples(Triple.class, "/tmp/data.trig").forEachRemaining(this::process)
-```
-
-If each keystroke costs, there is a shortcut:
 ```java
 RIt.forEachTriple(this::process, "/tmp/data.trig")
 ```
 
 If instead of triples the goal is to iterate over quads, use `iterateQuads`. 
-Like `iterateTriples`, any triple in the output is converted into a quad using
-a `Converter`. For example, in Jena, `Triple` and `Statement` objects from 
-non-quad storages (e.g., `.ttl` files or `Model` instances) become `Quad` 
-instances with `Quad.defaultGraphIRI`. 
-
+If the input provides triples, they will be converted to quad representations. 
 ```java
 RDFIt<Quad> it = RIt.iterateQuads(Quad.class, "/tmp/data.nt");
 ```
 
-For finer control of how triples are transformed into quads, provide a 
-`QuadLifter`. rdfit will convert triples to its desired input class and 
-pass them through the lifter in order to produce quads.
+> A triple converted to a Jena `Quad` will have `Quad.defaultGraphIRI` as 
+> its graph. A triple converted to a RDF4J `Statement` will have a null 
+> `getContext()`. For finer control of this conversion, use the overload 
+> that takes a `QuadLifter`  
 
-```java
-QuadLifter lifter = new QuadLifterFunction(Triple.class, 
-                                           t -> new Quad(Quad.defaultGraphIRI, (Triple) t));
-RDFIt<Quad> it = RIt.iterateQuads(Quad.class, lifter, "/tmp/data.nt");
-```
+Listeners (push-style iteration)
+--------------------------------
 
-With iterators, the control flow is with the triple consumer. This can be 
-reversed with the listener pattern (a.k.a. a callback), which is the most usual 
-design approach with RDF parsers. Like in the iterator versions, the expected 
-`Class` for triples must be given so that the parser output is converted to 
-the type expected by the listener. 
+Using the listener pattern (a.k.a. a callback), methods in an `RDFListnener` 
+implementation are called for every triple/quad or error. Use this if quads 
+need dedicated processing in your application or to gracefully handle invalid 
+input data (`RDFIt` stops on first error). 
 
 ```java
 RIt.parse(new TripleListenerBase<>(Triple.class) {
@@ -156,30 +150,27 @@ RIt.parse(new TripleListenerBase<>(Triple.class) {
 }, "/tmp/data.trig");
 ```
 
-The `RDFListener` implementation should declare which triple type and which 
-quad type it expects (or null if it does not expect). Declaring a triple type 
-is sufficient for handling both triples and quads, as in the above example. 
-A callback that declares no triple type and no quad type is invalid and 
-will be rejected.
+> The `RDFListener` *Base classes take the triple (and/or quad) class objects 
+> in the constructs, this enables conversion at runtime. Any of those can be 
+> null (causing conversion of quads to triples and triples to quads), but at 
+> least one must be non-null.
 
-To handle both triples and quad objects, `RDFListenerBase` should be used 
-instead of `TripleListenerBase`:
+To handle both triples and quad objects, extend `RDFListenerBase` instead:
 ```java
 RIt.parse(new RDFListenerBase<>(Triple.class, Quad.class) {
-    @Override public void triple(@Nonnull Triple triple) {
-        // handle triple
-    }
+  @Override public void triple(@Nonnull Triple triple) {
+    // handle triple
+  }
 
-    @Override public void quad(@Nonnull Quad quad) {
-        // handle quad. The triple part will not be delivered to 
-        // #triple(Triple) nor to #quad(String, Triple)
-    }
+  @Override public void quad(@Nonnull Quad quad) {
+    // handle quad. The triple part will not be delivered to 
+    // #triple(Triple) nor to #quad(String, Triple)
+  }
 }, "/tmp/data.trig");
 ```
 
-If there is certainly no triples in the input, `QuadListenerBase` allows 
-implementing only the `quad(Q quad)` method. However, if there is a triple 
-in the input, an exception will be thrown. 
+A third base class, `QuadListenerBase` allows implementing only the 
+`quad(Q quad)` method. Any triple will be converted to a quad representation. 
 
 Supported sources
 -----------------
@@ -187,7 +178,7 @@ Supported sources
 The last parameter in the above factory method examples is variadic, 
 thus multiple sources of multiple types can be given. Sources are parsed 
 in the same sequence they were given and triples/quads are delivered through 
-`RDFIt`/`RDFCallback` in the same order they were parsed in each source. 
+`RDFIt`/`RDFListener` in the same order they were parsed in each source. 
 
 The following example, while unusual, showcases possible sources. Parsing 
 support for a source is independent of whether `iterate*()` or `parse()` 
