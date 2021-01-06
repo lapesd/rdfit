@@ -8,6 +8,7 @@ import com.github.lapesd.rdfit.components.converters.quad.QuadLifter;
 import com.github.lapesd.rdfit.components.normalizers.DefaultSourceNormalizerRegistry;
 import com.github.lapesd.rdfit.components.normalizers.SourceNormalizerRegistry;
 import com.github.lapesd.rdfit.components.parsers.DefaultParserRegistry;
+import com.github.lapesd.rdfit.components.parsers.ListenerFeeder;
 import com.github.lapesd.rdfit.components.parsers.ParserRegistry;
 import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.NoParserException;
@@ -242,8 +243,8 @@ public class DefaultRDFItFactory implements RDFItFactory {
             Class<?> offQuad   = itElement.isQuad() ? itP.valueClass() : null;
             cb = ConvertingRDFListener.createIf(cb, offTriple, offQuad, conversionMgr);
 
-            cb.start(source);
-            try (RDFIt<Object> it = itP.parse(source)) {
+            try (RDFIt<Object> it = itP.parse(source);
+                 ListenerFeeder feeder = new ListenerFeeder(cb, conversionMgr).setSource(source)) {
                 while (it.hasNext()) {
                     Object next = it.next();
                     if (next == null) {
@@ -252,14 +253,12 @@ public class DefaultRDFItFactory implements RDFItFactory {
                         assert false; // blow up in debug runs
                         continue;
                     }
-                    if (isTriple) cb.triple(next);
-                    else          cb.quad(next);
+                    if (isTriple) feeder.feedTriple(next);
+                    else          feeder.feedQuad(next);
                 }
-            } catch (RDFItException e) {
-                if (!cb.notifySourceError(e))
+            } catch (Throwable t) {
+                if (!cb.notifySourceError(RDFItException.wrap(source, t)))
                     throw new InterruptParsingException();
-            } finally {
-                cb.finish(source);
             } // InterruptParsingException is propagated
         }
     }

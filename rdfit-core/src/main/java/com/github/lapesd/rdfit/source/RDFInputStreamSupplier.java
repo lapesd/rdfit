@@ -1,6 +1,7 @@
 package com.github.lapesd.rdfit.source;
 
 import com.github.lapesd.rdfit.errors.RDFItException;
+import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import com.github.lapesd.rdfit.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +23,31 @@ public class RDFInputStreamSupplier extends RDFInputStream {
     private @Nullable String name;
 
     public RDFInputStreamSupplier(@Nonnull Supplier<InputStream> supplier) {
-        this((Callable<InputStream>) supplier::get);
+        this(supplier, null);
+    }
+
+    public RDFInputStreamSupplier(@Nonnull Supplier<InputStream> supplier,
+                                  @Nullable RDFLang lang) {
+        this(supplier, lang, null);
+    }
+
+    public RDFInputStreamSupplier(@Nonnull Supplier<InputStream> supplier,
+                                  @Nullable RDFLang lang, @Nullable String baseIRI) {
+        this((Callable<InputStream>) supplier::get, lang, baseIRI);
     }
 
     public RDFInputStreamSupplier(@Nonnull Callable<InputStream> supplier) {
-        super(null, null, null, true);
+        this(supplier, null);
+    }
+
+    public RDFInputStreamSupplier(@Nonnull Callable<InputStream> supplier,
+                                  @Nullable RDFLang lang) {
+        this(supplier, lang, null);
+    }
+
+    public RDFInputStreamSupplier(@Nonnull Callable<InputStream> supplier,
+                                  @Nullable RDFLang lang, @Nullable String baseIRI) {
+        super(null, lang, baseIRI, true);
         this.supplier = supplier;
     }
 

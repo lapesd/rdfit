@@ -38,7 +38,7 @@ public class HDTItParser extends BaseItParser {
 
         if (source instanceof RDFInputStream) {
             try {
-                return RDFLangs.HDT.equals(((RDFInputStream)source).getOrDetectLang(8));
+                return RDFLangs.HDT.equals(((RDFInputStream)source).getOrDetectLang());
             } catch (IOException e) {
                 logger.info("IOException guessing lang of {}. Accepting as a source", source);
                 return true;

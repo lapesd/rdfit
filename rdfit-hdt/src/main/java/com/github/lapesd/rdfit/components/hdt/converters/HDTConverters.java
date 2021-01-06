@@ -19,13 +19,9 @@ import org.apache.jena.graph.Triple;
 import org.rdfhdt.hdt.triples.TripleString;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
-import static java.util.Collections.singletonList;
 import static org.apache.jena.graph.NodeFactory.createBlankNode;
 import static org.apache.jena.graph.NodeFactory.createLiteral;
 
@@ -35,8 +31,9 @@ public class HDTConverters {
     private static final @Nonnull Pattern DOUBLE_RX = Pattern.compile(
             "([+-]?[0-9]|[+-]?\\.[0-9]+|[+-]?[0-9]+\\.[0-9]+)[eE]([+-]?[0-9]+)");
     private static final @Nonnull Map<String, String> PREFIXES;
-    private static final @Nonnull List<Converter> CONVERTERS
-            = singletonList(TripleString2Triple.INSTANCE);
+    private static final @Nonnull List<Converter> CONVERTERS = Arrays.asList(
+            TripleString2Triple.INSTANCE, Triple2TripleString.INSTANCE
+    );
 
     static {
         Map<String, String> map = new HashMap<>();
@@ -115,12 +112,50 @@ public class HDTConverters {
             }
         }
 
-        @Override public @Nonnull Object convert(@Nonnull Object input) throws ConversionException {
+        @Override public @Nonnull Triple convert(@Nonnull Object input) throws ConversionException {
             TripleString ts = (TripleString) input;
             Node s = convertTerm(ts, ts.getSubject(), true);
             Node p = convertTerm(ts, ts.getPredicate(), true);
             Node o = convertTerm(ts, ts.getObject(), false);
             return new Triple(s, p, o);
+        }
+    }
+
+    @Accepts(Triple.class) @Outputs(TripleString.class)
+    public static class Triple2TripleString extends BaseConverter {
+        public static final @Nonnull Triple2TripleString INSTANCE = new Triple2TripleString();
+
+        private @Nonnull String toHDTString(@Nonnull Node node,
+                                            @Nonnull Triple in) throws ConversionException {
+            if (node.isBlank()) {
+                return "_:"+node.toString();
+            } else if (node.isURI()) {
+                return node.getURI();
+            } else if (node.isLiteral()) {
+                String lang = node.getLiteralLanguage();
+                String lex = node.getLiteralLexicalForm().replace("\"", "\\\"")
+                                 .replace("\n", "\\n").replaceAll("\r", "\\r");
+                if (lang != null && !lang.isEmpty()) {
+                    return String.format("\"%s\"@%s", lex, lang);
+                } else {
+                    String uri = node.getLiteralDatatypeURI();
+                    if (uri == null || uri.isEmpty())
+                        uri = XSDDatatype.XSDstring.getURI();
+                    return String.format("\"%s\"^^<%s>", lex, uri);
+                }
+            } else {
+                throw new ConversionException(in, this, "non-concrete node "+node);
+            }
+        }
+
+        @Override public @Nonnull TripleString convert(@Nonnull Object input)
+                throws ConversionException {
+            Triple t = (Triple) input;
+            return new TripleString(
+                    toHDTString(t.getSubject(), t),
+                    toHDTString(t.getPredicate(), t),
+                    toHDTString(t.getObject(), t)
+            );
         }
     }
 

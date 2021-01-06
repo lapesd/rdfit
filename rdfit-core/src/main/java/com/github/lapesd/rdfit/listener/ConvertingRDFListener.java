@@ -19,7 +19,7 @@ public class ConvertingRDFListener<T, Q> implements RDFListener<T, Q> {
     protected @Nonnull RDFListener<Object, Object> target;
     protected @Nonnull ConversionCache tripleConversion;
     protected @Nonnull ConversionCache quadConversion;
-    protected @Nonnull ConversionCache quadTripleConversion;
+    protected @Nonnull ConversionCache upgrader, downgrader;
     private @Nonnull Object source = NoSource.INSTANCE;
 
     public ConvertingRDFListener(@Nonnull RDFListener<?, ?> target,
@@ -35,8 +35,9 @@ public class ConvertingRDFListener<T, Q> implements RDFListener<T, Q> {
         Class<?> outTripleType = target.tripleType();
         Class<?> outQuadType = target.quadType();
         this.tripleConversion = ConversionPathSingletonCache.createCache(convMgr, outTripleType);
-        this.quadTripleConversion = ConversionPathSingletonCache.createCache(convMgr, outTripleType);
         this.quadConversion = ConversionPathSingletonCache.createCache(convMgr, outQuadType);
+        this.upgrader = ConversionPathSingletonCache.createCache(convMgr, outQuadType);
+        this.downgrader = ConversionPathSingletonCache.createCache(convMgr, outTripleType);
     }
 
     public static @Nonnull <T, Q> RDFListener<T, Q>
@@ -55,7 +56,8 @@ public class ConvertingRDFListener<T, Q> implements RDFListener<T, Q> {
         Class<?> rt = ot == null ? ct : ot;
         boolean needs = (oq != null && cq == null && !ct.isAssignableFrom(oq))  // oq -> ct
                      || (ot != null && ct != null && !ct.isAssignableFrom(ot))  // ot -> ct
-                     || (oq != null && cq != null && !cq.isAssignableFrom(oq)); //oq -> cq
+                     || (ot != null && ct == null && !cq.isAssignableFrom(ot))  // ot -> cq
+                     || (oq != null && cq != null && !cq.isAssignableFrom(oq)); // oq -> cq
         if (needs) {
             //noinspection unchecked
             return  (RDFListener<T, Q>)new ConvertingRDFListener<>(cb, rt, oq, convMgr);
@@ -71,49 +73,26 @@ public class ConvertingRDFListener<T, Q> implements RDFListener<T, Q> {
         return quadType;
     }
 
-    @Override public void triple(@Nonnull T triple) {
-        Object converted = null;
-        try {
-            converted = tripleConversion.convert(source, triple);
-        } catch (InconvertibleException e) {
-            target.notifyInconvertibleTriple(e);
-        }
-        if (converted != null)
-            target.triple(converted);
+    @Override public void triple(@Nonnull T triple) throws InconvertibleException {
+        assert tripleType != null;
+        if (target.tripleType() == null)
+            target.quad(upgrader.convert(source, triple));
+        else
+            target.triple(tripleConversion.convert(source, triple));
+
     }
 
     @Override public void quad(@Nonnull String graph, @Nonnull T triple) {
-        Object converted = null;
-        try {
-            converted = tripleConversion.convert(source, triple);
-        } catch (InconvertibleException e) {
-            target.notifyInconvertibleTriple(e);
-        }
-        if (converted != null)
-            target.quad(graph, converted);
+        assert quadType == null && tripleType != null;
+        target.quad(graph, tripleConversion.convert(source, triple));
     }
 
     @Override public void quad(@Nonnull Q quad) {
         assert quadType != null;
-        if (target.quadType() == null) {
-            Object converted = null;
-            try {
-                converted = quadTripleConversion.convert(source, quad);
-            } catch (InconvertibleException e) {
-                target.notifyInconvertibleTriple(e);
-            }
-            if (converted != null)
-                target.triple(converted);
-        } else {
-            Object converted = null;
-            try {
-                converted = quadConversion.convert(source, quad);
-            } catch (InconvertibleException e) {
-                target.notifyInconvertibleQuad(e);
-            }
-            if (converted != null)
-                target.quad(converted);
-        }
+        if (target.quadType() == null)
+            target.triple(downgrader.convert(source, quad));
+        else
+            target.quad(quadConversion.convert(source, quad));
     }
 
     @Override public void start(@Nonnull Object source) {

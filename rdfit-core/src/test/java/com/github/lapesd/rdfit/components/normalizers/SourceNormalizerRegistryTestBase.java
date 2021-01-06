@@ -97,6 +97,7 @@ public abstract class SourceNormalizerRegistryTestBase {
     @DataProvider public Object[][] testData() throws Exception {
         List<List<Object>> rows = new ArrayList<>();
         for (String content : asList(NT, NQ)) {
+            rows.add(asList(content, has(content)));
             rows.add(asList(createFile(content), has(content)));
             rows.add(asList(createFile(content).toPath(), has(content)));
             rows.add(asList(createFile(content).getAbsolutePath(), has(content)));
@@ -106,6 +107,7 @@ public abstract class SourceNormalizerRegistryTestBase {
             rows.add(asList(new FileInputStream(createFile(content)), has(content)));
             rows.add(asList(new InputStreamReader(new FileInputStream(createFile(content)), UTF_8), has(content)));
 
+            rows.add(asList((Callable<?>)() -> content, has(content)));
             rows.add(asList((Callable<?>)() -> createFile(content), has(content)));
             rows.add(asList((Callable<?>)() -> createFile(content).toPath(), has(content)));
             rows.add(asList((Callable<?>)() -> createFile(content).getAbsolutePath(), has(content)));
@@ -115,6 +117,7 @@ public abstract class SourceNormalizerRegistryTestBase {
             rows.add(asList((Callable<?>)() -> new FileInputStream(createFile(content)), has(content)));
             rows.add(asList((Callable<?>)() -> new InputStreamReader(new FileInputStream(createFile(content)), UTF_8), has(content)));
 
+            rows.add(asList((Supplier<?>)() -> content, has(content)));
             rows.add(asList((Supplier<?>)() -> createFile(content), has(content)));
             rows.add(asList((Supplier<?>)() -> createFile(content).toPath(), has(content)));
             rows.add(asList((Supplier<?>)() -> createFile(content).getAbsolutePath(), has(content)));
