@@ -5,6 +5,7 @@
 *.iml
 *.ipr
 .attach_*
+todo.txt
 ### Maven template
 target/
 dependency-reduced-pom.xml

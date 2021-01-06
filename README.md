@@ -11,8 +11,7 @@ Suppose you want to iterate over all triples in these sources:
 
 [Apache Jena](https://jena.apache.org/) and [Eclipse RDF4J](https://rdf4j.org/)
 provide functionality for RDF I/O in multiple syntaxes, but each of the above 
-cases will require from tens to a few hundred lines of boilerplate code around 
-functionality in those libraries.
+cases will require too much code.
 
 rdfit hides the boring bits behind a `Iterator<>` ...
 ```java
@@ -23,40 +22,18 @@ RIt.iterateTriples(Triple.class, inputStream, "/path/to/tdb",
 
 ... or an push-style `RDFListener`:
 ```java
-RIt.parse(new TripleListener(Triple.class) {
-              @Override public void triple(@Nonnull Triple triple) {
-                  handleTriple(triple);
-              }
-          }, 
-          inputStream, "/path/to/tdb", new URI("https://example.org/file.hdt"), new File("Affymetrix.7z")
-);
+RIt.parseTriples(this::handleTriple, inputStream, anURIToAnHDTFile);
 ```
 
 rdfit provides:
-- Automatic syntax detection (no need to keep track of InputStream syntax)
+- Automatic syntax detection (no need to keep track of `InputStream` syntax)
 - Detecting RDF data, file paths and URIs in Strings
 - Using Java objects as sources (e.g.,
   RDF4J [Model](https://rdf4j.org/javadoc/latest/org/eclipse/rdf4j/model/Model.html),
-  [Repository](),
-  [RepositoryConnection](),
-  [RepositoryResult](),
-  [TupleQuery](),
-  [TupleQueryResult](),
-  [GraphQuery](),
-  [GraphQueryResult](),
-  Jena [Model](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/rdf/model/Model.html), 
-  [Graph](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/graph/Graph.html), 
-  [Dataset](https://jena.apache.org/documentation/javadoc/arq/org/apache/jena/query/Dataset.html), 
-  [DatasetGraph](https://jena.apache.org/documentation/javadoc/arq/org/apache/jena/sparql/core/DatasetGraph.html), 
-  [QueryExecution](https://jena.apache.org/documentation/javadoc/arq/org/apache/jena/query/QueryExecution.html), 
+  Jena [Dataset](https://jena.apache.org/documentation/javadoc/arq/org/apache/jena/query/Dataset.html),
   hdt-java's [HDT](https://github.com/rdfhdt/hdt-java/blob/master/hdt-api/src/main/java/org/rdfhdt/hdt/hdt/HDT.java)) and
   `Iterable<T>` or `T[]` where `T` is a triple/quad representation.
-- Implicit conversion between triple/quad representations (e.g.,
-  [Statement](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/rdf/model/Statement.html), 
-  [Triple](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/graph/Triple.html), 
-  [Quad](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/graph/Triple.html), 
-  [Statement](https://rdf4j.org/javadoc/latest/org/eclipse/rdf4j/model/Statement.html) or 
-  [TripleString](https://github.com/rdfhdt/hdt-java/blob/master/hdt-api/src/main/java/org/rdfhdt/hdt/triples/TripleString.java)).
+- Implicit conversion between triple/quad representations
 - Implicit conversion of control flow (pull-style iterators from push-style parsers and vice-versa)
 
 Quickstart
@@ -66,7 +43,7 @@ On Maven: add this to your pom.xml:
 ```xml
 <dependency>
   <groupId>com.github.lapesd.rdfit</groupId>
-  <artifactId>rdfit-jena-libs</artifactId> <!-- or rdfit-rdf4j-libs -->
+  <artifactId>rdfit-all-libs</artifactId> <!-- "all" could be jena or df4j -->
   <version>1.0.0</version>
   <type>pom</type>                         <!-- not a jar, just deps -->
 </dependency>
@@ -77,8 +54,8 @@ On gradle, add this to your build.gradle:
 implementation 'com.github.lapesd.rdfit:rdfit-jena-libs:1.0.0'
 ```
 
-> Note: `rdfit-jena-libs` and `rdfit-rdf4j-libs` may bring unwanted transitive 
-> dependencies. See [Modules](#modules) below for minimal dependencies.
+> Note: if `rdfit-all-libs` bring too much transitive, see [Modules](#modules)
+> below for minimal dependencies.
 
 Iterator (RDFIt<T>)
 -------------------
@@ -109,8 +86,6 @@ What happened:
   when no longer needed. As a safety measure, resources are released as soon 
   as parsing finishes. Thus, if the iterator is consumed until exhaustion 
   resources will be released before `it.close()` is called.
-- `it.hasNext()`/`it.next()` other than its creation and the recommended 
-  try-with block, this behaves like any `java.lang.Iterator<>`
 
 The try/while/hasNext/next bit is classic Java boilerplate. To save keystrokes:
 
@@ -180,69 +155,47 @@ thus multiple sources of multiple types can be given. Sources are parsed
 in the same sequence they were given and triples/quads are delivered through 
 `RDFIt`/`RDFListener` in the same order they were parsed in each source. 
 
-The following example, while unusual, showcases possible sources. Parsing 
-support for a source is independent of whether `iterate*()` or `parse()` 
-was called.    
+Supported sources objects:
 
-```java
-try (RDFIt<Triple> it = RIt.iterateTriples(Triple.class,
-        "http://www.w3.org/2006/time", //strings can be URLs (content negotiation)
-        "/tmp/quads.nq", //file paths
-        "guess-my-rdf-syntax", //file paths can be relative and syntaxes can eb guessed
-        "file:/tmp/data.rdf", // file:/ and file:// work as expected
-        "_:bnode a <http://www.w3.org/2002/07/owl#Thing>", // RDF string, any syntax
-        new File("a-file-object.rdf"), //
-        // URLs can be given in java.net classes or RDF terms (jena/rdf4j):
-        URI.create("http://www.w3.org/2004/02/skos/core"), //java.net.URI
-        URI.create("http://www.w3.org/2004/02/skos/core").toURL(),
-        aJenaResource, // will take Resouce.getURI()
-        rdf4jIRI,      // IRI.toString() gives the URI
-        getClass().getResourceAsStream("any-input-stream-guessed-syntax"),
-        // A syntax can be matched to an input stream using this wrapper:
-        new RDFInputStream(new FileInputStream("/tmp/file"), RDFSyntax.TTL),
-        new RDFFile(new File("/tmp/other_file"), RDFSyntax.TTL),
-        // Giving the syntax is optional. It will detect the syntax from data
-        new RDFInputStreamSupplier(inputStreamSupplier),
-        // RDFInputStream subclasses can be created with the Rit.wrap shothand
-        RIt.wrap(inputStreamSupplier)
-        // in-memory RDF can also be parsed:
-        jenaModel,
-        jenaGraph,
-        jenaDataset,
-        rdf4jModel,
-        hdtDict, //HDT dict
-        // Collections of triple and quad objects:
-        Arrays.asList(jenaTriple, jenaStatement, hdtTripleString),
-        // Collections can also contain other sources:
-        Arrays.asList(jenaGraph, rdf4jModel, new File("somewhere.ttl")),
-        // SPARQL query: type of query (SELECT/CONSTRUCT/DESCRIBE) is auto-detected
-        // for SELECT queries, this will work only if the results have exactly
-        // three (or four) variables, the order of which determines subject, 
-        // predicate,  object (and graph).
-        jenaQueryExecution,
-        // an RDF4J SELECT query, same caveats (3 or 4 variables) apply:
-        rdf4jTupleQueryResult,
-        // an RDF4J CONSTRUCT/DESCRIBE query result
-        rdf4jGraphQueryResult,
-        rdf4jRepositoryResult,
-        // RDF4J Query instances will be evaluate()ed and their *Result 
-        // instances parsed according to the above rules
-        rdf4jTupleQuery,
-        rdf4jGraphQuery,
-        // A RDF4J model, Repository or a RepositoryConnection can also be parsed
-        rdf4jRepository,
-        rdf4jRepositoryConnection,
-        rdf4jModel,
-        // rdfit can handle querying itself:
-        new SPARQLQuery("SELECT * WHERE {?s ?p ?o}", "http://example.org/sparql/query")
-     )) {
-    while (it.hasNext()) {
-        Triple triple = it.next();
-        process(triple);
-    }
-}
-```
-
+- Java objects
+  - Iterable/arrays of:
+    - ... Jena [Statement](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/rdf/model/Statement.html),
+      [Triple](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/graph/Triple.html) or
+      [Quad](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/graph/Triple.html)
+    - ... RDF4J [Statement](https://rdf4j.org/javadoc/latest/org/eclipse/rdf4j/model/Statement.html)
+    - ... HDT [TripleString](https://github.com/rdfhdt/hdt-java/blob/master/hdt-api/src/main/java/org/rdfhdt/hdt/triples/TripleString.java)
+    - ... other sources in this list
+  - `Supplier<?>`/`Callable<?>` yielding any source in this list
+  - `CharSequence`s that contain RDF data (not paths or URIs)
+  - Jena:
+    [Model](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/rdf/model/Model.html),
+    [Graph](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/graph/Graph.html),
+    [Dataset](https://jena.apache.org/documentation/javadoc/arq/org/apache/jena/query/Dataset.html),
+    [DatasetGraph](https://jena.apache.org/documentation/javadoc/arq/org/apache/jena/sparql/core/DatasetGraph.html),
+    [QueryExecution](https://jena.apache.org/documentation/javadoc/arq/org/apache/jena/query/QueryExecution.html),
+  - hdt-java [HDT](https://github.com/rdfhdt/hdt-java/blob/master/hdt-api/src/main/java/org/rdfhdt/hdt/hdt/HDT.java) intances
+  - RDF4J:
+    [Model](https://rdf4j.org/javadoc/latest/org/eclipse/rdf4j/model/Model.html),
+    [Repository](),
+    [RepositoryConnection](),
+    [RepositoryResult](),
+    [TupleQuery](),
+    [TupleQueryResult](),
+    [GraphQuery](),
+    [GraphQueryResult](),
+- External sources (RDF syntax is guessed):
+  - `URI` (converted to a `File` or to an `URL`)
+  - `URL` remote content is fetched, using content negotiation if possible 
+  - `File`/`Path` 
+  - `InputStream`
+  - `Reader`
+  - `byte[]` (e.g. a consumed InputStream)
+  - `CharSequence` containing either URIs or file paths
+- `rdfit` sources (allow setting RDF syntax and base IRIs):
+  - `RDFInputStream`
+    - `RDFInputStreamSupplier` wraps Callable/Suppliers
+    - `RDFFile` wraps a `File`
+  
 Modules
 =======
 
@@ -270,18 +223,29 @@ Modules
 - **rdfit-jena-rdf4j-converters**: `Converter` implementations between RDF4J 
   `Statement` and Jena's `Triple`, `Quad` and `Statement
   
-> Too many modules? Consider **rdfit-jena-libs** or **rdfit-rdf4j-libs** 
-> (shown in the [quickstart](#quickstart)).
-
-Writing parsers
+> Too many modules? Consider one of these bundles: 
+> - **rdf-jena-libs**: core, jena, jena-parsers and hdt
+> - **rdf-rdf4j-libs**: core, rdf4j, rdf4j-parsers and hdt
+> - **rdf-all-libs**: rdf-jena-libs and rdf-rdf4j-libs  
+ 
+Extending rdfit
 ===============
 
-TODO
+Writing Source Normalizers
+--------------------------
+
+- [ ] Write me!
+
+Writing parsers
+---------------
+
+- [ ] Write me!
 
 Writing Converters
-==================
+------------------
 
-TODO
+- [ ] Write me!
+
 
 FAQ - Frequently Asked Questions
 ================================
