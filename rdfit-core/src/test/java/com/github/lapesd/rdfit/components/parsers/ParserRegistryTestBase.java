@@ -19,9 +19,12 @@ package com.github.lapesd.rdfit.components.parsers;
 import com.github.lapesd.rdfit.components.ItParser;
 import com.github.lapesd.rdfit.components.ListenerParser;
 import com.github.lapesd.rdfit.components.Parser;
-import com.github.lapesd.rdfit.data.ModelLib;
+import com.github.lapesd.rdfit.data.*;
+import com.github.lapesd.rdfit.iterator.EmptyRDFIt;
 import com.github.lapesd.rdfit.iterator.Ex;
+import com.github.lapesd.rdfit.iterator.IterationElement;
 import com.github.lapesd.rdfit.iterator.RDFIt;
+import com.github.lapesd.rdfit.listener.RDFListener;
 import com.github.lapesd.rdfit.listener.RDFListenerBase;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -34,11 +37,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static com.github.lapesd.rdfit.iterator.IterationElement.QUAD;
+import static com.github.lapesd.rdfit.iterator.IterationElement.TRIPLE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.*;
 
 public abstract class ParserRegistryTestBase {
     @DataProvider public Object[][] testData() {
@@ -104,7 +108,7 @@ public abstract class ParserRegistryTestBase {
         ParserRegistry registry = createRegistry();
         for (Parser p : parsers)
             registry.register(p);
-        ItParser itParser = registry.getItParser(source);
+        ItParser itParser = registry.getItParser(source, null, null);
         assertEquals(itParser, expectedItParser);
         if (itParser != null) {
             assertNotNull(expectedItValues);
@@ -116,7 +120,7 @@ public abstract class ParserRegistryTestBase {
             assertEquals(actualItValues, expectedItValues);
         }
 
-        ListenerParser cbParser = registry.getCallbackParser(source);
+        ListenerParser cbParser = registry.getListenerParser(source, null, null);
         assertEquals(cbParser, expectedCbParser);
         if (cbParser != null) {
             ArrayList<Object> actualTriples = new ArrayList<>(), actualQuads = new ArrayList<>();
@@ -136,5 +140,137 @@ public abstract class ParserRegistryTestBase {
             assertEquals(actualTriples, expectedTriples);
             assertEquals(actualQuads, expectedQuads);
         }
+    }
+
+    private static class DummyListenerParser extends BaseListenerParser {
+        public DummyListenerParser(@Nonnull Class<?> accept, @Nullable Class<?> tripleClass,
+                                   @Nullable Class<?> quadClass) {
+            super(Collections.singleton(accept), tripleClass, quadClass);
+        }
+
+        @Override
+        public void parse(@Nonnull Object source, @Nonnull RDFListener<?, ?> listener) {
+        }
+    }
+
+    private static class DummyItParser extends BaseItParser {
+        public DummyItParser(@Nonnull Class<?> accepted, @Nonnull Class<?> valueClass,
+                             @Nonnull IterationElement iterationElement) {
+            super(Collections.singleton(accepted), valueClass, iterationElement);
+        }
+
+        @Override public @Nonnull <T> RDFIt<T> parse(@Nonnull Object source) {
+            //noinspection unchecked
+            return new EmptyRDFIt<>((Class<T>) valueClass(), iterationElement(), source);
+        }
+
+        @Override public @Nonnull String toString() {
+            return String.format("DummyItParser(%s, %s, %s)", acceptedClasses().iterator().next(),
+                                                              valueClass(), iterationElement());
+        }
+    }
+
+    @Test
+    public void testLIFO() {
+        ParserRegistry reg = createRegistry();
+        DummyListenerParser p1 = new DummyListenerParser(String.class, TripleMock1.class, null);
+        DummyListenerParser p2 = new DummyListenerParser(String.class, TripleMock1.class, null);
+        DummyItParser pt1 = new DummyItParser(String.class, TripleMock1.class, TRIPLE);
+        DummyItParser pt2 = new DummyItParser(String.class, TripleMock1.class, TRIPLE);
+        DummyItParser pq1 = new DummyItParser(String.class, TripleMock1.class, QUAD);
+        DummyItParser pq2 = new DummyItParser(String.class, TripleMock1.class, QUAD);
+        reg.register(p1);
+        reg.register(p2);
+        reg.register(pt1);
+        reg.register(pt2);
+        reg.register(pq1);
+        reg.register(pq2);
+        assertSame(reg.getListenerParser("asd", null, null), p2);
+        assertSame(reg.getItParser("asd", TRIPLE, null), pt2);
+        assertSame(reg.getItParser("asd", QUAD, null), pq2);
+    }
+
+    @Test
+    public void testLIFOSuperClass() {
+        ParserRegistry reg = createRegistry();
+        DummyListenerParser p1 = new DummyListenerParser(String.class, TripleMock1.class, null);
+        DummyListenerParser p2 = new DummyListenerParser(String.class, TripleMock1.class, null);
+        DummyListenerParser p3 = new DummyListenerParser(CharSequence.class, TripleMock1.class, null);
+        DummyItParser pt1 = new DummyItParser(String.class, TripleMock1.class, TRIPLE);
+        DummyItParser pt2 = new DummyItParser(String.class, TripleMock1.class, TRIPLE);
+        DummyItParser pt3 = new DummyItParser(CharSequence.class, TripleMock1.class, TRIPLE);
+        DummyItParser pq1 = new DummyItParser(String.class, TripleMock1.class, QUAD);
+        DummyItParser pq2 = new DummyItParser(String.class, TripleMock1.class, QUAD);
+        DummyItParser pq3 = new DummyItParser(CharSequence.class, TripleMock1.class, QUAD);
+        reg.register(p1);
+        reg.register(p2);
+        reg.register(p3);
+        reg.register(pt1);
+        reg.register(pt2);
+        reg.register(pt3);
+        reg.register(pq1);
+        reg.register(pq2);
+        reg.register(pq3);
+        assertSame(reg.getListenerParser("asd", null, null), p2);
+        assertSame(reg.getItParser("asd", TRIPLE, null), pt2);
+        assertSame(reg.getItParser("asd", QUAD, null), pq2);
+    }
+
+    @Test
+    public void testPreferNoConversionTripleListenerParser() {
+        ParserRegistry reg = createRegistry();
+        DummyListenerParser p1 = new DummyListenerParser(String.class, TripleMock1.class, null);
+        DummyListenerParser p2 = new DummyListenerParser(String.class, TripleMock2.class, null);
+        reg.register(p1);
+        reg.register(p2);
+        assertSame(reg.getListenerParser("asd", TripleMock1.class, null), p1);
+        assertSame(reg.getListenerParser("asd", TripleMock2.class, null), p2);
+    }
+
+    @Test
+    public void testPreferNoConversionTripleAndQuadListenerParser() {
+        ParserRegistry reg = createRegistry();
+        DummyListenerParser p1 = new DummyListenerParser(String.class, TripleMock1.class, QuadMock1.class);
+        DummyListenerParser p2 = new DummyListenerParser(String.class, TripleMock2.class, QuadMock2.class);
+        reg.register(p1);
+        reg.register(p2);
+        assertSame(reg.getListenerParser("asd", TripleMock1.class, QuadMock1.class), p1);
+        assertSame(reg.getListenerParser("asd", TripleMock1.class, QuadMock2.class), p1);
+        assertSame(reg.getListenerParser("asd", TripleMock1.class, null), p1);
+        assertSame(reg.getListenerParser("asd", null, QuadMock1.class), p1);
+
+        assertSame(reg.getListenerParser("asd", TripleMock2.class, QuadMock2.class), p2);
+        assertSame(reg.getListenerParser("asd", TripleMock2.class, QuadMock1.class), p2);
+        assertSame(reg.getListenerParser("asd", TripleMock2.class, null), p2);
+        assertSame(reg.getListenerParser("asd", null, QuadMock2.class), p2);
+        assertSame(reg.getListenerParser("asd", null, null), p2);
+    }
+
+    @Test
+    public void testPreferNoConversionItParser() {
+        ParserRegistry reg = createRegistry();
+        DummyItParser pt1 = new DummyItParser(String.class, TripleMock1.class, TRIPLE);
+        DummyItParser pt2 = new DummyItParser(String.class, TripleMock2.class, TRIPLE);
+        DummyItParser pq1t = new DummyItParser(String.class, TripleMock1.class, QUAD);
+        DummyItParser pq2t = new DummyItParser(String.class, TripleMock2.class, QUAD);
+        DummyItParser pq1 = new DummyItParser(String.class, QuadMock1.class, QUAD);
+        DummyItParser pq2 = new DummyItParser(String.class, QuadMock2.class, QUAD);
+        DummyItParser pq3 = new DummyItParser(String.class, QuadMock3.class, QUAD);
+
+        reg.register(pt1);
+        reg.register(pt2);
+        reg.register(pq1t);
+        reg.register(pq2t);
+        reg.register(pq1);
+        reg.register(pq2);
+        reg.register(pq3);
+
+        assertSame(reg.getItParser("asd", TRIPLE, TripleMock2.class), pt2);
+        assertSame(reg.getItParser("asd", TRIPLE, TripleMock1.class), pt1);
+        assertSame(reg.getItParser("asd", TRIPLE, null), pt2);
+        assertSame(reg.getItParser("asd", QUAD, QuadMock1.class), pq1);
+        assertSame(reg.getItParser("asd", QUAD, QuadMock2.class), pq2);
+        assertSame(reg.getItParser("asd", QUAD, QuadMock3.class), pq3);
+        assertSame(reg.getItParser("asd", QUAD, null), pq3);
     }
 }

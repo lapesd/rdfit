@@ -55,27 +55,42 @@ public interface ParserRegistry {
     }
 
     /**
-     * Get the first {@link ItParser} instance whose {@link Parser#canParse(Object)} accepts
-     * source and whose {@link ItParser#iterationElement()} matches
+     * Get an {@link ItParser} that accepts source and whose {@link ItParser#iterationElement()}
+     * matches the one given.
      *
-     * @param source the source to be parsed
+     * If tripleClass is not null, the most recently added {@link ItParser} that satisfies the
+     * above conditions and also has an #{@link ItParser#valueClass()} assignable to tripleClass
+     * is returned. If the tripleClass retriction is not satisfied by any registered
+     * {@link ItParser} with given iterationElement, then the tripleClass parameter is ignored.
+     *
      * @return a {@link ItParser} or null if no registered {@link ItParser} accepts the source.
      */
-    @Nullable ItParser getItParser(@Nonnull Object source, @Nullable IterationElement itElem);
-
-    /**
-     * Same as {@link #getItParser(Object, IterationElement)} with null {@link IterationElement};
-     */
-    default @Nullable ItParser getItParser(@Nonnull Object source) {
-        return getItParser(source, null);
-    }
+    @Nullable ItParser getItParser(@Nonnull Object source,  @Nullable IterationElement itElem,
+                                   @Nullable Class<?> tripleClass);
 
     /**
      * Get a {@link ListenerParser} instance whose {@link Parser#canParse(Object)} accepts source.
      *
+     * IF there are multiple registered {@link ListenerParser}s that accept source, the following
+     * criteria define which is returned:
+     * <ol>
+     *     <li>The first parser whose both offered triple class and quad class are assignable to those requested</li>
+     *         <ol>
+     *             <li>If none satisfied the previous, the parser that provides the desired triple</li>
+     *             <li>If none satisfied the previous, the parser that provides the desired quad</li>
+     *         </ol>
+     *     <li>In case of ties, the last registered parser wins</li>
+     * </ol>
+     *
      * @param source the source to be parsed
+     * @param desiredTripleClass desired triple class or null if any triple class is accepted
+     * @param desiredQuadClass desired quad class or null if any quad class is accepted
      * @return a {@link ListenerParser} or null if no registered {@link ListenerParser}
      *         accepts the source.
      */
-    @Nullable ListenerParser getCallbackParser(@Nonnull Object source);
+    @Nullable ListenerParser getListenerParser(@Nonnull Object source,
+                                               @Nullable Class<?> desiredTripleClass,
+                                               @Nullable Class<?> desiredQuadClass);
+
+
 }

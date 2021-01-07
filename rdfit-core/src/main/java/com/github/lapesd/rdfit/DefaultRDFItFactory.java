@@ -132,10 +132,11 @@ public class DefaultRDFItFactory implements RDFItFactory {
                                                  @Nullable QuadLifter quadLifter,
                                                  @Nonnull Class<?> valueClass, @Nonnull Object in) {
         RDFIt<Object> it;
-        ItParser itParser = parserRegistry.getItParser(in, itElement);
+        ItParser itParser = parserRegistry.getItParser(in, itElement, valueClass);
         if (itParser == null) {
             IterationElement other = itElement.toggle();
-            itParser = parserRegistry.getItParser(in, other);
+            Class<?> otherClass = itElement == QUAD ? tripleClass : valueClass;
+            itParser = parserRegistry.getItParser(in, other, otherClass);
             if (itParser == null) {
                 it = parse2It(itElement, quadLifter, valueClass, in);
             } else {
@@ -166,7 +167,8 @@ public class DefaultRDFItFactory implements RDFItFactory {
                                            @Nullable QuadLifter quadLifter,
                                            @Nonnull Class<?> valueClass, @Nonnull Object source) {
         RDFIt<Object> it;
-        ListenerParser cbParser = parserRegistry.getCallbackParser(source);
+        Class<?> tCls = quadLifter != null ? quadLifter.tripleType() : valueClass;
+        ListenerParser cbParser = parserRegistry.getListenerParser(source, tCls, valueClass);
         if (cbParser == null)
             throw new NoParserException(source);
 
@@ -242,14 +244,15 @@ public class DefaultRDFItFactory implements RDFItFactory {
     protected void parseSource(@Nonnull RDFListener<Object, Object> cb,
                                @Nonnull Object source) throws InterruptParsingException,
                                                               RDFItException {
-        ListenerParser cbP = parserRegistry.getCallbackParser(source);
+        Class<?> cTT = cb.tripleType(), cQT = cb.quadType();
+        ListenerParser cbP = parserRegistry.getListenerParser(source, cTT, cQT);
         if (cbP != null) {
             cb = ConvertingRDFListener.createIf(cb, cbP, conversionMgr);
             cbP.parse(source, cb);
         } else {
-            ItParser itP = parserRegistry.getItParser(source, QUAD);
+            ItParser itP = parserRegistry.getItParser(source, QUAD, cQT);
             if (itP == null) {
-                itP = parserRegistry.getItParser(source, TRIPLE);
+                itP = parserRegistry.getItParser(source, TRIPLE, cTT);
                 if (itP == null)
                     throw new NoParserException(source);
             }

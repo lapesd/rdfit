@@ -27,9 +27,7 @@ import com.github.lapesd.rdfit.util.TypeDispatcher;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
 public class DefaultParserRegistry implements ParserRegistry {
@@ -109,19 +107,61 @@ public class DefaultParserRegistry implements ParserRegistry {
         cbParsers.removeIf(predicate);
     }
 
-    @Override public @Nullable ItParser getItParser(@Nonnull Object source,
-                                                    @Nullable IterationElement itElement) {
+    @Override
+    public @Nullable ItParser getItParser(@Nonnull Object source,
+                                          @Nullable IterationElement itElem,
+                                          @Nullable Class<?> tripleClass) {
         Iterator<ItParser> it = itParsers.get(source);
+        if (!it.hasNext()) return null;
+        List<ItParser> list = new ArrayList<>();
         while (it.hasNext()) {
-            ItParser parser = it.next();
-            if (itElement == null || itElement.equals(parser.iterationElement()))
-                return parser;
+            ItParser p = it.next();
+            list.add(p);
+            if (itElem != null && itElem != p.iterationElement())
+                continue;
+            if (tripleClass == null || tripleClass.isAssignableFrom(p.valueClass()))
+                return p;
         }
+        if (tripleClass != null) {
+            for (ItParser p : list) {
+                if (itElem == null || itElem.equals(p.iterationElement()))
+                    return p;
+            }
+        }
+        assert !list.isEmpty();
         return null;
     }
 
-    @Override public @Nullable ListenerParser getCallbackParser(@Nonnull Object source) {
+    @Override
+    public @Nullable ListenerParser
+    getListenerParser(@Nonnull Object source, @Nullable Class<?> tCls, @Nullable Class<?> qCls) {
         Iterator<ListenerParser> it = cbParsers.get(source);
-        return it.hasNext() ? it.next() : null;
+        if (!it.hasNext())
+            return null;
+        List<ListenerParser> list = new ArrayList<>();
+        while (it.hasNext()) {
+            ListenerParser p = it.next();
+            list.add(p);
+            Class<?> pt = p.tripleType(), pq = p.quadType();
+            boolean ok = (tCls == null || (pt != null && tCls.isAssignableFrom(pt))) &&
+                         (qCls == null || (pq != null && qCls.isAssignableFrom(pq)));
+            if (ok)
+                return p;
+        }
+        if (tCls != null) {
+            for (ListenerParser p : list) {
+                Class<?> tt = p.tripleType();
+                if (tt != null &&  tCls.isAssignableFrom(tt))
+                    return p;
+            }
+        }
+        if (qCls != null) {
+            for (ListenerParser p : list) {
+                Class<?> qt = p.quadType();
+                if (qt != null && qCls.isAssignableFrom(qt))
+                    return p;
+            }
+        }
+        return list.get(0);
     }
 }
