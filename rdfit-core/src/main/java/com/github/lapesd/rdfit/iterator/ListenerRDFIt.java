@@ -86,6 +86,7 @@ public class ListenerRDFIt<T> extends EagerRDFIt<T> {
         try {
             Object object = queue.take();
             if (object == END) {
+                queue.put(object); // stops a second advance() call from hanging
                 synchronized (this) {
                     if (exception != null) throw exception;
                 }
