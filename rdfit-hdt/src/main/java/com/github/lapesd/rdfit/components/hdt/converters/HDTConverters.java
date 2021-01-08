@@ -111,8 +111,13 @@ public class HDTConverters {
         }
     }
 
+    private static abstract class HDTBaseConverter extends BaseConverter {
+        @Override public void attachTo(@Nonnull ConversionManager ignored) {
+        }
+    }
+
     @Accepts(TripleString.class) @Outputs(Triple.class)
-    public static class TripleString2Triple extends BaseConverter {
+    public static class TripleString2Triple extends HDTBaseConverter {
         public static final @Nonnull TripleString2Triple INSTANCE = new TripleString2Triple();
 
         protected @Nonnull Node convertTerm(@Nonnull TripleString ts, @Nonnull CharSequence term,
@@ -138,7 +143,7 @@ public class HDTConverters {
     }
 
     @Accepts(Triple.class) @Outputs(TripleString.class)
-    public static class Triple2TripleString extends BaseConverter {
+    public static class Triple2TripleString extends HDTBaseConverter {
         public static final @Nonnull Triple2TripleString INSTANCE = new Triple2TripleString();
 
         private @Nonnull String toHDTString(@Nonnull Node node,

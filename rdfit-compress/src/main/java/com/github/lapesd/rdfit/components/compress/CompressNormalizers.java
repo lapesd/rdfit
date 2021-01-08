@@ -17,32 +17,22 @@
 package com.github.lapesd.rdfit.components.compress;
 
 import com.github.lapesd.rdfit.RDFItFactory;
-import com.github.lapesd.rdfit.components.SourceNormalizer;
 import com.github.lapesd.rdfit.components.compress.normalizers.CompressNormalizer;
 import com.github.lapesd.rdfit.components.normalizers.SourceNormalizerRegistry;
 
 import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Supplier;
-
-import static java.util.Collections.singleton;
-import static java.util.Collections.singletonList;
 
 public class CompressNormalizers {
-    private static final Set<Class<?>> CLASSES = singleton(CompressNormalizer.class);
-    private static final List<Supplier<SourceNormalizer>> SUPPLIERS
-            = singletonList(CompressNormalizer::new);
 
     public static void registerAll(@Nonnull SourceNormalizerRegistry registry) {
-        for (Supplier<SourceNormalizer> s : SUPPLIERS) registry.register(s.get());
+        registry.register(new CompressNormalizer());
     }
     public static void registerAll(@Nonnull RDFItFactory factory) {
         registerAll(factory.getNormalizerRegistry());
     }
 
     public static void unregisterAll(@Nonnull SourceNormalizerRegistry registry) {
-        registry.unregisterIf(p -> CLASSES.contains(p.getClass()));
+        registry.unregisterIf(CompressNormalizer.class::isInstance);
     }
     public static void unregisterAll(@Nonnull RDFItFactory factory) {
         unregisterAll(factory.getNormalizerRegistry());

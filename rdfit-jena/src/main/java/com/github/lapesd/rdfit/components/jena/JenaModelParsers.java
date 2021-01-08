@@ -19,7 +19,6 @@ package com.github.lapesd.rdfit.components.jena;
 import com.github.lapesd.rdfit.RDFItFactory;
 import com.github.lapesd.rdfit.components.ItParser;
 import com.github.lapesd.rdfit.components.ListenerParser;
-import com.github.lapesd.rdfit.components.Parser;
 import com.github.lapesd.rdfit.components.jena.parsers.iterator.DatasetItParser;
 import com.github.lapesd.rdfit.components.jena.parsers.iterator.GraphItParser;
 import com.github.lapesd.rdfit.components.jena.parsers.iterator.ModelItParser;
@@ -34,35 +33,40 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.sparql.core.Quad;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableSet;
 
 public class JenaModelParsers {
-    private static final @Nonnull List<ItParser> IT_PARSERS = asList(
-            new DatasetItParser(), new GraphItParser(), new ModelItParser()) ;
-    private static final @Nonnull List<ListenerParser> LISTENER_PARSERS = asList(
-            new DatasetListenerParser(), new GraphListenerParser(), new ModelListenerParser(),
-            new QueryExecutionListenerParser());
-    private static final @Nonnull List<Parser> PARSERS;
-
-    static {
-        List<Parser> list = new ArrayList<>();
-        list.addAll(IT_PARSERS);
-        list.addAll(LISTENER_PARSERS);
-        PARSERS = Collections.unmodifiableList(list);
-    }
+    private static final List<Supplier<ItParser>> IT_SUPPLIERS = asList(
+            DatasetItParser::new, GraphItParser::new, ModelItParser::new
+    );
+    private static final Set<Class<?>> IT_CLASSES = unmodifiableSet(new HashSet<>(asList(
+            DatasetItParser.class, GraphItParser.class, ModelItParser.class
+    )));
+    private static final List<Supplier<ListenerParser>> LISTENER_SUPPLIERS = asList(
+            DatasetListenerParser::new, GraphListenerParser::new, ModelListenerParser::new,
+            QueryExecutionListenerParser::new
+    );
+    private static final Set<Class<?>> LISTENER_CLASSES = unmodifiableSet(new HashSet<>(asList(
+            DatasetListenerParser.class, GraphListenerParser.class, ModelListenerParser.class,
+            QueryExecutionListenerParser.class
+    )));
 
     public static void registerAll(@Nonnull ParserRegistry registry) {
-        for (Parser p : PARSERS) registry.register(p);
+        registerItParsers(registry);
+        registerListenerParsers(registry);
     }
     public static void registerAll(@Nonnull RDFItFactory factory) {
         registerAll(factory.getParserRegistry());
     }
     public static void registerItParsers(@Nonnull ParserRegistry registry) {
-        for (ItParser p : IT_PARSERS) registry.register(p);
+        for (Supplier<ItParser> supplier : IT_SUPPLIERS)
+            registry.register(supplier.get());
         JavaParsers.registerWithTripleClass(registry, Statement.class);
         JavaParsers.registerWithTripleClass(registry, Triple.class);
         JavaParsers.registerWithQuadClass(registry, Quad.class);
@@ -71,7 +75,8 @@ public class JenaModelParsers {
         registerItParsers(factory.getParserRegistry());
     }
     public static void registerListenerParsers(@Nonnull ParserRegistry registry) {
-        for (ListenerParser p : LISTENER_PARSERS) registry.register(p);
+        for (Supplier<ListenerParser> supplier : LISTENER_SUPPLIERS)
+            registry.register(supplier.get());
         JavaParsers.unregister(registry, Statement.class);
         JavaParsers.unregister(registry, Triple.class);
         JavaParsers.unregister(registry, Quad.class);
@@ -81,19 +86,20 @@ public class JenaModelParsers {
     }
 
     public static void unregisterAll(@Nonnull ParserRegistry registry) {
-        for (Parser p : PARSERS) registry.unregister(p);
+        unregisterAllItParsers(registry);
+        unregisterAllListenerParsers(registry);
     }
     public static void unregisterAll(@Nonnull RDFItFactory factory) {
         unregisterAll(factory.getParserRegistry());
     }
     public static void unregisterAllItParsers(@Nonnull ParserRegistry registry) {
-        for (ItParser p : IT_PARSERS) registry.unregister(p);
+        registry.unregisterIf(p -> IT_CLASSES.contains(p.getClass()));
     }
     public static void unregisterAllItParsers(@Nonnull RDFItFactory factory) {
         unregisterAllItParsers(factory.getParserRegistry());
     }
     public static void unregisterAllListenerParsers(@Nonnull ParserRegistry registry) {
-        for (ListenerParser p : LISTENER_PARSERS) registry.unregister(p);
+        registry.unregisterIf(p -> LISTENER_CLASSES.contains(p.getClass()));
     }
     public static void unregisterAllListenerParsers(@Nonnull RDFItFactory factory) {
         unregisterAllListenerParsers(factory.getParserRegistry());
