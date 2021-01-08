@@ -16,8 +16,11 @@
 
 package com.github.lapesd.rdfit;
 
+import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
 import com.github.lapesd.rdfit.components.converters.quad.QuadLifter;
 import com.github.lapesd.rdfit.components.normalizers.CoreSourceNormalizers;
+import com.github.lapesd.rdfit.components.normalizers.DefaultSourceNormalizerRegistry;
+import com.github.lapesd.rdfit.components.parsers.DefaultParserRegistry;
 import com.github.lapesd.rdfit.iterator.RDFIt;
 import com.github.lapesd.rdfit.listener.RDFListener;
 import com.github.lapesd.rdfit.listener.TripleListenerBase;
@@ -41,59 +44,6 @@ import java.util.function.Supplier;
 public class RIt {
     private static final Logger logger = LoggerFactory.getLogger(RIt.class);
     private static boolean initialized = false;
-
-    public static void init() {
-        if (initialized)
-            return;
-        initialized = true;
-        DefaultRDFItFactory factory = DefaultRDFItFactory.get();
-        CoreSourceNormalizers.registerAll(factory);
-        String root = "com.github.lapesd.rdfit.components";
-        callRegisterAll(factory, root + ".jena.converters.JenaConverters");
-        callRegisterAll(factory, root + ".jena.JenaModelParsers");
-        callRegisterAll(factory, root + ".jena.JenaParsers");
-        callRegisterAll(factory, root + ".rdf4j.RDF4JModelParsers");
-        callRegisterAll(factory, root + ".rdf4j.RDF4JParsers");
-        callRegisterAll(factory, root + ".hdt.HDTParsers");
-        callRegisterAll(factory, root + ".hdt.converters.HDTConverters");
-        callRegisterAll(factory, root + ".converters.JenaRDF4JConverters");
-        callRegisterAll(factory, root + ".compress.CompressNormalizers");
-    }
-
-    static {
-        init();
-    }
-
-    private static void callRegisterAll(@Nonnull DefaultRDFItFactory factory,
-                                        @Nonnull String className) {
-        if (callRegisterAll(Thread.currentThread().getContextClassLoader(), factory, className))
-            return;
-        if (callRegisterAll(RIt.class.getClassLoader(), factory, className))
-            logger.info("Registered {}", className);
-        else
-            logger.info("Did not registered {}", className);
-    }
-    private static boolean callRegisterAll(@Nonnull ClassLoader cl, @Nonnull DefaultRDFItFactory f,
-                                           @Nonnull String className) {
-        try {
-            Class<?> cls = cl.loadClass(className);
-            Method m = cls.getMethod("registerAll", RDFItFactory.class);
-            int mods = m.getModifiers();
-            if (!Modifier.isStatic(mods) && !Modifier.isPublic(mods))
-                throw new RuntimeException(className+"registerAll: not public static");
-            m.invoke(null, f);
-            return true;
-        } catch (ClassNotFoundException e) {
-            return false;
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException("Missing registerAll method in "+className, e);
-        } catch (IllegalAccessException e) {
-            logger.warn("IllegalAccessException invoking {}.registerAll", className, e);
-            return false;
-        } catch (InvocationTargetException e) {
-            throw (RuntimeException)e.getCause();
-        }
-    }
 
     /**
      * Shortcut for {@link DefaultRDFItFactory#iterateTriples(Class, Object...)}.
@@ -186,6 +136,69 @@ public class RIt {
 
     public static @Nonnull RDFInputStreamSupplier wrap(@Nonnull Supplier<InputStream> supplier) {
         return new RDFInputStreamSupplier(supplier);
+    }
+
+    public static @Nonnull RDFItFactory createFactory() {
+        DefaultRDFItFactory factory = new DefaultRDFItFactory(new DefaultParserRegistry(),
+                new DefaultConversionManager(), new DefaultSourceNormalizerRegistry());
+        init(factory);
+        return factory;
+    }
+
+    public static void init() {
+        if (initialized)
+            return;
+        initialized = true;
+        init(DefaultRDFItFactory.get());
+    }
+
+    public static void init(@Nonnull RDFItFactory factory) {
+        CoreSourceNormalizers.registerAll(factory);
+        String root = "com.github.lapesd.rdfit.components";
+        callRegisterAll(factory, root + ".jena.converters.JenaConverters");
+        callRegisterAll(factory, root + ".jena.JenaModelParsers");
+        callRegisterAll(factory, root + ".jena.JenaParsers");
+        callRegisterAll(factory, root + ".rdf4j.RDF4JModelParsers");
+        callRegisterAll(factory, root + ".rdf4j.RDF4JParsers");
+        callRegisterAll(factory, root + ".hdt.HDTParsers");
+        callRegisterAll(factory, root + ".hdt.converters.HDTConverters");
+        callRegisterAll(factory, root + ".converters.JenaRDF4JConverters");
+        callRegisterAll(factory, root + ".compress.CompressNormalizers");
+    }
+
+    static {
+        init();
+    }
+
+    private static void callRegisterAll(@Nonnull RDFItFactory factory,
+                                        @Nonnull String className) {
+        if (callRegisterAll(Thread.currentThread().getContextClassLoader(), factory, className))
+            return;
+        if (callRegisterAll(RIt.class.getClassLoader(), factory, className))
+            logger.info("Registered {}", className);
+        else
+            logger.info("Did not registered {}", className);
+    }
+    private static boolean callRegisterAll(@Nonnull ClassLoader cl, @Nonnull RDFItFactory f,
+                                           @Nonnull String className) {
+        try {
+            Class<?> cls = cl.loadClass(className);
+            Method m = cls.getMethod("registerAll", RDFItFactory.class);
+            int mods = m.getModifiers();
+            if (!Modifier.isStatic(mods) && !Modifier.isPublic(mods))
+                throw new RuntimeException(className+"registerAll: not public static");
+            m.invoke(null, f);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException("Missing registerAll method in "+className, e);
+        } catch (IllegalAccessException e) {
+            logger.warn("IllegalAccessException invoking {}.registerAll", className, e);
+            return false;
+        } catch (InvocationTargetException e) {
+            throw (RuntimeException)e.getCause();
+        }
     }
 
 }

@@ -41,15 +41,15 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 public class IntegrationTest {
-    private DefaultRDFItFactory factory;
+    private List<RDFItFactory> factories;
     private ExecutorService exec;
 
     @BeforeClass
     public void beforeClass() {
         RIt.init();
-        factory = DefaultRDFItFactory.get();
+        factories = Arrays.asList(DefaultRDFItFactory.get(), RIt.createFactory());
         int processors = Runtime.getRuntime().availableProcessors();
-        exec = Executors.newFixedThreadPool(processors + processors/2);
+        exec = Executors.newFixedThreadPool(processors);
     }
 
     @AfterClass
@@ -74,25 +74,25 @@ public class IntegrationTest {
         if (!data.isTripleOnly())
             return;
         List<?> expected = data.expectedTriples();
-//        List<Future<?>> futures = new ArrayList<>();
+        List<Future<?>> futures = new ArrayList<>();
         for (Object input : data.generateInputs()) {
-//            futures.add(exec.submit(() -> {
+            futures.add(exec.submit(() -> {
                 List<Object> actual = new ArrayList<>();
                 function.apply(data.getTripleClass(), input).forEachRemaining(actual::add);
                 check(actual, expected);
-//                return null;
-//            }));
+                return null;
+            }));
         }
-//        try {
-//            for (Future<?> f : futures)
-//                f.get();
-//        } catch (Error|RuntimeException e) {
-//            throw e;
-//        } catch (Exception e) {
-//            throw new AssertionError(e);
-//        } finally {
+        try {
+            for (Future<?> f : futures)
+                f.get();
+        } catch (Error|RuntimeException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new AssertionError(e);
+        } finally {
             data.cleanUp();
-//        }
+        }
     }
     public void iterateQuadsTest(@Nonnull TestData data,
                                  @Nonnull BiFunction<Class<?>, Object, RDFIt<?>> function) {
@@ -121,11 +121,13 @@ public class IntegrationTest {
 
     @Test(dataProvider = "testData")
     public void testFactoryIterateTriples(@Nonnull TestData data) {
-        iterateTriplesTest(data, (cls, in) -> factory.iterateTriples(cls, in));
+        for (RDFItFactory factory : factories)
+            iterateTriplesTest(data, (cls, in) -> factory.iterateTriples(cls, in));
     }
     @Test(dataProvider = "testData")
     public void testFactoryIterateQuads(@Nonnull TestData data) {
-        iterateQuadsTest(data, (cls, in) -> factory.iterateQuads(cls, in));
+        for (RDFItFactory factory : factories)
+            iterateQuadsTest(data, (cls, in) -> factory.iterateQuads(cls, in));
     }
     @Test(dataProvider = "testData")
     public void testRItIterateTriples(@Nonnull TestData data) {
@@ -233,7 +235,8 @@ public class IntegrationTest {
 
     @Test(dataProvider = "testData")
     public void testFactoryParse(@Nonnull TestData data) {
-        testParse(data, (l, i) -> factory.parse(l, i));
+        for (RDFItFactory factory : factories)
+            testParse(data, factory::parse);
     }
 
     @Test(dataProvider = "testData")
