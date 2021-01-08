@@ -166,7 +166,8 @@ Supported sources objects:
     - ... HDT [TripleString](https://github.com/rdfhdt/hdt-java/blob/master/hdt-api/src/main/java/org/rdfhdt/hdt/triples/TripleString.java)
     - ... other sources in this list
   - `Supplier<?>`/`Callable<?>` yielding any source in this list
-  - `CharSequence`s that contain RDF data (not paths or URIs)
+  - `CharSequence`/`String`s that contain RDF data (not paths or URIs)
+  - `byte[]` containing compressed data, a compressed archive or RDF data. 
   - Jena:
     [Model](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/rdf/model/Model.html),
     [Graph](https://jena.apache.org/documentation/javadoc/jena/org/apache/jena/graph/Graph.html),
@@ -186,11 +187,44 @@ Supported sources objects:
 - External sources (RDF syntax is guessed):
   - `URI` (converted to a `File` or to an `URL`)
   - `URL` remote content is fetched, using content negotiation if possible 
-  - `File`/`Path` 
+  - `File`/`Path`
   - `InputStream`
   - `Reader`
-  - `byte[]` (e.g. a consumed InputStream)
-  - `CharSequence` containing either URIs or file paths
+  - `byte[]` with data that could've been read from an `InputStream` 
+  - `CharSequence`/`String` containing either URIs or file paths
+  - All of the above support the following compression formats (`commons-compress`):
+    - bzip2
+    - gzip
+    - pack2000
+    - xz
+    - snappy
+    - z
+    - deflate, deflate64
+    - lz4
+    - zstd
+  - All of the above support the following archive formats (`commons-compress`):
+    - tar (usually within a compressed stream, see above)
+    - ar
+    - arj
+    - cpio
+    - dump
+    - jar
+    - zip
+    - 7z
+  - All of the above support the following RDF syntaxes:
+    - [N-Triples](https://www.w3.org/TR/n-triples/)
+    - [N-Quads](https://www.w3.org/TR/n-quads/)
+    - [Turtle](https://www.w3.org/TR/turtle/)
+    - [TriG](https://www.w3.org/TR/trig/)
+    - [RDF/XML](https://www.w3.org/TR/rdf-syntax-grammar/)
+    - [OWL/XML](https://www.w3.org/TR/2012/REC-owl2-xml-serialization-20121211/)
+    - [TriX](https://www.hpl.hp.com/techreports/2004/HPL-2004-56.html)
+    - [RDFa](https://www.w3.org/TR/rdfa-primer/) (no auto-detection)
+    - [JSON-LD](https://www.w3.org/TR/json-ld/)
+    - [RDF-JSON](https://www.w3.org/TR/rdf-json/) (no auto-detection)
+    - [THRIFT](https://jena.apache.org/documentation/io/rdf-binary.html) (no auto-detection)
+    - Sesame (old RDF4J) BynaryRDF (no auto-detection)
+    - [HDT](https://www.rdfhdt.org/)
 - `rdfit` sources (allow setting RDF syntax and base IRIs):
   - `RDFInputStream`
     - `RDFInputStreamSupplier` wraps Callable/Suppliers
@@ -222,6 +256,10 @@ Modules
 - **rdfit-rdf4j-parsers**: `Parser` implementations using RDF4J. 
 - **rdfit-jena-rdf4j-converters**: `Converter` implementations between RDF4J 
   `Statement` and Jena's `Triple`, `Quad` and `Statement
+- **rdfit-compress**: Load compressed RDF and compressed archives with 
+  multiple RDF files inside
+- **rdfit-compress-libs**: Loads also optional dependencies from commons-compress: 
+  com.github.luben:zstd-jni, org.brotli:dec and org.tukaani:xz
   
 > Too many modules? Consider one of these bundles: 
 > - **rdf-jena-libs**: core, jena, jena-parsers and hdt

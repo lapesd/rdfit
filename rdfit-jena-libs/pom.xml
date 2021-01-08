@@ -47,6 +47,12 @@
       <artifactId>rdfit-jena</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.github.lapesd.rdfit</groupId>
+      <artifactId>rdfit-compress-libs</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+    </dependency>
   </dependencies>
 
 </project>

@@ -48,7 +48,8 @@ public class IntegrationTest {
     public void beforeClass() {
         RIt.init();
         factory = DefaultRDFItFactory.get();
-        exec = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        int processors = Runtime.getRuntime().availableProcessors();
+        exec = Executors.newFixedThreadPool(processors + processors/2);
     }
 
     @AfterClass
@@ -73,25 +74,25 @@ public class IntegrationTest {
         if (!data.isTripleOnly())
             return;
         List<?> expected = data.expectedTriples();
-        List<Future<?>> futures = new ArrayList<>();
+//        List<Future<?>> futures = new ArrayList<>();
         for (Object input : data.generateInputs()) {
-            futures.add(exec.submit(() -> {
+//            futures.add(exec.submit(() -> {
                 List<Object> actual = new ArrayList<>();
                 function.apply(data.getTripleClass(), input).forEachRemaining(actual::add);
                 check(actual, expected);
-                return null;
-            }));
+//                return null;
+//            }));
         }
-        try {
-            for (Future<?> f : futures)
-                f.get();
-        } catch (Error|RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new AssertionError(e);
-        } finally {
+//        try {
+//            for (Future<?> f : futures)
+//                f.get();
+//        } catch (Error|RuntimeException e) {
+//            throw e;
+//        } catch (Exception e) {
+//            throw new AssertionError(e);
+//        } finally {
             data.cleanUp();
-        }
+//        }
     }
     public void iterateQuadsTest(@Nonnull TestData data,
                                  @Nonnull BiFunction<Class<?>, Object, RDFIt<?>> function) {

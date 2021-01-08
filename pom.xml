@@ -86,6 +86,8 @@
     <module>rdfit-hdt</module>
     <module>rdfit-rdf4j</module>
     <module>rdfit-rdf4j-parsers</module>
+    <module>rdfit-compress</module>
+    <module>rdfit-compress-libs</module>
     <module>rdfit-jena-libs</module>
     <module>rdfit-rdf4j-libs</module>
     <module>rdfit-all-libs</module>

@@ -62,6 +62,10 @@ public class RDFFile extends RDFInputStream {
         return this;
     }
 
+    public @Nonnull File getFile() {
+        return file;
+    }
+
     @Override public @Nonnull InputStream getInputStream() {
         if (inputStream == null) {
             try {

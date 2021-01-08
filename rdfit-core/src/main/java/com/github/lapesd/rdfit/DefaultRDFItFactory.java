@@ -32,6 +32,7 @@ import com.github.lapesd.rdfit.errors.RDFItException;
 import com.github.lapesd.rdfit.iterator.*;
 import com.github.lapesd.rdfit.listener.ConvertingRDFListener;
 import com.github.lapesd.rdfit.listener.RDFListener;
+import com.github.lapesd.rdfit.source.SourcesIterator;
 import com.github.lapesd.rdfit.util.NoSource;
 import com.github.lapesd.rdfit.util.Utils;
 import org.slf4j.Logger;
@@ -122,9 +123,15 @@ public class DefaultRDFItFactory implements RDFItFactory {
         Object source = sources[0];
         if (source == null)
             return new EmptyRDFIt<>(valueClass, itElement, NoSource.INSTANCE);
-        source = normalizerRegistry.normalize(source);
-
-        return iterateSource(itElement, tripleClass, quadLifter, valueClass, source);
+        Object normalized = normalizerRegistry.normalize(source);
+        if (normalized instanceof SourcesIterator) {
+            return new FlatMapRDFIt<>(valueClass, itElement, (SourcesIterator)normalized,
+                    s -> iterateSources(itElement, tripleClass, quadClass, quadLifter, s));
+        } else if (normalized instanceof RDFItException) {
+            return new ErrorRDFIt<>(valueClass, itElement, source, (RDFItException) normalized);
+        } else {
+            return iterateSource(itElement, tripleClass, quadLifter, valueClass, normalized);
+        }
     }
 
     private @Nonnull RDFIt<Object> iterateSource(@Nonnull IterationElement itElement,
@@ -181,8 +188,8 @@ public class DefaultRDFItFactory implements RDFItFactory {
             } catch (InterruptParsingException ignored) {
             } catch (RDFItException e) {
                 cbIt.addException(e);
-            } catch (RuntimeException e) {
-                cbIt.addException(new RDFItException(source, e));
+            } catch (Throwable t) {
+                cbIt.addException(new RDFItException(source, t));
             }
         });
         it = cbIt;
@@ -221,6 +228,13 @@ public class DefaultRDFItFactory implements RDFItFactory {
                     continue;
                 try {
                     s = normalizerRegistry.normalize(s);
+                    if (s instanceof SourcesIterator) {
+                        for (SourcesIterator it = (SourcesIterator) s; it.hasNext(); )
+                            parse(listener, it.next());
+                        return;
+                    } else if (s instanceof RDFItException) {
+                        throw (RDFItException)s;
+                    }
                     //noinspection unchecked
                     parseSource((RDFListener<Object, Object>) listener, s);
                 } catch (InterruptParsingException e) {

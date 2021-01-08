@@ -18,6 +18,8 @@ package com.github.lapesd.rdfit.iterator;
 
 import com.github.lapesd.rdfit.errors.RDFItException;
 import com.github.lapesd.rdfit.util.NoSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -25,6 +27,7 @@ import java.util.Iterator;
 import java.util.function.Function;
 
 public class FlatMapRDFIt<T> extends EagerRDFIt<T> {
+    private static final Logger logger = LoggerFactory.getLogger(FlatMapRDFIt.class);
     private final @Nonnull Iterator<?> inputIt;
     private final @Nonnull Function<Object, RDFIt<T>> function;
     private @Nullable RDFIt<T> currentIt = null;
@@ -63,5 +66,12 @@ public class FlatMapRDFIt<T> extends EagerRDFIt<T> {
     @Override public void close() {
         if (currentIt != null)
             currentIt.close();
+        if (inputIt instanceof AutoCloseable) {
+            try {
+                ((AutoCloseable) inputIt).close();
+            } catch (Exception e) {
+                logger.error("{}.close(): ignoring {}.close() exception", this, inputIt, e);
+            }
+        }
     }
 }

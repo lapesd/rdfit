@@ -57,6 +57,7 @@ public class RIt {
         callRegisterAll(factory, root + ".hdt.HDTParsers");
         callRegisterAll(factory, root + ".hdt.converters.HDTConverters");
         callRegisterAll(factory, root + ".converters.JenaRDF4JConverters");
+        callRegisterAll(factory, root + ".compress.CompressNormalizers");
     }
 
     static {

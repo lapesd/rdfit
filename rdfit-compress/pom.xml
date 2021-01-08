@@ -25,28 +25,47 @@
     <artifactId>rdfit-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>rdfit-rdf4j-libs</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>rdfit-compress</artifactId>
+  <packaging>jar</packaging>
 
-  <name>rdfit-rdf4j-libs</name>
+  <name>rdfit-compress</name>
 
   <dependencies>
-    <!-- pulls rdfit-core and rdfit-jena -->
     <dependency>
       <groupId>com.github.lapesd.rdfit</groupId>
-      <artifactId>rdfit-hdt</artifactId>
+      <artifactId>rdfit-core</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.github.lapesd.rdfit</groupId>
-      <artifactId>rdfit-rdf4j-parsers</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-compress</artifactId>
+      <version>1.20</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.github.luben</groupId>
+      <artifactId>zstd-jni</artifactId>
+      <version>1.4.8-1</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.github.lapesd.rdfit</groupId>
-      <artifactId>rdfit-compress-libs</artifactId>
-      <version>${project.version}</version>
-      <type>pom</type>
+      <groupId>org.brotli</groupId>
+      <artifactId>dec</artifactId>
+      <version>0.1.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.tukaani</groupId>
+      <artifactId>xz</artifactId>
+      <version>1.8</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>6.14.3</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

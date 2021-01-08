@@ -25,28 +25,34 @@
     <artifactId>rdfit-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>rdfit-rdf4j-libs</artifactId>
+  <artifactId>rdfit-compress-libs</artifactId>
   <packaging>pom</packaging>
 
-  <name>rdfit-rdf4j-libs</name>
+  <name>rdfit-compress-libs</name>
 
   <dependencies>
-    <!-- pulls rdfit-core and rdfit-jena -->
+    <!-- pulls rdfit-core -->
     <dependency>
       <groupId>com.github.lapesd.rdfit</groupId>
-      <artifactId>rdfit-hdt</artifactId>
+      <artifactId>rdfit-compress</artifactId>
       <version>${project.version}</version>
     </dependency>
+
+    <!-- Make optional deps of commons-compress required: -->
     <dependency>
-      <groupId>com.github.lapesd.rdfit</groupId>
-      <artifactId>rdfit-rdf4j-parsers</artifactId>
-      <version>${project.version}</version>
+      <groupId>com.github.luben</groupId>
+      <artifactId>zstd-jni</artifactId>
+      <version>1.4.8-1</version>
     </dependency>
     <dependency>
-      <groupId>com.github.lapesd.rdfit</groupId>
-      <artifactId>rdfit-compress-libs</artifactId>
-      <version>${project.version}</version>
-      <type>pom</type>
+      <groupId>org.brotli</groupId>
+      <artifactId>dec</artifactId>
+      <version>0.1.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.tukaani</groupId>
+      <artifactId>xz</artifactId>
+      <version>1.8</version>
     </dependency>
   </dependencies>
 

@@ -25,7 +25,7 @@ public class ErrorRDFIt<T> extends BaseRDFIt<T> {
     private final @Nonnull Object source;
     private final @Nonnull RDFItException exception;
 
-    public ErrorRDFIt(@Nonnull Class<T> valueClass, @Nonnull IterationElement itElement,
+    public ErrorRDFIt(@Nonnull Class<?> valueClass, @Nonnull IterationElement itElement,
                       @Nonnull Object source, @Nonnull RDFItException exception) {
         super(valueClass, itElement);
         this.source = source;
