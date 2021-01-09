@@ -22,7 +22,7 @@
   <parent>
     <groupId>com.github.lapesd.rdfit</groupId>
     <artifactId>rdfit-parent</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.1</version>
   </parent>
   <artifactId>rdfit-jena-libs</artifactId>
   <packaging>pom</packaging>
