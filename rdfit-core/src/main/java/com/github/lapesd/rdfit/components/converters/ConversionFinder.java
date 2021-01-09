@@ -23,6 +23,8 @@ import javax.annotation.Nonnull;
 public interface ConversionFinder {
     /**
      * The {@link ConversionPath} which will be used in the next {@link #convert(Object)} call.
+     *
+     * @return the {@link ConversionPath}
      */
     @Nonnull ConversionPath getConversionPath();
 

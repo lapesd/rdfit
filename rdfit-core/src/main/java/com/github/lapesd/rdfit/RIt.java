@@ -47,6 +47,11 @@ public class RIt {
 
     /**
      * Shortcut for {@link DefaultRDFItFactory#iterateTriples(Class, Object...)}.
+     *
+     * @param <T>  the desired triple type
+     * @param tripleClass The {@link Class} object for T
+     * @param sources the sources to iterate over
+     * @return An {@link RDFIt} over triples from all sources (in the given sequence)
      */
     public static @Nonnull <T> RDFIt<T> iterateTriples(@Nonnull Class<T> tripleClass,
                                                        @Nonnull Object... sources) {
@@ -55,6 +60,11 @@ public class RIt {
 
     /**
      * Shortcut for {@link #iterateTriples(Class, Object...)}<code>.forEachRemaining(consumer)</code>
+     *
+     * @param <T> type of triples
+     * @param tripleClass Class object of T
+     * @param consumer function consuming the triples
+     * @param sources list
      */
     public static <T> void forEachTriple(@Nonnull Class<T> tripleClass,
                                          @Nonnull Consumer<? super T> consumer,
@@ -66,6 +76,12 @@ public class RIt {
 
     /**
      * Shortcut for {@link DefaultRDFItFactory#iterateQuads(Class, QuadLifter, Object...)}.
+     *
+     * @param <Q> quad type
+     * @param quadClass Class object for Q
+     * @param quadLifter Function that converts triples into quads
+     * @param sources list of sources to iterate over
+     * @return An iterator over quads parsed from sources
      */
     public static @Nonnull <Q> RDFIt<Q> iterateQuads(@Nonnull Class<Q> quadClass,
                                                      @Nonnull QuadLifter quadLifter,
@@ -75,6 +91,11 @@ public class RIt {
 
     /**
      * Shortcut for {@link #iterateQuads(Class, QuadLifter, Object...)}<code>.forEachRemaining(consumer)</code>.
+     * @param <Q> Desired quad type
+     * @param quadClass Class object for Q
+     * @param quadLifter Function that transforms triples into quads
+     * @param consumer handler for quads of type Q
+     * @param sources set of sources to iterate
      */
     public static <Q> void forEachQuad(@Nonnull Class<Q> quadClass, @Nonnull QuadLifter quadLifter,
                                        @Nonnull Consumer<? super Q> consumer,
@@ -86,6 +107,11 @@ public class RIt {
 
     /**
      * Shortcut for {@link DefaultRDFItFactory#iterateQuads(Class, QuadLifter, Object...)}.
+     *
+     * @param <Q> the desired quad type
+     * @param quadClass the {@link Class} object for Q
+     * @param sources the sources to iterate over
+     * @return An {@link RDFIt} over triples from all sources (in the given sequence)
      */
     public static @Nonnull <Q> RDFIt<Q> iterateQuads(@Nonnull Class<Q> quadClass,
                                                      @Nonnull Object... sources) {
@@ -94,6 +120,10 @@ public class RIt {
 
     /**
      * Shortcut for {@link #iterateQuads(Class, Object...)}<code>.forEachRemaining(consumer)</code>.
+     * @param <Q> desired quad type
+     * @param quadClass {@link Class} object for Q
+     * @param consumer function that will consume each quad
+     * @param sources sources to get quads from
      */
     public static <Q> void forEachQuad(@Nonnull Class<Q> quadClass,
                                        @Nonnull Consumer<? super Q> consumer,
@@ -105,6 +135,9 @@ public class RIt {
 
     /**
      * Shortcut for {@link DefaultRDFItFactory#parse(RDFListener, Object...)}
+     *
+     * @param listener {@link RDFListener} object that will consume triples, quads and events
+     * @param sources sources to parse
      */
     public static void parse(@Nonnull RDFListener<?,?> listener, @Nonnull Object... sources) {
         DefaultRDFItFactory.get().parse(listener, sources);
@@ -113,6 +146,11 @@ public class RIt {
     /**
      * Shortcut for {@link #parse(RDFListener, Object...)} with a {@link TripleListenerBase}
      * subclass that calls consumer
+     *
+     * @param <T> desired triple class
+     * @param tripleClass {@link Class} object for T
+     * @param consumer function that will consume each iterated triple
+     * @param sources sources to get triples from
      */
     public static <T> void parseTriples(@Nonnull Class<T> tripleClass,
                                         @Nonnull Consumer<? super T> consumer,
@@ -138,6 +176,12 @@ public class RIt {
         return new RDFInputStreamSupplier(supplier);
     }
 
+    /**
+     * Create a {@link RDFItFactory} with all components that are registered by default in
+     * {@link DefaultRDFItFactory}.
+     *
+     * @return A new {@link RDFItFactory} independent from {@link DefaultRDFItFactory#get()}.
+     */
     public static @Nonnull RDFItFactory createFactory() {
         DefaultRDFItFactory factory = new DefaultRDFItFactory(new DefaultParserRegistry(),
                 new DefaultConversionManager(), new DefaultSourceNormalizerRegistry());
@@ -145,6 +189,12 @@ public class RIt {
         return factory;
     }
 
+    /**
+     * Initialize the rdfit library by registering components in the default {@link RDFItFactory}.
+     *
+     * This method will be called implicitly in most cases. client code should not need
+     * to call it, except for debugging or non-conventional classpath shenanigans.
+     */
     public static void init() {
         if (initialized)
             return;
@@ -152,6 +202,12 @@ public class RIt {
         init(DefaultRDFItFactory.get());
     }
 
+    /**
+     * Register all rdfit components (in any of the modules that happen to be in the classpath)
+     * with the given factory.
+     *
+     * @param factory factory to receive instances of the available components.
+     */
     public static void init(@Nonnull RDFItFactory factory) {
         CoreSourceNormalizers.registerAll(factory);
         String root = "com.github.lapesd.rdfit.components";
@@ -179,6 +235,7 @@ public class RIt {
         else
             logger.info("Did not registered {}", className);
     }
+
     private static boolean callRegisterAll(@Nonnull ClassLoader cl, @Nonnull RDFItFactory f,
                                            @Nonnull String className) {
         try {

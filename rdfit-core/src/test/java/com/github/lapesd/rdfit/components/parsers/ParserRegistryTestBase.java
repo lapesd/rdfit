@@ -161,12 +161,12 @@ public abstract class ParserRegistryTestBase {
 
         @Override public @Nonnull <T> RDFIt<T> parse(@Nonnull Object source) {
             //noinspection unchecked
-            return new EmptyRDFIt<>((Class<T>) valueClass(), iterationElement(), source);
+            return new EmptyRDFIt<>((Class<T>) valueClass(), itElement(), source);
         }
 
         @Override public @Nonnull String toString() {
             return String.format("DummyItParser(%s, %s, %s)", acceptedClasses().iterator().next(),
-                                                              valueClass(), iterationElement());
+                                                              valueClass(), itElement());
         }
     }
 

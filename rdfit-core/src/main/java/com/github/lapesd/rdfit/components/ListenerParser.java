@@ -32,12 +32,16 @@ import javax.annotation.Nullable;
  */
 public interface ListenerParser extends Parser {
     /**
-     * Class of triples delivered to the callbacks
+     * Class of triples delivered to {@link RDFListener}s by this parser
+     *
+     * @return class of triples or null if this parser produces no triples.
      */
     @Nullable Class<?> tripleType();
 
     /**
-     * Class of quads delivered to the callbacks, or null if this parser does not produce quads
+     * Class of quads delivered to {@link RDFListener}s by this parser
+     *
+     * @return class of quads or null if this parser produces no quads
      */
     @Nullable Class<?> quadType();
 

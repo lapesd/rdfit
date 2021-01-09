@@ -27,6 +27,8 @@ public interface SourceNormalizer {
 
     /**
      * A collection of classes that the {@link #normalize(Object)} method will act upon.
+     *
+     * @return collection of classes {@link #normalize(Object)} may have an effect on.
      */
     @Nonnull Collection<Class<?>> acceptedClasses();
 

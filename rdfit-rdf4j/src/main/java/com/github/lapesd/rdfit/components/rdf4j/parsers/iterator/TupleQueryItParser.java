@@ -49,6 +49,6 @@ public class TupleQueryItParser extends AbstractRDF4JItParser {
             throw new RDFItException(source, "TupleQuery has "+size+" variables. " +
                                              "Triples/quads required 3/4.");
         }
-        return new TupleQueryResultRDFIt(iterationElement(), source, result);
+        return new TupleQueryResultRDFIt(itElement(), source, result);
     }
 }

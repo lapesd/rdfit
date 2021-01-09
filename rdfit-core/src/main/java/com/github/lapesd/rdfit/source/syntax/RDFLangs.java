@@ -101,6 +101,7 @@ public class RDFLangs {
 
     /**
      * Get all {@link RDFLang} instances registered
+     * @return non-null and non-empty list of languages
      */
     public static @Nonnull List<RDFLang> getLangs() {
         return LANGS;

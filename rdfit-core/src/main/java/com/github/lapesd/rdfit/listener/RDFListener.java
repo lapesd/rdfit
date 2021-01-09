@@ -33,11 +33,17 @@ public interface RDFListener<T, Q> {
     /**
      * The type of Triple objects (T) supported by this callback, or null if triples
      * are not supported.
+     *
+     * @return class of triples accepted by {@link #triple(Object)} and
+     *         by {@link #quad(String, Object)}.
      */
     @Nullable Class<T> tripleType();
     /**
      * The type of quad objects (Q) supported by this callback, or null if quads
      * are not supported.
+     *
+     * @return class of quads accepted by {@link #quad(Object)} or null if such method
+     *         should not be called.
      */
     @Nullable Class<Q> quadType();
 
@@ -46,6 +52,7 @@ public interface RDFListener<T, Q> {
      *
      * After this method, parsing can still continue, depending on the return value.
      *
+     * @param e exception describing the triple
      * @return if true, the parser will continue parsing the source, if false it will stop
      *         parsing that source, but other sources will still be processed.
      * @throws InterruptParsingException if the callback throws this, neither the source
@@ -61,6 +68,7 @@ public interface RDFListener<T, Q> {
      *
      * After this method, parsing can still continue, depending on the return value.
      *
+     * @param e Exception describing the issue
      * @return if true, the parser will continue parsing the source, if false it will stop
      *         parsing that source, but other sources will still be processed.
      * @throws InterruptParsingException if the callback throws this, neither the source
@@ -73,6 +81,7 @@ public interface RDFListener<T, Q> {
     /**
      * Notify a wanrning issued by the underlying parser while parsing the current source.
      *
+     * @param message the warning message
      * @return true if parsing of this source should continue. If false, parsing of the source
      *         will terminate but {@link #notifySourceError(RDFItException)} will not be called.
      */
@@ -81,6 +90,7 @@ public interface RDFListener<T, Q> {
     /**
      * Notify about a recoverable error when parsing the input at the source.
      *
+     * @param message The error message
      * @return true if parsing of this source should continue. If false, parsing of the source
      *         will terminate but {@link #notifySourceError(RDFItException)} will not be called.
      */
@@ -126,6 +136,8 @@ public interface RDFListener<T, Q> {
      * Called before a source starts being processed. All {@link #triple(Object)},
      * {@link #quad(Object)} and {@link #quad(String, Object)} calls, until {@link #finish(Object)}
      * correspond to triples and quads in that source.
+     *
+     * @param source the source being started
      */
     void start(@Nonnull Object source);
 
@@ -134,6 +146,8 @@ public interface RDFListener<T, Q> {
      *
      * This method is not called after a {@link #notifySourceError(RDFItException)}
      * call for the same source.
+     *
+     * @param source The source being finished
      */
     void finish(@Nonnull Object source);
 

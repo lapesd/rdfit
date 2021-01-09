@@ -18,6 +18,7 @@ package com.github.lapesd.rdfit.components.annotations;
 
 import com.github.lapesd.rdfit.components.Component;
 
+import javax.annotation.Nonnull;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -28,6 +29,7 @@ import java.lang.annotation.Target;
 public @interface Outputs {
     /**
      * The class of objects the {@link Component} outputs.
+     * @return the class of objects output by the components.
      */
-    Class<?> value();
+    @Nonnull Class<?> value();
 }

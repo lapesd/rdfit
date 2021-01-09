@@ -37,8 +37,7 @@ public abstract class AbstractRDF4JItParser extends BaseItParser {
     createError(@Nonnull Object source, @Nonnull String msg, @Nullable Throwable t) {
         RDFItException ex = t == null ? new RDFItException(source, msg)
                                       : new RDFItException(source, msg, t);
-        //noinspection unchecked
-        return new ErrorRDFIt<>((Class<T>) Statement.class, iterationElement(), source, ex);
+        return new ErrorRDFIt<>(Statement.class, itElement(), source, ex);
     }
 
     protected @Nonnull <T> ErrorRDFIt<T> createError(@Nonnull Object source, @Nonnull String msg) {
@@ -58,7 +57,7 @@ public abstract class AbstractRDF4JItParser extends BaseItParser {
         try {
             return (RDFIt<T>) doParse(source);
         } catch (RDFItException e) {
-            return new ErrorRDFIt<>((Class<T>)Statement.class, iterationElement(), source, e);
+            return new ErrorRDFIt<>(Statement.class, itElement(), source, e);
         } catch (Throwable t) {
             return createError(source, this+" failed to parse "+source, t);
         }

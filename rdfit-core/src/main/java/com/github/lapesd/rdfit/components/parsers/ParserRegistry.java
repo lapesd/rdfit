@@ -37,16 +37,22 @@ public interface ParserRegistry {
 
     /**
      * Register a parser.
+     *
+     * @param parser {@link Parser} instance to register
      */
     void register(@Nonnull Parser parser);
 
     /**
      * Removes a specific {@link Parser} instance previously registered.
+     *
+     * @param parser Parser instance to be removed (comparison by {@link Object#equals(Object)}.
      */
     void unregister(@Nonnull Parser parser);
 
     /**
      * Remove all {@link Parser} instances that satisfy the given predicate
+     *
+     * @param predicate A {@link Predicate} to be satisfied by removed parsers
      */
     void unregisterIf(@Nonnull Predicate<? super Parser> predicate);
 
@@ -55,18 +61,21 @@ public interface ParserRegistry {
     }
 
     /**
-     * Get an {@link ItParser} that accepts source and whose {@link ItParser#iterationElement()}
+     * Get an {@link ItParser} that accepts source and whose {@link ItParser#itElement()}
      * matches the one given.
      *
-     * If tripleClass is not null, the most recently added {@link ItParser} that satisfies the
-     * above conditions and also has an #{@link ItParser#valueClass()} assignable to tripleClass
-     * is returned. If the tripleClass retriction is not satisfied by any registered
-     * {@link ItParser} with given iterationElement, then the tripleClass parameter is ignored.
+     * If valueClass is not null, the most recently added {@link ItParser} that satisfies the
+     * above conditions and also has an #{@link ItParser#valueClass()} assignable to valueClass
+     * is returned. If the valueClass restriction is not satisfied by any registered
+     * {@link ItParser} with given iterationElement, then the valueClass parameter is ignored.
      *
+     * @param source source object that must be accepted by {@link Parser#canParse(Object)}
+     * @param itElem whether the {@link ItParser} should iterate triples or quads
+     * @param valueClass ideal {@link ItParser#valueClass()}
      * @return a {@link ItParser} or null if no registered {@link ItParser} accepts the source.
      */
     @Nullable ItParser getItParser(@Nonnull Object source,  @Nullable IterationElement itElem,
-                                   @Nullable Class<?> tripleClass);
+                                   @Nullable Class<?> valueClass);
 
     /**
      * Get a {@link ListenerParser} instance whose {@link Parser#canParse(Object)} accepts source.
@@ -74,11 +83,12 @@ public interface ParserRegistry {
      * IF there are multiple registered {@link ListenerParser}s that accept source, the following
      * criteria define which is returned:
      * <ol>
-     *     <li>The first parser whose both offered triple class and quad class are assignable to those requested</li>
+     *     <li> The first parser whose both offered triple class and quad class are assignable to those requested
      *         <ol>
      *             <li>If none satisfied the previous, the parser that provides the desired triple</li>
      *             <li>If none satisfied the previous, the parser that provides the desired quad</li>
      *         </ol>
+     *     </li>
      *     <li>In case of ties, the last registered parser wins</li>
      * </ol>
      *

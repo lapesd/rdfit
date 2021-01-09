@@ -32,6 +32,6 @@ public class RepositoryResultItParser extends AbstractRDF4JItParser {
 
     @Override protected @Nonnull RDFIt<Statement> doParse(@Nonnull Object source) {
         RepositoryResult<?> result = (RepositoryResult<?>) source;
-        return new RepositoryResultRDFIt(iterationElement(), source, null, result);
+        return new RepositoryResultRDFIt(itElement(), source, null, result);
     }
 }

@@ -16,6 +16,7 @@
 
 package com.github.lapesd.rdfit.components.annotations;
 
+import javax.annotation.Nonnull;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -26,6 +27,7 @@ import java.lang.annotation.Target;
 public @interface Accepts {
     /**
      * The classes which the component accepts as input.
+     * @return a non-null and non-empty array of accepted classes
      */
-    @SuppressWarnings("rawtypes") Class[] value();
+    @SuppressWarnings("rawtypes") @Nonnull Class[] value();
 }

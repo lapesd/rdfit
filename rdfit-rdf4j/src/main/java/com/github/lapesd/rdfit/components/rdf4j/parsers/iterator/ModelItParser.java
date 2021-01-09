@@ -31,7 +31,7 @@ public class ModelItParser extends AbstractRDF4JItParser {
     }
 
     @Override protected @Nonnull RDFIt<Statement> doParse(@Nonnull Object source) {
-        return new PlainRDFIt<>(Statement.class, iterationElement(),
+        return new PlainRDFIt<>(Statement.class, itElement(),
                                 ((Model)source).iterator(), source);
     }
 }

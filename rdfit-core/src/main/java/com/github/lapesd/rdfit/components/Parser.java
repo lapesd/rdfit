@@ -26,12 +26,16 @@ import java.util.Set;
 public interface Parser extends Component {
     /**
      * Notify that the parser has been registered at the given registry.
+     *
+     * @param registry {@link ParserRegistry} to which this instance has been attached.
      */
     void attachTo(@Nonnull ParserRegistry registry);
 
     /**
      * Set of classes accepted by the parser. {@link #canParse(Object)} may reject specific
      * instances of these classes.
+     *
+     * @return non-empty set of object classes supported by this parser.
      */
     @Nonnull Collection<Class<?>> acceptedClasses();
 
@@ -40,6 +44,8 @@ public interface Parser extends Component {
      *
      * Model-style parsers (e.g. for query results or in-memory graphs) should return an
      * empty collection.
+     *
+     * @return Non-empty set of {@link RDFLang}s supported by this parser
      */
     @Nonnull Set<RDFLang> parsedLangs();
 

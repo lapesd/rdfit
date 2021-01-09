@@ -37,7 +37,7 @@ public abstract class BaseItParser extends BaseParser implements ItParser {
         return valueClass;
     }
 
-    @Override public @Nonnull IterationElement iterationElement() {
+    @Override public @Nonnull IterationElement itElement() {
         return iterationElement;
     }
 }

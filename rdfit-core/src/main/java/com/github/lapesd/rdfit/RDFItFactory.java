@@ -32,16 +32,19 @@ import java.util.Collection;
 public interface RDFItFactory extends AutoCloseable {
     /**
      * Allows configuration of {@link Converter}s that will be transparently used during iteration.
+     * @return The {@link ConversionManager} of this factory
      */
     @Nonnull ConversionManager getConversionManager();
 
     /**
      * Allows configuring the available parsers.
+     * @return The {@link ParserRegistry} of this factory
      */
     @Nonnull ParserRegistry getParserRegistry();
 
     /**
      * Allows configuration of how sources are processed before being mapped to a parser.
+     * @return The {@link SourceNormalizerRegistry} of this factory
      */
     @Nonnull SourceNormalizerRegistry getNormalizerRegistry();
 
@@ -49,6 +52,7 @@ public interface RDFItFactory extends AutoCloseable {
      * Sequentially iterate all triples in each of the sources. If any quad is met, the
      * graph information is discarded and the quad is delivered as a triple
      *
+     * @param <T> triple type
      * @param tripleClass the desired class for triple instances. Whathever triple or quad
      *                    a {@link Parser} produces, it will be converted into a instance
      *                    of the given tripleClass
@@ -64,6 +68,7 @@ public interface RDFItFactory extends AutoCloseable {
     /**
      * same as {@link #iterateTriples(Class, Object...)}, but iterates over quads.
      *
+     * @param <Q> Quad type
      * @param quadClass The desired class of quad instances.
      * @param quadLifter A function that convert a triple (instance of tripleClass) into a
      *                    quad (instance of quadClass or convertible to it via {@link Converter}s)
@@ -82,6 +87,11 @@ public interface RDFItFactory extends AutoCloseable {
      * Same as {@link #iterateQuads(Class, QuadLifter, Object...)}, but will try to use a chain
      * of previously registered {@link Converter} instances to convert any triples output by
      * parsers into instances of quadClass
+     *
+     * @param <T>  quad type
+     * @param quadClass {@link Class} object of T
+     * @param sources sources to iterate over
+     * @return An {@link RDFIt} over the quads
      */
     @Nonnull <T> RDFIt<T> iterateQuads(@Nonnull Class<T> quadClass, @Nonnull Object... sources);
 

@@ -57,6 +57,9 @@ public class URLNormalizer extends BaseSourceNormalizer {
 
     /**
      * Orders the {@link RDFLang} instances in the given set from most preferred to least preferred.
+     *
+     * @param supportedLangs list of supported languages
+     * @return re-ordered list with all languages in supportedLangs
      */
     protected @Nonnull List<RDFLang> reorderAccept(@Nonnull Set<RDFLang> supportedLangs) {
         List<RDFLang> list = new ArrayList<>();
@@ -64,16 +67,21 @@ public class URLNormalizer extends BaseSourceNormalizer {
             if (supportedLangs.contains(lang))
                 list.add(lang);
         }
+        assert list.containsAll(supportedLangs);
         return list;
     }
 
     /**
      * Generate an Accept string with q-values from 1.0 (implicit) to 0.2 in the given order.
      *
-     * The Accept string should end with the following catch-all types at the lowest priority:
-     * "text/*;q=0.1, *\/*;q=0.1"
+     * See <a href="https://tools.ietf.org/html/rfc2616#section-14.1">RFC 2616 sec. 14.1</a>
+     * for details on Accept string syntax. The Accept string must end with the following
+     * catch-all types at the lowest priority: "text/*;q=0.1, *\/*;q=0.1"
      *
-     * {@see <a href="https://tools.ietf.org/html/rfc2616#section-14.1">RFC 2616 sec. 14.1</a>}
+     * @param langs list of accepted {@link RDFLang}s
+     * @return An HTTP 1.1 accept string
+     *
+     *
      */
     protected @Nonnull String toAcceptString(@Nonnull List<RDFLang> langs) {
         StringBuilder b = new StringBuilder();

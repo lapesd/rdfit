@@ -47,6 +47,6 @@ public class TupleQueryResultItParser extends AbstractRDF4JItParser {
     }
 
     @Override protected @Nonnull RDFIt<Statement> doParse(@Nonnull Object source) {
-        return new TupleQueryResultRDFIt(iterationElement(), source, (TupleQueryResult) source);
+        return new TupleQueryResultRDFIt(itElement(), source, (TupleQueryResult) source);
     }
 }

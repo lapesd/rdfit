@@ -27,18 +27,27 @@ import javax.annotation.Nonnull;
 public interface ItParser extends Parser {
     /**
      * {@link RDFIt#valueClass()} of iterators returned by {@link #parse(Object)}.
+     *
+     * @return The {@link RDFIt#valueClass()} of iterators returned by {@link #parse(Object)}.
      */
     @Nonnull Class<?> valueClass();
 
     /**
      * Whether this parser will produce a {@link RDFIt} over triples or quads.
+     *
+     * @return The {@link RDFIt#itElement()} of {@link #parse(Object)}.
      */
-    @Nonnull IterationElement iterationElement();
+    @Nonnull IterationElement itElement();
 
     /**
      * Create a {@link RDFIt} that iterates over parsed triples (or quads) from the given source.
      *
      * A RDFIt will iterate either only triples or only quads.
+     *
+     * @param <T> type of objects being iterated. This is compile-time only and may not
+     *           match {@link RDFIt#valueClass()}
+     * @param source source to iterate
+     * @return An {@link RDFIt} over triples/quads (see {@link #itElement()}.
      */
     @Nonnull <T> RDFIt<T> parse(@Nonnull Object source);
 }

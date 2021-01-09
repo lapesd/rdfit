@@ -62,6 +62,18 @@ public class DefaultRDFItFactory implements RDFItFactory {
     protected @Nonnull SourceNormalizerRegistry normalizerRegistry;
     private final @Nonnull ThreadPoolExecutor executor;
 
+    /**
+     * Create a new {@link DefaultRDFItFactory}.
+     *
+     * {@link ParserRegistry#setConversionManager(ConversionManager)},
+     * {@link SourceNormalizerRegistry#setParserRegistry(ParserRegistry)} and
+     * {@link SourceNormalizerRegistry#setConversionManager(ConversionManager)} will NOT be
+     * called to link the provided registries to one another.
+     *
+     * @param parserRegistry the parser registry
+     * @param conversionManager the conversion manager
+     * @param normalizerRegistry the normalizers registry
+     */
     public DefaultRDFItFactory(@Nonnull ParserRegistry parserRegistry,
                                @Nonnull ConversionManager conversionManager,
                                @Nonnull SourceNormalizerRegistry normalizerRegistry) {
@@ -270,7 +282,7 @@ public class DefaultRDFItFactory implements RDFItFactory {
                 if (itP == null)
                     throw new NoParserException(source);
             }
-            IterationElement itElement = itP.iterationElement();
+            IterationElement itElement = itP.itElement();
             boolean isTriple = itElement.isTriple();
             Class<?> offTriple =           isTriple ? itP.valueClass() : null;
             Class<?> offQuad   = itElement.isQuad() ? itP.valueClass() : null;

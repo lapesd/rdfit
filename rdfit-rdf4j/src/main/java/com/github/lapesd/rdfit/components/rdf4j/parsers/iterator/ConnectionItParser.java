@@ -34,6 +34,6 @@ public class ConnectionItParser extends AbstractRDF4JItParser {
     @Override protected @Nonnull  RDFIt<Statement> doParse(@Nonnull Object source) {
         RepositoryResult<Statement> results;
         results = ((RepositoryConnection) source).getStatements(null, null, null);
-        return new RepositoryResultRDFIt(iterationElement(), source, null, results);
+        return new RepositoryResultRDFIt(itElement(), source, null, results);
     }
 }

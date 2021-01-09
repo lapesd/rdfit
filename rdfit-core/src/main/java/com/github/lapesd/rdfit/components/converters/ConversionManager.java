@@ -24,17 +24,25 @@ import java.util.function.Predicate;
 public interface ConversionManager {
     /**
      * Register a converter for later usage by {@link #findPath(Object, Class)}.
+     *
+     * @param converter The {@link Converter} instance to attach
      */
     void register(@Nonnull Converter converter);
 
     /**
      * Removes a specific previously registered instance. Instances are compared
      * with {@link Object#equals(Object)}.
+     *
+     * @param instance the {@link Converter} instance to remove (compared
+     *                 by {@link Object#equals(Object)}).
      */
     void unregister(@Nonnull Converter instance);
 
     /**
      * Remove all {@link #register(Converter)}ed instances that match the predicate.
+     *
+     * @param predicate {@link Predicate} that, if true, causes a {@link Converter} instance to
+     *                                   be removed
      */
     void unregisterIf(@Nonnull Predicate<? super Converter> predicate);
 

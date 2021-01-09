@@ -110,21 +110,21 @@ public class DefaultParserRegistry implements ParserRegistry {
     @Override
     public @Nullable ItParser getItParser(@Nonnull Object source,
                                           @Nullable IterationElement itElem,
-                                          @Nullable Class<?> tripleClass) {
+                                          @Nullable Class<?> valueClass) {
         Iterator<ItParser> it = itParsers.get(source);
         if (!it.hasNext()) return null;
         List<ItParser> list = new ArrayList<>();
         while (it.hasNext()) {
             ItParser p = it.next();
             list.add(p);
-            if (itElem != null && itElem != p.iterationElement())
+            if (itElem != null && itElem != p.itElement())
                 continue;
-            if (tripleClass == null || tripleClass.isAssignableFrom(p.valueClass()))
+            if (valueClass == null || valueClass.isAssignableFrom(p.valueClass()))
                 return p;
         }
-        if (tripleClass != null) {
+        if (valueClass != null) {
             for (ItParser p : list) {
-                if (itElem == null || itElem.equals(p.iterationElement()))
+                if (itElem == null || itElem.equals(p.itElement()))
                     return p;
             }
         }

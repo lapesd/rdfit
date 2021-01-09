@@ -26,16 +26,22 @@ public interface Converter extends Component {
 
     /**
      * Notify that this instance has been registered at the given {@link ConversionManager}.
+     *
+     * @param conversionManager the manager to which this component has been attached to
      */
     void attachTo(@Nonnull ConversionManager conversionManager);
 
     /**
      * Collection of classes accepted by this converter as input in {@link #convert(Object)}.
+     *
+     * @return non-null and non-empty collection of classes
      */
     @Nonnull Collection<Class<?>> acceptedClasses();
 
     /**
      * Class which is output by the {@link #convert(Object)} method
+     *
+     * @return non-null class of conversion results
      */
     @Nonnull Class<?> outputClass();
 

@@ -24,23 +24,31 @@ import java.util.Iterator;
 
 /**
  * A closeable iterator over triple-representing objects
- * @param <T>
+ * @param <T> Value type of the iterator
  */
 public interface RDFIt<T> extends Iterator<T>, AutoCloseable {
     /**
      * Type of the triples (or quads) returned by {@link #next()}
+     *
+     * @return A {@link Class} object for which results of {@link #next()}
+     *         satisfy {@link Class#isInstance(Object)}
      */
     @Nonnull Class<? extends T> valueClass();
 
     /**
      * Whether this iterator is iterating triples or quads
+     *
+     * @return non-null {@link IterationElement}.
      */
     @Nonnull IterationElement itElement();
 
 
     /**
      * Get the source {@link Object} of the last value returned by {@link #next()}.
-     * If {@link #next()}  has not yet been called, return {@link NoSource#INSTANCE}
+     *
+     * @return current source object for the data in this iterator, or {@link NoSource#INSTANCE}
+     *         if {@link #next()} has not yet been called or {@link #hasNext()} never
+     *         returned true.
      */
     @Nonnull Object getSource();
 

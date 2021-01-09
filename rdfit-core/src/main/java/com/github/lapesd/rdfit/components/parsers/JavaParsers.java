@@ -46,6 +46,10 @@ public class JavaParsers {
     /**
      * Register parsers for Iterables, Streams and Iterables of the given triple class on
      * the {@link DefaultRDFItFactory}
+     *
+     * @param memberClass The {@link ItParser#valueClass()} or {@link ListenerParser#tripleType()}
+     *                    of the {@link ItParser}s and {@link ListenerParser}s implementations to
+     *                    be registered
      */
     public static void registerWithTripleClass(@Nonnull Class<?> memberClass) {
         registerWithTripleClass(DefaultRDFItFactory.get(), memberClass);
@@ -53,6 +57,10 @@ public class JavaParsers {
     /**
      * Register parsers for Iterables, Streams and Iterables of the given quad class on
      * the {@link DefaultRDFItFactory}
+     *
+     * @param memberClass The {@link ItParser#valueClass()} or {@link ListenerParser#quadType()}
+     *                    of the {@link ItParser}s and {@link ListenerParser}s implementations
+     *                    to be registered.
      */
     public static void registerWithQuadClass(@Nonnull Class<?> memberClass) {
         registerWithQuadClass(DefaultRDFItFactory.get(), memberClass);
@@ -61,6 +69,8 @@ public class JavaParsers {
     /**
      * Remove parsers handling the given triple or quad class registered by
      * this helper on the {@link DefaultRDFItFactory}
+     *
+     * @param memberClass {@link ItParser#valueClass()} of the {@link ItParser}s to be unregistered
      */
     public static void unregister(@Nonnull Class<?> memberClass) {
         unregister(DefaultRDFItFactory.get(), memberClass);
@@ -69,6 +79,9 @@ public class JavaParsers {
     /**
      * Unregister from {@link DefaultRDFItFactory} any Listener parser that handles both the
      * given triple class and quad class.
+     *
+     * @param tripleClass class of triples handled by the {@link ListenerParser}
+     * @param quadCLass   class of quads handled by the {@link ListenerParser}
      */
     public static void unregister(@Nonnull Class<?> tripleClass, @Nonnull Class<?> quadCLass) {
         unregister(DefaultRDFItFactory.get(), tripleClass, quadCLass);
