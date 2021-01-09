@@ -44,14 +44,14 @@ On Maven: add this to your pom.xml:
 <dependency>
   <groupId>com.github.lapesd.rdfit</groupId>
   <artifactId>rdfit-all-libs</artifactId> <!-- "all" could be jena or df4j -->
-  <version>1.0.0</version>
+  <version>1.0.3</version>
   <type>pom</type>                         <!-- not a jar, just deps -->
 </dependency>
 ```
 
 On gradle, add this to your build.gradle:
 ```groovy
-implementation 'com.github.lapesd.rdfit:rdfit-jena-libs:1.0.0'
+implementation 'com.github.lapesd.rdfit:rdfit-jena-libs:1.0.3'
 ```
 
 > Note: if `rdfit-all-libs` bring too much transitive, see [Modules](#modules)
