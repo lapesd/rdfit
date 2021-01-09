@@ -370,6 +370,4 @@ these steps:
 
 1. `mvn -Pintegration clean verify` to run integration-tests
 2. `mvn -Prelease release:prepare` to set version
-3. `mvn -Prelease release:perform` to stage a release
-4. `cd target/checkout && mvn -Prelease nexus-staging:release` to promote 
-   the release once everything is good to go
+3. `mvn -Prelease release:perform` to stage & release to maven central
