@@ -50,12 +50,12 @@
 
   <distributionManagement>
     <snapshotRepository>
-      <id>sonatype-nexus-snapshots</id>
+      <id>ossrh</id>
       <name>Sonatype Nexus Snapshots</name>
       <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
     </snapshotRepository>
     <repository>
-      <id>sonatype-nexus-staging</id>
+      <id>ossrh</id>
       <name>Nexus Release Repository</name>
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
@@ -92,7 +92,6 @@
     <module>rdfit-rdf4j-libs</module>
     <module>rdfit-all-libs</module>
     <module>rdfit-jena-rdf4j-converters</module>
-    <module>rdfit-integration-tests</module>
   </modules>
 
   <build>
@@ -121,6 +120,24 @@
           <version>3.0.2</version>
         </plugin>
         <plugin>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.2.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>nexus-staging-maven-plugin</artifactId>
+          <version>1.6.8</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.3</version>
+        </plugin>
+        <plugin>
           <artifactId>maven-install-plugin</artifactId>
           <version>2.5.2</version>
         </plugin>
@@ -142,9 +159,7 @@
 
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven.compiler.plugin}</version>
         <configuration>
           <source>${maven.compiler.source}</source>
           <target>${maven.compiler.target}</target>
@@ -152,5 +167,73 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>no-release</id>
+      <activation>
+        <property>
+          <name>!release</name>
+        </property>
+      </activation>
+      <modules>
+        <module>rdfit-integration-tests</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>release</id>
+      <activation>
+        <property>
+          <name>release</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <extensions>true</extensions>
+            <configuration>
+              <serverId>ossrh</serverId>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <autoReleaseAfterClose>false</autoReleaseAfterClose>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-release-plugin</artifactId>
+            <configuration>
+              <autoVersionSubmodules>true</autoVersionSubmodules>
+              <useReleaseProfile>false</useReleaseProfile>
+              <releaseProfiles>release</releaseProfiles>
+              <tagNameFormat>v@{project.version}</tagNameFormat>
+              <goals>deploy</goals>
+            </configuration>
+          </plugin>
+          <plugin>
+            <artifactId>maven-source-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals><goal>jar-no-fork</goal></goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <goals><goal>sign</goal></goals>
+                <configuration>
+                  <!--suppress MavenModelInspection: property set in settings.xml -->
+                  <keyname>${gpg.keyname}</keyname>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

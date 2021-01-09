@@ -9,3 +9,4 @@ todo.txt
 ### Maven template
 target/
 dependency-reduced-pom.xml
+/settings.xml
