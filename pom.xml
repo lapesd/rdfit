@@ -169,12 +169,7 @@
 
   <profiles>
     <profile>
-      <id>no-release</id>
-      <activation>
-        <property>
-          <name>!release</name>
-        </property>
-      </activation>
+      <id>integration</id>
       <modules>
         <module>rdfit-integration-tests</module>
       </modules>

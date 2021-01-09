@@ -361,10 +361,15 @@ triple is met. You can disable exception throwing on RDFIt by calling
 `setErrorHandler()` and you can override the `notifyInconvertible*()` methods 
 in RDFCallback to stop logging.  
 
-### How to release
+### Release workflow
 
-To avoid integration-tests from being distributed, the release profile must activated with `-Drelease` (not -P). See the reason [on NEXUS-9138](https://issues.sonatype.org/browse/NEXUS-9138). The resulting workflow:
-1. `mvn clean verify` to run integration-tests
-2. `mvn -Drelease release:prepare` to set version
-3. `mvn -Drelease release:perform` to stage a release
-4. `mvn -Dnexus-staging:release` once confirmed everything is good to go
+Integration tests take ~2min thus are disabled by default. Unfortunately, due 
+to [NEXUS-9138](https://issues.sonatype.org/browse/NEXUS-9138), they cannot be 
+part of the release profile. Thus, the solution is to release following 
+these steps: 
+
+1. `mvn -Pintegration clean verify` to run integration-tests
+2. `mvn -Prelease release:prepare` to set version
+3. `mvn -Prelease release:perform` to stage a release
+4. `cd target/checkout && mvn -Prelease nexus-staging:release` to promote 
+   the release once everything is good to go
