@@ -1,0 +1,16 @@
+{
+  "@context" : {
+    "p4" : {
+      "@id" : "http://example.org/p4",
+      "@type" : "@id"
+    },
+    "p3" : {
+      "@id" : "http://example.org/p3",
+      "@type" : "@id"
+    },
+    "ex" : "http://example.org/"
+  },
+  "@id" : "ex:S2",
+  "p3" : [ "ex:O5", "ex:O4" ],
+  "p4" : "ex:O6"
+}

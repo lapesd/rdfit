@@ -36,6 +36,19 @@ rdfit provides:
 - Implicit conversion between triple/quad representations
 - Implicit conversion of control flow (pull-style iterators from push-style parsers and vice-versa)
 
+Quick Quickstart
+================
+
+1. Get the example project
+```shell
+git clone --depth=1 https://github.com/lapesd/rdfit.git && mv rdfit/example . && rm -fr rdfit
+```
+2. Edit [App.java](example/src/main/java/org/example/rdfit/App.java)
+3. Build über-jar & run:
+```shell
+mvn package && java -jar target/example-1.0-SNAPSHOT.jar data/*
+```
+
 Quickstart
 ==========
 
@@ -45,7 +58,7 @@ On Maven: add this to your pom.xml:
   <groupId>com.github.lapesd.rdfit</groupId>
   <artifactId>rdfit-all-libs</artifactId> <!-- "all" could be jena or df4j -->
   <version>1.0.3</version>
-  <type>pom</type>                         <!-- not a jar, just deps -->
+  <type>pom</type>                    <!-- don't forget, this is not a jar -->
 </dependency>
 ```
 

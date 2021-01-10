@@ -1,0 +1,94 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.example.rdfit</groupId>
+  <artifactId>example</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>example</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+  </properties>
+
+  <dependencies>
+    <!-- catch-all dependency -->
+    <dependency>
+      <groupId>com.github.lapesd.rdfit</groupId>
+      <artifactId>rdfit-all-libs</artifactId>
+      <version>1.0.3</version>
+      <type>pom</type>
+    </dependency>
+  </dependencies>
+
+  <!-- If your use case does not need a fatjar, stop here. -->
+
+  <build>
+    <plugins>
+      <!-- Create an executable JAR. This is not as simple as code because rdfit-all-libs
+           pulls a lot of deps. Most of the configurations are to solve overlapping
+           classes and resources that end up in the über-jar from  multiple dependency paths. -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.4</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals><goal>shade</goal></goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer"/>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer"/>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <manifestEntries>
+                    <Main-Class>org.example.rdfit.App</Main-Class>
+                    <Multi-Release>true</Multi-Release>
+                  </manifestEntries>
+                </transformer>
+              </transformers>
+              <artifactSet>
+                <!-- Some jars already include other jars that are reached from this
+                     project through distinct paths. These exclusions fix the shade-plugin
+                     complaining about duplicate resources by excluding jars that are included
+                     by other jars already included in the über-jar -->
+                <excludes>
+                  <exclude>commons-codec:commons-codec:*</exclude>
+                  <exclude>org.apache.httpcomponents:httpclient:*</exclude>
+                  <exclude>org.apache.httpcomponents:httpmime:*</exclude>
+                  <exclude>org.apache.httpcomponents:fluent-hc:*</exclude>
+                  <exclude>org.apache.httpcomponents:httpclient-cache:*</exclude>
+                  <exclude>org.apache.httpcomponents:httpcore-nio:*</exclude>
+                  <exclude>org.apache.httpcomponents:httpcore:*</exclude>
+                  <!-- On a second mvn package without previous clean, the shade plugin might
+                       try to merge into the jar into itself, which would cause lots of warnings
+                       about overlapping classes/resources -->
+                  <exclude>example-1.0-SNAPSHOT.jar</exclude>
+                </excludes>
+              </artifactSet>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <!-- Some jars are signed but shading breaks that. -->
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                    <!-- Do not include  these often overlapping resources -->
+                    <exclude>META-INF/*.MF</exclude>
+                    <exclude>META-INF/DEPENDENCIES</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>
