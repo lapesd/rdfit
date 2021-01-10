@@ -22,7 +22,7 @@
   <parent>
     <groupId>com.github.lapesd.rdfit</groupId>
     <artifactId>rdfit-parent</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4-SNAPSHOT</version>
   </parent>
   <artifactId>rdfit-all-libs</artifactId>
   <packaging>pom</packaging>
@@ -45,7 +45,7 @@
     <dependency>
       <groupId>com.github.lapesd.rdfit</groupId>
       <artifactId>rdfit-compress-libs</artifactId>
-      <version>1.0.3</version>
+      <version>1.0.4-SNAPSHOT</version>
       <type>pom</type>
     </dependency>
     <dependency>
