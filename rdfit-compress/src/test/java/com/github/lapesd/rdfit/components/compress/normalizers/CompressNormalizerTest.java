@@ -58,7 +58,7 @@ public class CompressNormalizerTest {
     }
 
     @DataProvider public static Object[][] testData() {
-        List<String> contents = asList("file_a\n", "file_b\n", "file_c\n");
+        List<String> contents = asList("", "file_a\n", "file_b\n", "file_c\n");
         return Stream.of(
                 asList("test_1.tar.gz", contents),
                 asList("test_1.tar.xz", contents),
@@ -67,6 +67,7 @@ public class CompressNormalizerTest {
                 asList("test_1.7z", contents),
                 asList("test_empty.tar.gz", Collections.emptyList()),
                 asList("test_empty.zip", Collections.emptyList()),
+                asList("no_files.7z", Collections.emptyList()),
                 asList("single_a.bz2", Collections.singletonList("single_a\n")),
                 asList("single_b.xz", Collections.singletonList("single_b\n"))
         ).map(List::toArray).toArray(Object[][]::new);

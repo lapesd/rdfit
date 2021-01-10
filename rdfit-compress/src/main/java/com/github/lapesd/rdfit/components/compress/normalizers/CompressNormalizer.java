@@ -23,6 +23,7 @@ import com.github.lapesd.rdfit.components.normalizers.BaseSourceNormalizer;
 import com.github.lapesd.rdfit.errors.RDFItException;
 import com.github.lapesd.rdfit.source.RDFFile;
 import com.github.lapesd.rdfit.source.RDFInputStream;
+import com.github.lapesd.rdfit.source.impl.EmptySourcesIterator;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
@@ -36,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.io.*;
+import java.nio.BufferUnderflowException;
 import java.nio.file.Files;
 
 @Accepts(RDFInputStream.class)
@@ -69,8 +71,18 @@ public class CompressNormalizer extends BaseSourceNormalizer {
         try {
             if (ArchiveStreamFactory.SEVEN_Z.equalsIgnoreCase(format)) {
                 if (ris instanceof RDFFile) {
-                    SevenZFile sz = new SevenZFile(((RDFFile)ris).getFile());
-                    return new SevenZSourceIterator(source, sz);
+                    File file = ((RDFFile) ris).getFile();
+                    try {
+                        SevenZFile sz = new SevenZFile(file);
+                        return new SevenZSourceIterator(source, sz);
+                    } catch (BufferUnderflowException e) {
+                        if (file.length() <= 64) {
+                            logger.info("7z file at source {} has no entries", source);
+                            return new EmptySourcesIterator(); //7z file has no entries
+                        }
+                        return new RDFItException(source, "BufferUnderflowException on 7z " +
+                                                          "file with "+file.length()+" bytes", e);
+                    }
                 } else {
                     File temp = Files.createTempFile("rdfit", ".7z").toFile();
                     temp.deleteOnExit();

@@ -60,7 +60,7 @@ public class SevenZSourceIteratorTest {
                     contents.add(new String(buf, StandardCharsets.UTF_8));
                 }
             }
-            HashSet<String> expected = new HashSet<>(asList("file_a\n", "file_b\n", "file_c\n"));
+            HashSet<String> expected = new HashSet<>(asList("", "file_a\n", "file_b\n", "file_c\n"));
             assertEquals(new HashSet<>(contents), expected);
         } finally {
             assertTrue(!file.exists() || file.delete());
