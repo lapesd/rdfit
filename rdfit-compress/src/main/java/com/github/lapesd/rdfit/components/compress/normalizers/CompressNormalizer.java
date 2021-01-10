@@ -72,17 +72,7 @@ public class CompressNormalizer extends BaseSourceNormalizer {
             if (ArchiveStreamFactory.SEVEN_Z.equalsIgnoreCase(format)) {
                 if (ris instanceof RDFFile) {
                     File file = ((RDFFile) ris).getFile();
-                    try {
-                        SevenZFile sz = new SevenZFile(file);
-                        return new SevenZSourceIterator(source, sz);
-                    } catch (BufferUnderflowException e) {
-                        if (file.length() <= 64) {
-                            logger.info("7z file at source {} has no entries", source);
-                            return new EmptySourcesIterator(); //7z file has no entries
-                        }
-                        return new RDFItException(source, "BufferUnderflowException on 7z " +
-                                                          "file with "+file.length()+" bytes", e);
-                    }
+                    return openSevenZArchive(source, file);
                 } else {
                     File temp = Files.createTempFile("rdfit", ".7z").toFile();
                     temp.deleteOnExit();
@@ -90,8 +80,7 @@ public class CompressNormalizer extends BaseSourceNormalizer {
                     try (FileOutputStream out = new FileOutputStream(temp);
                          InputStream in = ris.getInputStream()) {
                         IOUtils.copy(in, out);
-                        SevenZFile sz = new SevenZFile(temp);
-                        return new SevenZSourceIterator(source, sz).deleteOnClose(temp);
+                        return openSevenZArchive(source, temp);
                     } catch (Throwable e) {
                         failed = true;
                         if (temp.exists() && !temp.delete())
@@ -112,6 +101,20 @@ public class CompressNormalizer extends BaseSourceNormalizer {
             }
         } catch (ArchiveException | IOException e) {
             return new RDFItException(source, e);
+        }
+    }
+
+    @Nonnull private Object openSevenZArchive(@Nonnull Object source, File file) throws IOException {
+        try {
+            SevenZFile sz = new SevenZFile(file);
+            return new SevenZSourceIterator(source, sz);
+        } catch (BufferUnderflowException e) {
+            if (file.length() <= 64) {
+                logger.info("7z file at source {} has no entries", source);
+                return new EmptySourcesIterator(); //7z file has no entries
+            }
+            return new RDFItException(source, "BufferUnderflowException on 7z " +
+                                              "file with "+ file.length()+" bytes", e);
         }
     }
 

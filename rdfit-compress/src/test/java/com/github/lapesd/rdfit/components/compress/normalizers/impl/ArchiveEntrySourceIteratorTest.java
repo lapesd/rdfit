@@ -40,9 +40,9 @@ public class ArchiveEntrySourceIteratorTest {
 
     @DataProvider public static Object[][] testData() {
         return Stream.of(
-                asList("../test_1.9r.zip", asList("file_a\n", "file_b\n", "file_c\n")),
-                asList("../test_1.tar.xz", asList("file_a\n", "file_b\n", "file_c\n")),
-                asList("../test_1.tar.gz", asList("file_a\n", "file_b\n", "file_c\n")),
+                asList("../test_1.9r.zip", asList("", "file_a\n", "file_b\n", "file_c\n")),
+                asList("../test_1.tar.xz", asList("", "file_a\n", "file_b\n", "file_c\n")),
+                asList("../test_1.tar.gz", asList("", "file_a\n", "file_b\n", "file_c\n")),
                 asList("../test_empty.tar.gz", Collections.emptyList()),
                 asList("../test_empty.zip", Collections.emptyList())
                 // cannot stream 7z, must open file
