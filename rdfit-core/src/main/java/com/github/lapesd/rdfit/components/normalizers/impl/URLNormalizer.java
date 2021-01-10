@@ -49,6 +49,7 @@ public class URLNormalizer extends BaseSourceNormalizer {
             RDFLangs.RDFXML,
             RDFLangs.TRIX,
             RDFLangs.OWL,
+            RDFLangs.RDFJSON,
             RDFLangs.RDFA,
             RDFLangs.BRF
     );
