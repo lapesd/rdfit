@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.github.lapesd.rdfit;
+package com.github.lapesd.rdfit.integration;
 
 import com.github.lapesd.rdfit.components.converters.JenaRDF4JConverters;
 import com.github.lapesd.rdfit.components.jena.converters.JenaConverters;

@@ -14,21 +14,20 @@
  *    limitations under the License.
  */
 
-package com.github.lapesd.rdfit.generators;
+package com.github.lapesd.rdfit.integration.generators;
 
-import com.github.lapesd.rdfit.TripleSet;
+import com.github.lapesd.rdfit.integration.TripleSet;
 
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.concurrent.Callable;
 
-public class SupplierGenerator implements SourceGenerator {
+public class CallableGenerator implements SourceGenerator{
     private final @Nonnull SourceGenerator child;
 
-    public SupplierGenerator(@Nonnull SourceGenerator child) {
+    public CallableGenerator(@Nonnull SourceGenerator child) {
         this.child = child;
     }
 
@@ -38,10 +37,10 @@ public class SupplierGenerator implements SourceGenerator {
 
     @Override public @Nonnull List<?> generate(@Nonnull TripleSet tripleSet,
                                                @Nonnull File tempDir) {
-        if (!child.isReusable())
-            return Collections.emptyList();
-        List<Supplier<?>> list = new ArrayList<>();
-        for (Object o : child.generate(tripleSet, tempDir)) list.add(() -> o);
+        List<Callable<?>> list = new ArrayList<>();
+        if (child.isReusable()) {
+            for (Object o : child.generate(tripleSet, tempDir)) list.add(() -> o);
+        }
         return list;
     }
 }

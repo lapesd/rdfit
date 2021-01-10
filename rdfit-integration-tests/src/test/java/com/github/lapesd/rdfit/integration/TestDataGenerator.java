@@ -14,9 +14,9 @@
  *    limitations under the License.
  */
 
-package com.github.lapesd.rdfit;
+package com.github.lapesd.rdfit.integration;
 
-import com.github.lapesd.rdfit.generators.SourceGenerator;
+import com.github.lapesd.rdfit.integration.generators.SourceGenerator;
 import com.google.common.collect.Lists;
 import com.google.common.reflect.ClassPath;
 import org.apache.jena.datatypes.xsd.XSDDatatype;
@@ -62,7 +62,7 @@ public class TestDataGenerator {
     static {
         try {
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            String pkg = "com.github.lapesd.rdfit.generators";
+            String pkg = "com.github.lapesd.rdfit.integration.generators";
             List<SourceGenerator> plainGens = new ArrayList<>(), allGens;
             List<Class<?>> chainingClasses = new ArrayList<>();
             for (ClassPath.ClassInfo info : ClassPath.from(classLoader).getTopLevelClasses(pkg)) {

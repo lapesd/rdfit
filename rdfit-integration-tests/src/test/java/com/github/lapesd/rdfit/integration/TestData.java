@@ -14,9 +14,9 @@
  *    limitations under the License.
  */
 
-package com.github.lapesd.rdfit;
+package com.github.lapesd.rdfit.integration;
 
-import com.github.lapesd.rdfit.generators.SourceGenerator;
+import com.github.lapesd.rdfit.integration.generators.SourceGenerator;
 import com.github.lapesd.rdfit.util.Utils;
 import org.apache.commons.io.FileUtils;
 import org.apache.jena.graph.Node;

@@ -14,8 +14,11 @@
  *    limitations under the License.
  */
 
-package com.github.lapesd.rdfit;
+package com.github.lapesd.rdfit.integration;
 
+import com.github.lapesd.rdfit.DefaultRDFItFactory;
+import com.github.lapesd.rdfit.RDFItFactory;
+import com.github.lapesd.rdfit.RIt;
 import com.github.lapesd.rdfit.errors.InconvertibleException;
 import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;

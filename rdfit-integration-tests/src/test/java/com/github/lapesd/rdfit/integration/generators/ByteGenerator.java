@@ -14,9 +14,9 @@
  *    limitations under the License.
  */
 
-package com.github.lapesd.rdfit.generators;
+package com.github.lapesd.rdfit.integration.generators;
 
-import com.github.lapesd.rdfit.TripleSet;
+import com.github.lapesd.rdfit.integration.TripleSet;
 import com.github.lapesd.rdfit.components.hdt.converters.HDTConverters.Triple2TripleString;
 import com.github.lapesd.rdfit.components.jena.JenaHelpers;
 import com.github.lapesd.rdfit.source.syntax.RDFLangs;

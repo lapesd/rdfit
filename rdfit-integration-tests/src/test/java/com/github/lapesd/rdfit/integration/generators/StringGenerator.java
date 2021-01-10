@@ -14,9 +14,9 @@
  *    limitations under the License.
  */
 
-package com.github.lapesd.rdfit.generators;
+package com.github.lapesd.rdfit.integration.generators;
 
-import com.github.lapesd.rdfit.TripleSet;
+import com.github.lapesd.rdfit.integration.TripleSet;
 import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 

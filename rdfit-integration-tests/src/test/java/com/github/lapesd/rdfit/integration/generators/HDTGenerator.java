@@ -14,9 +14,9 @@
  *    limitations under the License.
  */
 
-package com.github.lapesd.rdfit.generators;
+package com.github.lapesd.rdfit.integration.generators;
 
-import com.github.lapesd.rdfit.TripleSet;
+import com.github.lapesd.rdfit.integration.TripleSet;
 import com.github.lapesd.rdfit.components.hdt.converters.HDTConverters;
 import org.apache.jena.graph.Triple;
 import org.rdfhdt.hdt.hdt.HDT;
