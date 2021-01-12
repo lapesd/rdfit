@@ -111,6 +111,10 @@ public class ConvertingRDFListener<T, Q> implements RDFListener<T, Q> {
             target.quad(quadConversion.convert(source, quad));
     }
 
+    @Override public void prefix(@Nonnull String prefixLabel, @Nonnull String iriPrefix) {
+        target.prefix(prefixLabel, iriPrefix);
+    }
+
     @Override public void start(@Nonnull Object source) {
         this.source = source;
         target.start(source);

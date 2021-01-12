@@ -133,6 +133,14 @@ public interface RDFListener<T, Q> {
     void quad(@Nonnull String graph, @Nonnull T triple);
 
     /**
+     * Notify a prefix definition (e.g., <code>@prefix label: <IRI></code>) from the input document.
+     *
+     * @param prefixLabel the prefix label
+     * @param iriPrefix the IRI used as prefix
+     */
+    void prefix(@Nonnull String prefixLabel, @Nonnull String iriPrefix);
+
+    /**
      * Called before a source starts being processed. All {@link #triple(Object)},
      * {@link #quad(Object)} and {@link #quad(String, Object)} calls, until {@link #finish(Object)}
      * correspond to triples and quads in that source.

@@ -99,6 +99,10 @@ public abstract class RDFListenerBase<T, Q> implements RDFListener<T, Q> {
             throw new UnsupportedOperationException("Should have called quad(quad)");
     }
 
+    @Override public void prefix(@Nonnull String prefixLabel, @Nonnull String iriPrefix) {
+        logger.debug("{}.prefx({}, {})", this, prefixLabel, iriPrefix);
+    }
+
     @Override public void finish(@Nonnull Object source) {
         logger.debug("{}.finish({})", this, source);
         this.source = NoSource.INSTANCE;

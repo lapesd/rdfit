@@ -26,16 +26,23 @@ import com.github.lapesd.rdfit.errors.InconvertibleException;
 import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;
 import com.github.lapesd.rdfit.listener.RDFListenerBase;
+import com.github.lapesd.rdfit.listener.TripleListenerBase;
 import com.github.lapesd.rdfit.source.RDFFile;
 import com.github.lapesd.rdfit.source.RDFInputStream;
 import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import org.apache.jena.ext.com.google.common.collect.Lists;
+import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.*;
 import org.apache.jena.rdf.model.impl.LiteralImpl;
 import org.apache.jena.rdf.model.impl.PropertyImpl;
 import org.apache.jena.rdf.model.impl.ResourceImpl;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
+import org.apache.jena.riot.RDFFormat;
 import org.apache.jena.sparql.core.Quad;
+import org.apache.jena.sparql.graph.GraphFactory;
+import org.apache.jena.vocabulary.RDF;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
@@ -49,6 +56,7 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import static com.github.lapesd.rdfit.source.syntax.RDFLangs.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -270,6 +278,72 @@ public class JenaParsersTest {
         assertEquals(messages, emptyList());
         assertUnorderedEquals(acTriples, exTriples);
         assertUnorderedEquals(acQuads, exQuads);
+    }
+
+
+    @DataProvider public @Nonnull Object[][] testParsePrefixData() {
+        return Stream.of(
+                RDFFormat.TURTLE_PRETTY, RDFFormat.RDFXML_PRETTY, RDFFormat.JSONLD_PRETTY
+        ).map(l -> new Object[]{l}).toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "testParsePrefixData")
+    public void testParsePrefix(RDFFormat format) throws IOException {
+        Graph g = GraphFactory.createDefaultGraph();
+        g.getPrefixMapping().setNsPrefix("ex", EX);
+        g.add(T1);
+
+        byte[] data;
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            RDFDataMgr.write(out, g, format);
+            data = out.toByteArray();
+        }
+        JenaInputStreamParser parser = new JenaInputStreamParser();
+        Map<String, String> actual = new HashMap<>(), expected = new HashMap<>();
+        List<Throwable> exceptions = new ArrayList<>();
+        expected.put("ex", EX);
+        if (Lang.RDFXML.equals(format.getLang()))
+            expected.put("rdf", RDF.getURI());
+
+        parser.parse(new RDFInputStream(new ByteArrayInputStream(data)),
+                     new TripleListenerBase<Triple>(Triple.class) {
+            @Override public void triple(@Nonnull Triple triple) { }
+
+            @Override public void prefix(@Nonnull String label, @Nonnull String iriPrefix) {
+                if (actual.put(label, iriPrefix) != null)
+                    exceptions.add(new AssertionError("multiple prefixes "+label));
+            }
+
+            @Override
+            public boolean notifyInconvertibleTriple(@Nonnull InconvertibleException e) throws InterruptParsingException {
+                exceptions.add(e);
+                return super.notifyInconvertibleTriple(e);
+            }
+
+            @Override
+            public boolean notifyInconvertibleQuad(@Nonnull InconvertibleException e) throws InterruptParsingException {
+                exceptions.add(e);
+                return super.notifyInconvertibleQuad(e);
+            }
+
+            @Override public boolean notifySourceError(@Nonnull RDFItException e) {
+                exceptions.add(e);
+                return super.notifySourceError(e);
+            }
+
+            @Override public boolean notifyParseWarning(@Nonnull String message) {
+                exceptions.add(new AssertionError("Unexpected warning: "+message));
+                return super.notifyParseWarning(message);
+            }
+
+            @Override public boolean notifyParseError(@Nonnull String message) {
+                exceptions.add(new AssertionError("Unexpected error: "+message));
+                return super.notifyParseError(message);
+            }
+        });
+
+        assertEquals(actual, expected);
+        assertEquals(exceptions, emptyList());
     }
 
     @Test(dataProvider = "testData")

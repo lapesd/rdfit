@@ -69,7 +69,7 @@ public class RDFListenerHandler implements RDFHandler, AutoCloseable {
     }
 
     @Override public void handleNamespace(String prefix, String uri) throws RDFHandlerException {
-        logger.debug("{}: @prefix {}: <{}>", this, prefix, uri);
+        target.prefix(prefix, uri);
     }
 
     @Override public void handleComment(String comment) throws RDFHandlerException {

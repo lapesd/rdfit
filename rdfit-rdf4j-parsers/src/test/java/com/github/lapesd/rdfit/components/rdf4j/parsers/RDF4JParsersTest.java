@@ -36,19 +36,19 @@ import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Resource;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.model.impl.SimpleValueFactory;
-import org.eclipse.rdf4j.rio.*;
+import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.RDFWriter;
+import org.eclipse.rdf4j.rio.Rio;
+import org.eclipse.rdf4j.rio.UnsupportedRDFormatException;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.annotation.Nonnull;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -77,8 +77,6 @@ public class RDF4JParsersTest {
     @BeforeClass
     public void beforeClass() {
         RDF4JParsers.registerAll(factory);
-        RDFWriterRegistry wr = RDFWriterRegistry.getInstance();
-
     }
 
     private static void split(@Nonnull Collection<Statement> collection,
@@ -153,6 +151,64 @@ public class RDF4JParsersTest {
         rows.addAll(more);
 
         return rows.stream().map(List::toArray).toArray(Object[][]::new);
+    }
+
+    @Test
+    public void testParsePrefixes() throws IOException {
+        byte[] data;
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            try (Writer writer = new OutputStreamWriter(out, StandardCharsets.UTF_8)) {
+                writer.write("@prefix ex: <" + EX + ">.\nex:S1 ex:P1 ex:O1.\n");
+            }
+            data = out.toByteArray();
+        }
+        List<Statement> triples = new ArrayList<>();
+        List<Throwable> exceptions = new ArrayList<>();
+        List<String> messages = new ArrayList<>();
+        Map<String, String> actual = new HashMap<>(), expected = new HashMap<>();
+        expected.put("ex", EX);
+        factory.parse(new TripleListenerBase<Statement>(Statement.class) {
+            @Override public void triple(@Nonnull Statement triple) {
+                triples.add(triple);
+            }
+
+            @Override public void prefix(@Nonnull String prefixLabel, @Nonnull String iriPrefix) {
+                if (actual.put(prefixLabel, iriPrefix) != null)
+                    exceptions.add(new AssertionError("Already had "+prefixLabel));
+            }
+
+            @Override
+            public boolean notifyInconvertibleTriple(@Nonnull InconvertibleException e) throws InterruptParsingException {
+                exceptions.add(e);
+                return super.notifyInconvertibleTriple(e);
+            }
+
+            @Override
+            public boolean notifyInconvertibleQuad(@Nonnull InconvertibleException e) throws InterruptParsingException {
+                exceptions.add(e);
+                return super.notifyInconvertibleQuad(e);
+            }
+
+            @Override public boolean notifySourceError(@Nonnull RDFItException e) {
+                exceptions.add(e);
+                return super.notifySourceError(e);
+            }
+
+            @Override public boolean notifyParseWarning(@Nonnull String message) {
+                messages.add(message);
+                return super.notifyParseWarning(message);
+            }
+
+            @Override public boolean notifyParseError(@Nonnull String message) {
+                messages.add(message);
+                return super.notifyParseError(message);
+            }
+        }, new RDFInputStream(new ByteArrayInputStream(data)));
+
+        assertEquals(triples, singletonList(T1));
+        assertEquals(exceptions, emptyList());
+        assertEquals(messages, emptyList());
+        assertEquals(actual, expected);
     }
 
     @Test(dataProvider = "testData")

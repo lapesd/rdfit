@@ -134,7 +134,7 @@ public class ListenerStreamRDF implements StreamRDF {
     }
 
     @Override public void prefix(String prefix, String iri) {
-        logger.trace("{}.prefix({}, {})", this, prefix, iri);
+        target.prefix(prefix, iri);
     }
 
     @Override public void finish() {
