@@ -32,11 +32,6 @@
   <dependencies>
     <dependency>
       <groupId>com.github.lapesd.rdfit</groupId>
-      <artifactId>rdfit-core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.github.lapesd.rdfit</groupId>
       <artifactId>rdfit-jena</artifactId>
       <version>${project.version}</version>
     </dependency>

@@ -33,16 +33,17 @@ import org.testng.annotations.Test;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 public class RDFLangsTest {
     static {
@@ -154,5 +155,67 @@ public class RDFLangsTest {
         try (InputStream is = new ByteArrayInputStream(bytes)) {
             assertEquals(RDFLangs.guess(is, Integer.MAX_VALUE), expected);
         }
+    }
+
+    @DataProvider public @Nonnull Object[][] fromExtensionData() throws Exception {
+        List<List<Object>> rows = asList(
+                asList(".ttl", RDFLangs.TTL),
+                asList("file.ttl", RDFLangs.TTL),
+                asList("file.nq", RDFLangs.NQ),
+                asList("file.nquads", RDFLangs.NQ),
+                asList("file.nt", RDFLangs.NT),
+                asList("file.ntriples", RDFLangs.NT),
+                asList("file.jsonld", RDFLangs.JSONLD),
+                asList("file.rj", RDFLangs.RDFJSON),
+                asList("file.trig", RDFLangs.TRIG),
+                asList("file.rdf", RDFLangs.RDFXML),
+                asList("file.xml", RDFLangs.RDFXML), //RDFXML takes precedence over OWL
+                asList("file.ttl", RDFLangs.TTL),
+                asList("/tmp/file.ttl", RDFLangs.TTL),
+                asList("../file.ttl", RDFLangs.TTL),
+                asList("../file.ttl.gz", RDFLangs.UNKNOWN),
+                asList("../ttl.ttl.gz", RDFLangs.UNKNOWN),
+                asList("../ttl.ttl.gz-ttl", RDFLangs.UNKNOWN),
+                asList("../ttl.ttl.gz ttl", RDFLangs.UNKNOWN),
+                asList("http://example.org/data.ttl", RDFLangs.TTL),
+                asList("http://example.org/data.ttl?param=1", RDFLangs.TTL),
+                asList("http://example.org/data.ttl?param=1&other=2", RDFLangs.TTL),
+                asList("http://example.org/data.ttl?param=1&other=2#title", RDFLangs.TTL),
+                asList("http://example.org/data.ttl?param=1&other=2#nt", RDFLangs.TTL),
+                asList("http://example.org/data.ttl?ttl=1&other=2#nt", RDFLangs.TTL),
+                asList("data.ttl?ttl=1&other=2#nt", RDFLangs.TTL),
+                asList("/path/to/data.ttl?ttl=1&other=2#nt", RDFLangs.TTL),
+                asList("..//path/to/data.ttl?ttl=1&other=2#nt", RDFLangs.TTL)
+        );
+        List<List<Object>> expanded = new ArrayList<>(rows);
+        for (List<Object> row : rows) {
+            URI uri = new URI(row.get(0).toString().replace(" ", "%20"));
+            expanded.add(asList(uri, row.get(1)));
+            if (uri.isAbsolute()) {
+                expanded.add(asList(uri.toURL(), row.get(1)));
+            } else {
+                expanded.add(asList(new File(row.get(0).toString()), row.get(1)));
+                expanded.add(asList(new File(row.get(0).toString()).toPath(), row.get(1)));
+            }
+        }
+        return expanded.stream().map(List::toArray).toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "fromExtensionData")
+    public void testFromExtension(@Nonnull Object in, @Nonnull RDFLang expected) {
+        RDFLang actual = null;
+        if (in instanceof Path)
+            actual = RDFLangs.fromExtension((Path) in);
+        else if (in instanceof File)
+            actual = RDFLangs.fromExtension((File) in);
+        else if (in instanceof URI)
+            actual = RDFLangs.fromExtension((URI) in);
+        else if (in instanceof URL)
+            actual = RDFLangs.fromExtension((URL) in);
+        else if (in instanceof String)
+            actual = RDFLangs.fromExtension(in.toString());
+        else
+            fail();
+        assertEquals(actual, expected);
     }
 }

@@ -18,9 +18,12 @@ package com.github.lapesd.rdfit.components.normalizers.impl;
 
 import com.github.lapesd.rdfit.components.annotations.Accepts;
 import com.github.lapesd.rdfit.components.normalizers.BaseSourceNormalizer;
+import com.github.lapesd.rdfit.source.RDFInputStream;
 import com.github.lapesd.rdfit.source.RDFInputStreamSupplier;
 import com.github.lapesd.rdfit.source.syntax.RDFLangs;
 import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
+import com.github.lapesd.rdfit.util.URLCache;
+import com.github.lapesd.rdfit.util.impl.WeighedURLCache;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -29,6 +32,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 
@@ -55,6 +59,15 @@ public class URLNormalizer extends BaseSourceNormalizer {
     );
     private @Nullable Set<RDFLang> acceptStringSource;
     private @Nullable String acceptString;
+    private final @Nonnull URLCache cache;
+
+    public URLNormalizer() {
+        this(WeighedURLCache.getDefault());
+    }
+
+    public URLNormalizer(@Nonnull URLCache cache) {
+        this.cache = cache;
+    }
 
     /**
      * Orders the {@link RDFLang} instances in the given set from most preferred to least preferred.
@@ -111,8 +124,12 @@ public class URLNormalizer extends BaseSourceNormalizer {
     @Override public @Nonnull Object normalize(@Nonnull Object source) {
         if (!(source instanceof URL))
             return source;
+        URL url = (URL) source;
+        Supplier<RDFInputStream> supplier = cache.get(url);
+        if (supplier != null)
+            return supplier.get();
         return new RDFInputStreamSupplier((Callable<InputStream>) () -> {
-            URLConnection c = ((URL) source).openConnection();
+            URLConnection c = url.openConnection();
             c.setRequestProperty("Accept", getAcceptString());
             return c.getInputStream();
         });

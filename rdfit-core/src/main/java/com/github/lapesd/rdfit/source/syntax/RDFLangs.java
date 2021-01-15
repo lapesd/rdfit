@@ -17,22 +17,33 @@
 package com.github.lapesd.rdfit.source.syntax;
 
 import com.github.lapesd.rdfit.source.syntax.impl.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.*;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Collections.synchronizedMap;
 
 public class RDFLangs {
+    private static final Logger logger = LoggerFactory.getLogger(RDFLangs.class);
+
     private static @Nonnull List<RDFLang> LANGS;
     private static final @Nonnull List<RDFLang> BUILTIN_LANGS;
     private static final @Nonnull MultiLangDetector LANG_DETECTOR = new MultiLangDetector();
     private static final @Nonnull Map<RDFLang, LangDetector> EXTRA_DETECTORS
-            = Collections.synchronizedMap(new HashMap<>());
+            = synchronizedMap(new HashMap<>());
+    private static final @Nonnull Map<String, RDFLang> EXT_2_LANG = synchronizedMap(new HashMap<>());
+
 
     public static final @Nonnull RDFLang NT      = new SimpleRDFLang("N-Triples",        asList("nt",  "ntriples"),  "application/n-triples", false);
     public static final @Nonnull RDFLang NQ      = new SimpleRDFLang("N-Quads",          asList("nq",  "nquads"  ), "application/n-quads", false);
@@ -65,6 +76,9 @@ public class RDFLangs {
         list.add(BRF);
         list.add(HDT);
         LANGS = BUILTIN_LANGS = Collections.unmodifiableList(list);
+        for (RDFLang lang : LANGS) {
+            for (String ext : lang.getExtensions()) EXT_2_LANG.putIfAbsent(ext, lang);
+        }
 
         CookiesLangDetector cd = new CookiesLangDetector();
         cd.addCookie(Cookie.builder("<?xml").strict()
@@ -118,6 +132,11 @@ public class RDFLangs {
         ArrayList<RDFLang> list = new ArrayList<>(LANGS);
         list.add(lang);
         LANGS = Collections.unmodifiableList(list);
+        for (String ext : lang.getExtensions()) {
+            RDFLang old = EXT_2_LANG.put(ext, lang);
+            if (old != null)
+                logger.warn("Overriding extension {} -> language {} with {}", ext, old, lang);
+        }
     }
 
     /**
@@ -139,6 +158,8 @@ public class RDFLangs {
             LangDetector langDetector = EXTRA_DETECTORS.getOrDefault(lang, null);
             if (langDetector != null)
                 LANG_DETECTOR.remove(langDetector);
+            for (String extension : lang.getExtensions())
+                EXT_2_LANG.remove(extension, lang);
             return true;
         }
         return false;
@@ -157,5 +178,44 @@ public class RDFLangs {
         }
         RDFLang lang = state.end();
         return lang != null ? lang : UNKNOWN;
+    }
+
+    /**
+     * Get {@link RDFLang} that corresponds to the provided extension, path or URI.
+     *
+     * @param pathOrUrlOrExtension A URI/URL, a local file path (any separator allowed)
+     *                             or a plain file extension (with or without the '.').
+     * @return The {@link RDFLang} that uses the extension present in the input or UNKNOWN if
+     *         no {@link RDFLang} can be deduced from the extension.
+     */
+    public static @Nonnull RDFLang fromExtension(@Nonnull String pathOrUrlOrExtension) {
+        int i = pathOrUrlOrExtension.lastIndexOf('.');
+        if (i < 0)
+            return EXT_2_LANG.getOrDefault(pathOrUrlOrExtension, UNKNOWN);
+        RDFLang lang = EXT_2_LANG.getOrDefault(pathOrUrlOrExtension.substring(i+1), UNKNOWN);
+        if (!isKnown(lang)) {
+            i = pathOrUrlOrExtension.indexOf('?');
+            if (i < 0)
+                i = pathOrUrlOrExtension.indexOf('#');
+            if (i >= 0) {
+                pathOrUrlOrExtension = pathOrUrlOrExtension.substring(0, i);
+                i = pathOrUrlOrExtension.lastIndexOf('.');
+                if (i >= 0)
+                    return EXT_2_LANG.getOrDefault(pathOrUrlOrExtension.substring(i+1), UNKNOWN);
+            }
+        }
+        return lang;
+    }
+    public static @Nonnull RDFLang fromExtension(@Nonnull URL url) {
+        return fromExtension(url.toString());
+    }
+    public static @Nonnull RDFLang fromExtension(@Nonnull URI uri) {
+        return fromExtension(uri.toString());
+    }
+    public static @Nonnull RDFLang fromExtension(@Nonnull File file) {
+        return fromExtension(file.getName());
+    }
+    public static @Nonnull RDFLang fromExtension(@Nonnull Path path) {
+        return fromExtension(path.toFile());
     }
 }
