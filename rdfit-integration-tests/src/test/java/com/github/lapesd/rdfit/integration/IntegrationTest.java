@@ -79,12 +79,12 @@ public class IntegrationTest {
         List<?> expected = data.expectedTriples();
         List<Future<?>> futures = new ArrayList<>();
         for (Object input : data.generateInputs()) {
-            futures.add(exec.submit(() -> {
+//            futures.add(exec.submit(() -> {
                 List<Object> actual = new ArrayList<>();
                 function.apply(data.getTripleClass(), input).forEachRemaining(actual::add);
                 check(actual, expected);
-                return null;
-            }));
+//                return null;
+//            }));
         }
         try {
             for (Future<?> f : futures)

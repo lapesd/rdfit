@@ -16,6 +16,8 @@
 
 package com.github.lapesd.rdfit.iterator;
 
+import com.github.lapesd.rdfit.SourceQueue;
+import com.github.lapesd.rdfit.impl.ClosedSourceQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +31,14 @@ public class PlainRDFIt<T> extends EagerRDFIt<T> {
     private final @Nonnull Object source;
 
     public PlainRDFIt(@Nonnull Class<?> valueClass, @Nonnull IterationElement itElement,
-                      @Nonnull Iterator<?> iterator, @Nonnull Object source) {
-        super(valueClass, itElement);
+                  @Nonnull Iterator<?> iterator, @Nonnull Object source) {
+        this(valueClass, itElement, iterator, source, new ClosedSourceQueue());
+    }
+
+    public PlainRDFIt(@Nonnull Class<?> valueClass, @Nonnull IterationElement itElement,
+                      @Nonnull Iterator<?> iterator, @Nonnull Object source,
+                      @Nonnull SourceQueue sourceQueue) {
+        super(valueClass, itElement, sourceQueue);
         this.iterator = iterator;
         this.source = source;
     }

@@ -16,6 +16,7 @@
 
 package com.github.lapesd.rdfit.iterator;
 
+import com.github.lapesd.rdfit.SourceQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,7 @@ public class TransformingRDFIt<T> extends EagerRDFIt<T> {
     public <X> TransformingRDFIt(@Nonnull Class<? extends T> valueClass,
                                  @Nonnull IterationElement itElement, @Nonnull RDFIt<?> in,
                                  @Nonnull Function<?, ? extends T> function) {
-        super(valueClass, itElement);
+        super(valueClass, itElement, in.getSourceQueue());
         this.in = in;
         //noinspection unchecked
         this.function = (Function<Object, ? extends T>) function;
@@ -39,6 +40,10 @@ public class TransformingRDFIt<T> extends EagerRDFIt<T> {
 
     @Override public @Nonnull Object getSource() {
         return in.getSource();
+    }
+
+    @Override public @Nonnull SourceQueue getSourceQueue() {
+        return in.getSourceQueue();
     }
 
     @Override protected @Nullable T advance() {

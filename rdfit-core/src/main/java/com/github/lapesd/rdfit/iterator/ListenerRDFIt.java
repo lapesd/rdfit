@@ -16,12 +16,14 @@
 
 package com.github.lapesd.rdfit.iterator;
 
+import com.github.lapesd.rdfit.SourceQueue;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
 import com.github.lapesd.rdfit.components.converters.quad.QuadLifter;
 import com.github.lapesd.rdfit.components.converters.util.ConversionCache;
 import com.github.lapesd.rdfit.errors.InconvertibleException;
 import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;
+import com.github.lapesd.rdfit.impl.ClosedSourceQueue;
 import com.github.lapesd.rdfit.listener.RDFListener;
 import com.github.lapesd.rdfit.listener.RDFListenerBase;
 import org.slf4j.Logger;
@@ -45,9 +47,16 @@ public class ListenerRDFIt<T> extends EagerRDFIt<T> {
     private final @Nonnull BlockingQueue<Object> queue = new ArrayBlockingQueue<>(1024);
 
     public ListenerRDFIt(@Nonnull Object source, @Nonnull Class<?> valueClass,
+                     @Nonnull IterationElement itElement, @Nullable QuadLifter quadLifter,
+                     @Nonnull ConversionManager convMgr) {
+        this(source, valueClass, itElement, quadLifter, convMgr, new ClosedSourceQueue());
+    }
+
+    public ListenerRDFIt(@Nonnull Object source, @Nonnull Class<?> valueClass,
                          @Nonnull IterationElement itElement, @Nullable QuadLifter quadLifter,
-                         @Nonnull ConversionManager convMgr) {
-        super(valueClass, itElement);
+                         @Nonnull ConversionManager convMgr,
+                         @Nonnull SourceQueue sourceQueue) {
+        super(valueClass, itElement, sourceQueue);
         this.source = source;
         listener = new Listener(quadLifter, convMgr);
     }
@@ -152,6 +161,10 @@ public class ListenerRDFIt<T> extends EagerRDFIt<T> {
             }
         }
 
+        @Override public void attachSourceQueue(@Nonnull SourceQueue queue) {
+            ListenerRDFIt.this.sourceQueue = queue;
+        }
+
         @Override public void triple(@Nonnull Object triple) {
             if (itElement.isQuad()) {
                 if (quadLifter == null) {
@@ -209,6 +222,7 @@ public class ListenerRDFIt<T> extends EagerRDFIt<T> {
         }
 
         @Override public void finish() {
+            super.finish();
             synchronized (ListenerRDFIt.this) {
                 finished = true;
                 ListenerRDFIt.this.notifyAll();

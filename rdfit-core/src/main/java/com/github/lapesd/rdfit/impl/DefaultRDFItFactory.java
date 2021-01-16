@@ -18,6 +18,7 @@ package com.github.lapesd.rdfit.impl;
 
 import com.github.lapesd.rdfit.RDFItFactory;
 import com.github.lapesd.rdfit.RIt;
+import com.github.lapesd.rdfit.SourceQueue;
 import com.github.lapesd.rdfit.components.ItParser;
 import com.github.lapesd.rdfit.components.ListenerParser;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
@@ -35,14 +36,12 @@ import com.github.lapesd.rdfit.iterator.*;
 import com.github.lapesd.rdfit.listener.ConvertingRDFListener;
 import com.github.lapesd.rdfit.listener.RDFListener;
 import com.github.lapesd.rdfit.source.SourcesIterator;
-import com.github.lapesd.rdfit.util.NoSource;
 import com.github.lapesd.rdfit.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -118,40 +117,38 @@ public class DefaultRDFItFactory implements RDFItFactory {
     }
 
     private @Nonnull RDFIt<Object>
-    iterateSources(@Nonnull IterationElement itElement, @Nullable Class<?> tripleClass,
-                   @Nullable Class<?> quadClass, @Nullable QuadLifter quadLifter,
+    iterateSources(@Nonnull IterationElement itEl, @Nullable Class<?> tCls,
+                   @Nullable Class<?> quadClass, @Nullable QuadLifter qLifter,
                    @Nonnull Object... sources) {
-        if (tripleClass == null && quadClass == null)
+        if (tCls == null && quadClass == null)
             throw new NullPointerException("Both tripleClass and quadClass are null");
-        assert quadLifter == null || tripleClass != null;
-        Class<?> valueClass = itElement.isTriple() ? tripleClass : quadClass;
-        if (valueClass == null)
+        assert qLifter == null || tCls != null;
+        Class<?> vCls = itEl.isTriple() ? tCls : quadClass;
+        if (vCls == null)
             throw new IllegalArgumentException("null *Class parameter corresponding to itElement");
-
-        if (sources.length == 0) {
-            return new EmptyRDFIt<>(valueClass, itElement, NoSource.INSTANCE);
-        } else if (sources.length > 1) {
-            return new FlatMapRDFIt<>(valueClass,  itElement, Arrays.asList(sources).iterator(),
-                    s -> iterateSources(itElement, tripleClass, quadClass, quadLifter, s));
-        }
-        Object source = sources[0];
-        if (source == null)
-            return new EmptyRDFIt<>(valueClass, itElement, NoSource.INSTANCE);
-        Object normalized = normalizerRegistry.normalize(source);
-        if (normalized instanceof SourcesIterator) {
-            return new FlatMapRDFIt<>(valueClass, itElement, (SourcesIterator)normalized,
-                    s -> iterateSources(itElement, tripleClass, quadClass, quadLifter, s));
-        } else if (normalized instanceof RDFItException) {
-            return new ErrorRDFIt<>(valueClass, itElement, source, (RDFItException) normalized);
-        } else {
-            return iterateSource(itElement, tripleClass, quadLifter, valueClass, normalized);
-        }
+        DefaultSourceQueue queue = new DefaultSourceQueue(sources);
+        return new FlatMapRDFIt<>(vCls, itEl, queue,
+                                  s -> iterateSource(queue, itEl, tCls, qLifter, vCls, s), queue
+        ).owningSourceQueue();
     }
 
-    private @Nonnull RDFIt<Object> iterateSource(@Nonnull IterationElement itElement,
+    private @Nonnull RDFIt<Object> iterateSource(@Nonnull SourceQueue queue,
+                                                 @Nonnull IterationElement itElement,
                                                  @Nullable Class<?> tripleClass,
                                                  @Nullable QuadLifter quadLifter,
                                                  @Nonnull Class<?> valueClass, @Nonnull Object in) {
+        Object normalized = normalizerRegistry.normalize(in);
+        if (normalized instanceof SourcesIterator) {
+            SourcesIterator sourceIt = (SourcesIterator) normalized;
+            if (!sourceIt.hasNext())
+                return new EmptyRDFIt<>(valueClass, itElement, in);
+            normalized = sourceIt.next();
+            queue.add(SourceQueue.When.Soon, sourceIt);
+        } else if (normalized instanceof RDFItException) {
+            return new ErrorRDFIt<>(valueClass, itElement, in, (RDFItException) normalized);
+        }
+        in = normalized;
+
         RDFIt<Object> it;
         ItParser itParser = parserRegistry.getItParser(in, itElement, valueClass);
         if (itParser == null) {
@@ -159,7 +156,7 @@ public class DefaultRDFItFactory implements RDFItFactory {
             Class<?> otherClass = itElement == QUAD ? tripleClass : valueClass;
             itParser = parserRegistry.getItParser(in, other, otherClass);
             if (itParser == null) {
-                it = parse2It(itElement, quadLifter, valueClass, in);
+                it = parse2It(queue, itElement, quadLifter, valueClass, in);
             } else {
                 it = itParser.parse(in);
                 if (valueClass.isAssignableFrom(it.valueClass())) {
@@ -184,20 +181,21 @@ public class DefaultRDFItFactory implements RDFItFactory {
         return it;
     }
 
-    private @Nonnull RDFIt<Object> parse2It(@Nonnull IterationElement itElement,
-                                           @Nullable QuadLifter quadLifter,
-                                           @Nonnull Class<?> valueClass, @Nonnull Object source) {
+    private @Nonnull RDFIt<Object> parse2It(@Nonnull SourceQueue sourceQueue,
+                                            @Nonnull IterationElement itElement,
+                                            @Nullable QuadLifter quadLifter,
+                                            @Nonnull Class<?> valueClass, @Nonnull Object source) {
         RDFIt<Object> it;
         Class<?> tCls = quadLifter != null ? quadLifter.tripleType() : valueClass;
-        ListenerParser cbParser = parserRegistry.getListenerParser(source, tCls, valueClass);
-        if (cbParser == null)
+        ListenerParser parser = parserRegistry.getListenerParser(source, tCls, valueClass);
+        if (parser == null)
             throw new NoParserException(source);
 
         ListenerRDFIt<Object> cbIt = new ListenerRDFIt<>(source, valueClass, itElement,
-                quadLifter, conversionMgr);
+                                                         quadLifter, conversionMgr, sourceQueue);
         executor.execute(() -> {
             try {
-                cbParser.parse(source, cbIt.getListener());
+                parser.parse(source, cbIt.getListener());
                 cbIt.getListener().finish();
             } catch (InterruptParsingException ignored) {
             } catch (RDFItException e) {
@@ -236,10 +234,11 @@ public class DefaultRDFItFactory implements RDFItFactory {
 
     @Override
     public void parse(@Nonnull RDFListener<?,?> listener, @Nonnull Object... sources) {
-        if (sources.length != 0) {
-            for (Object s : sources) {
-                if (s == null)
-                    continue;
+        boolean onFinishCall = false;
+        try (DefaultSourceQueue queue = new DefaultSourceQueue(sources)) {
+            listener.attachSourceQueue(queue);
+            while (queue.hasNext()) {
+                Object s = queue.next();
                 try {
                     s = normalizerRegistry.normalize(s);
                     if (s instanceof SourcesIterator) {
@@ -247,25 +246,30 @@ public class DefaultRDFItFactory implements RDFItFactory {
                             parse(listener, it.next());
                         return;
                     } else if (s instanceof RDFItException) {
-                        throw (RDFItException)s;
+                        throw (RDFItException) s;
                     }
                     //noinspection unchecked
                     parseSource((RDFListener<Object, Object>) listener, s);
                 } catch (InterruptParsingException e) {
                     break;
                 } catch (Throwable t) {
-                    RDFItException e = t instanceof RDFItException ? (RDFItException)t
-                                     : new RDFItException("Unexpected exception parsing "+s, t);
+                    RDFItException e = t instanceof RDFItException ? (RDFItException) t
+                            : new RDFItException("Unexpected exception parsing " + s, t);
                     // triple and quad conversion exceptions are notified inside parseSource
                     if (!listener.notifySourceError(e))
                         break; // stop parsing
                 }
             }
-        }
-        try {
+            onFinishCall = true;
             listener.finish();
         } catch (Throwable t) {
-            throw new RDFItException(listener+".finish() threw "+t.getClass().getSimpleName(), t);
+            try {
+                if (!onFinishCall)
+                    listener.finish();
+            } catch (Throwable t2) {
+                t.addSuppressed(t2);
+            }
+            throw t;
         }
     }
 

@@ -16,14 +16,17 @@
 
 package com.github.lapesd.rdfit.iterator;
 
+import com.github.lapesd.rdfit.impl.ClosedSourceQueue;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class EmptyRDFIt<T> extends EagerRDFIt<T> {
     private final @Nonnull Object source;
 
-    public EmptyRDFIt(@Nonnull Class<? extends T> valueClass, @Nonnull IterationElement itElement, @Nonnull Object source) {
-        super(valueClass, itElement);
+    public EmptyRDFIt(@Nonnull Class<? extends T> valueClass, @Nonnull IterationElement itElement,
+                      @Nonnull Object source) {
+        super(valueClass, itElement, new ClosedSourceQueue());
         this.source = source;
     }
 

@@ -16,6 +16,7 @@
 
 package com.github.lapesd.rdfit.listener;
 
+import com.github.lapesd.rdfit.SourceQueue;
 import com.github.lapesd.rdfit.errors.InconvertibleException;
 import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;
@@ -34,6 +35,7 @@ public abstract class RDFListenerBase<T, Q> implements RDFListener<T, Q> {
     protected @Nullable Class<T> tripleType;
     protected @Nullable Class<Q> quadType;
     protected @Nonnull Object source = NoSource.INSTANCE;
+    protected @Nullable SourceQueue sourceQueue = null;
 
     public RDFListenerBase(@Nullable Class<T> tripleType) {
         this(tripleType, null);
@@ -43,6 +45,25 @@ public abstract class RDFListenerBase<T, Q> implements RDFListener<T, Q> {
         assert tripleType != null || quadType != null;
         this.tripleType = tripleType;
         this.quadType = quadType;
+    }
+
+    public @Nonnull SourceQueue getSourceQueue() {
+        if (sourceQueue == null)
+            throw new IllegalArgumentException("SourceQueue not yet set with attachSourceQueue()!");
+        return sourceQueue;
+    }
+
+    @Override public @Nullable Class<T> tripleType() {
+        return tripleType;
+    }
+
+    @Override public @Nullable Class<Q> quadType() {
+        return quadType;
+    }
+
+    @Override public void attachSourceQueue(@Nonnull SourceQueue queue) {
+        logger.debug("{}.attachSourceQueue({})", this, queue);
+        sourceQueue = queue;
     }
 
     @Override
@@ -77,14 +98,6 @@ public abstract class RDFListenerBase<T, Q> implements RDFListener<T, Q> {
         return false; //do not parse next sources
     }
 
-    @Override public @Nullable Class<T> tripleType() {
-        return tripleType;
-    }
-
-    @Override public @Nullable Class<Q> quadType() {
-        return quadType;
-    }
-
     @Override public void quad(@Nonnull Q quad) {
         if (quadType() == null)
             throw new UnsupportedOperationException("Should have called quad(graph, triple)");
@@ -115,6 +128,7 @@ public abstract class RDFListenerBase<T, Q> implements RDFListener<T, Q> {
 
     @Override public void finish() {
         logger.debug("{}.finish()", this);
+        this.sourceQueue = null;
     }
 
     @Override public String toString() {

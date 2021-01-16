@@ -16,6 +16,7 @@
 
 package com.github.lapesd.rdfit.iterator;
 
+import com.github.lapesd.rdfit.SourceQueue;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
 import com.github.lapesd.rdfit.components.converters.util.ConversionCache;
 import com.github.lapesd.rdfit.components.converters.util.ConversionPathSingletonCache;
@@ -34,9 +35,13 @@ public class ConvertingRDFIt<T> extends EagerRDFIt<T> {
     public ConvertingRDFIt(@Nonnull Class<? extends T> valueClass,
                            @Nonnull IterationElement itElement, @Nonnull RDFIt<?> source,
                            @Nonnull ConversionManager conversionManager) {
-        super(valueClass, itElement);
+        super(valueClass, itElement, source.getSourceQueue());
         this.source = source;
         this.conversionCache = new ConversionPathSingletonCache(conversionManager, valueClass);
+    }
+
+    @Override public @Nonnull SourceQueue getSourceQueue() {
+        return source.getSourceQueue();
     }
 
     @Override public @Nonnull Object getSource() {

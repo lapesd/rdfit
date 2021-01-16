@@ -17,6 +17,7 @@
 package com.github.lapesd.rdfit.iterator;
 
 import com.github.lapesd.rdfit.errors.RDFItException;
+import com.github.lapesd.rdfit.impl.ClosedSourceQueue;
 
 import javax.annotation.Nonnull;
 import java.util.NoSuchElementException;
@@ -27,7 +28,7 @@ public class ErrorRDFIt<T> extends BaseRDFIt<T> {
 
     public ErrorRDFIt(@Nonnull Class<?> valueClass, @Nonnull IterationElement itElement,
                       @Nonnull Object source, @Nonnull RDFItException exception) {
-        super(valueClass, itElement);
+        super(valueClass, itElement, new ClosedSourceQueue());
         this.source = source;
         this.exception = exception;
     }

@@ -17,6 +17,7 @@
 package com.github.lapesd.rdfit.components.rdf4j.parsers.iterator.impl;
 
 import com.github.lapesd.rdfit.errors.RDFItException;
+import com.github.lapesd.rdfit.impl.ClosedSourceQueue;
 import com.github.lapesd.rdfit.iterator.BaseRDFIt;
 import com.github.lapesd.rdfit.iterator.IterationElement;
 import com.github.lapesd.rdfit.util.Utils;
@@ -37,7 +38,7 @@ public class GraphQueryResultRDFIt extends BaseRDFIt<Statement> {
 
     public GraphQueryResultRDFIt(@Nonnull Object source, @Nullable RepositoryConnection connection,
                                  @Nonnull GraphQueryResult result) {
-        super(Statement.class, IterationElement.QUAD);
+        super(Statement.class, IterationElement.QUAD, new ClosedSourceQueue());
         this.source = source;
         this.connection = connection;
         this.result = result;

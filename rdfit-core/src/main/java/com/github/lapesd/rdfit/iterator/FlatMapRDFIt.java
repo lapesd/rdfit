@@ -16,7 +16,9 @@
 
 package com.github.lapesd.rdfit.iterator;
 
+import com.github.lapesd.rdfit.SourceQueue;
 import com.github.lapesd.rdfit.errors.RDFItException;
+import com.github.lapesd.rdfit.impl.ClosedSourceQueue;
 import com.github.lapesd.rdfit.util.NoSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,14 +33,27 @@ public class FlatMapRDFIt<T> extends EagerRDFIt<T> {
     private final @Nonnull Iterator<?> inputIt;
     private final @Nonnull Function<Object, RDFIt<T>> function;
     private @Nullable RDFIt<T> currentIt = null;
+    private boolean ownsSourceQueue = false, closed = false;
+
+    public FlatMapRDFIt(@Nonnull Class<? extends T> valueClass, @Nonnull IterationElement itElement,
+                    @Nonnull Iterator<?> inputIt,
+                    @Nonnull Function<?, RDFIt<T>> function) {
+        this(valueClass, itElement, inputIt, function, new ClosedSourceQueue());
+    }
 
     public FlatMapRDFIt(@Nonnull Class<? extends T> valueClass, @Nonnull IterationElement itElement,
                         @Nonnull Iterator<?> inputIt,
-                        @Nonnull Function<?, RDFIt<T>> function) {
-        super(valueClass, itElement);
+                        @Nonnull Function<?, RDFIt<T>> function,
+                        @Nonnull SourceQueue sourceQueue) {
+        super(valueClass, itElement, sourceQueue);
         this.inputIt = inputIt;
         //noinspection unchecked
         this.function = (Function<Object, RDFIt<T>>) function;
+    }
+
+    public @Nonnull FlatMapRDFIt<T> owningSourceQueue() {
+        this.ownsSourceQueue = true;
+        return this;
     }
 
     @Override public @Nonnull Object getSource() {
@@ -60,12 +75,21 @@ public class FlatMapRDFIt<T> extends EagerRDFIt<T> {
                 throw new RDFItException(input, "Unexpected "+e.getClass().getSimpleName(), e);
             }
         }
-        return currentIt != null && currentIt.hasNext() ? currentIt.next() : null;
+        if (currentIt != null && currentIt.hasNext())
+            return currentIt.next();
+        if (!closed)
+            close();
+        return null;
     }
 
     @Override public void close() {
+        if (closed)
+            return;
+        closed = true;
         if (currentIt != null)
             currentIt.close();
+        if (ownsSourceQueue)
+            sourceQueue.close();
         if (inputIt instanceof AutoCloseable) {
             try {
                 ((AutoCloseable) inputIt).close();

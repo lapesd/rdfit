@@ -16,6 +16,7 @@
 
 package com.github.lapesd.rdfit.iterator;
 
+import com.github.lapesd.rdfit.SourceQueue;
 import com.github.lapesd.rdfit.errors.RDFItException;
 import com.github.lapesd.rdfit.util.NoSource;
 
@@ -42,6 +43,12 @@ public interface RDFIt<T> extends Iterator<T>, AutoCloseable {
      */
     @Nonnull IterationElement itElement();
 
+    /**
+     * Return a {@link SourceQueue} on which  new sources may be queued.
+     *
+     * @return the SourceQueue instance
+     */
+    @Nonnull SourceQueue getSourceQueue();
 
     /**
      * Get the source {@link Object} of the last value returned by {@link #next()}.

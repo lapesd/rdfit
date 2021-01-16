@@ -33,14 +33,13 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import static com.github.lapesd.rdfit.data.MockFactory.*;
 import static com.github.lapesd.rdfit.data.MockHelpers.quadLifter;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.testng.Assert.*;
 
 public abstract class RDFItFactoryTestBase {
@@ -462,5 +461,83 @@ public abstract class RDFItFactoryTestBase {
         assertEquals(quadConversionExceptions, Collections.emptyList());
         assertEquals(sourceExceptions, Collections.emptyList());
         assertEquals(acTriples, exTriples);
+    }
+
+    @DataProvider public @Nonnull Object[][] factoryMethodsData() {
+        return Arrays.stream(FactoryMethod.values())
+                     .map(v -> new Object[]{v}).toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "factoryMethodsData")
+    public void testRecursiveEnqueueing(@Nonnull FactoryMethod factoryMethod) {
+        RDFItFactory factory = factoryMethod.invoke(this);
+        List<Object> actual = new ArrayList<>();
+        List<Exception> exceptions = new ArrayList<>();
+        List<String> messages = new ArrayList<>();
+        factory.parse(new RDFListenerBase<TripleMock1, QuadMock1>(TripleMock1.class, QuadMock1.class) {
+            @Override public void triple(@Nonnull TripleMock1 triple) {
+                if (triple.equals(Ex.T1)) {
+                    getSourceQueue().add(SourceQueue.When.Soon,
+                                         ModelLib.getModel(singletonList(Ex.U2)));
+                } else if (triple.equals(Ex.T2)) {
+                    getSourceQueue().add(SourceQueue.When.Later,
+                                         ModelLib.getModel(singletonList(Ex.V3)));
+                }
+                actual.add(triple);
+            }
+            @Override public void quad(@Nonnull QuadMock1 quad) {
+                actual.add(quad);
+            }
+
+            @Override
+            public boolean notifyInconvertibleTriple(@Nonnull InconvertibleException e) throws InterruptParsingException {
+                exceptions.add(e);
+                return super.notifyInconvertibleTriple(e);
+            }
+
+            @Override
+            public boolean notifyInconvertibleQuad(@Nonnull InconvertibleException e) throws InterruptParsingException {
+                exceptions.add(e);
+                return super.notifyInconvertibleQuad(e);
+            }
+
+            @Override public boolean notifySourceError(@Nonnull RDFItException e) {
+                exceptions.add(e);
+                return super.notifySourceError(e);
+            }
+
+            @Override public boolean notifyParseWarning(@Nonnull String message) {
+                messages.add(message);
+                return super.notifyParseWarning(message);
+            }
+
+            @Override public boolean notifyParseError(@Nonnull String message) {
+                messages.add(message);
+                return super.notifyParseError(message);
+            }
+        }, ModelLib.getModel(singletonList(Ex.T1)), ModelLib.getModel(singletonList(Ex.Q1)));
+
+        assertEquals(exceptions, emptyList());
+        assertEquals(messages, emptyList());
+        assertEquals(actual, asList(Ex.T1, Ex.T2, Ex.Q1, Ex.T3));
+    }
+
+    @Test(dataProvider = "factoryMethodsData")
+    public void testRecursiveEnqueuingOnRDFIt(@Nonnull FactoryMethod factoryMethod) {
+        RDFItFactory factory = factoryMethod.invoke(this);
+        ModelLib.Model m1 = ModelLib.getModel(asList(Ex.T1, Ex.T2, Ex.T3));
+        List<TripleMock1> actual = new ArrayList<>();
+        try (RDFIt<TripleMock1> it = factory.iterateTriples(TripleMock1.class, m1)) {
+            while (it.hasNext()) {
+                TripleMock1 triple = it.next();
+                if (triple.equals(Ex.T1)) {
+                    ModelLib.Model nexModel = ModelLib.getModel(singletonList(Ex.Q4));
+                    it.getSourceQueue().add(SourceQueue.When.Later, nexModel);
+                }
+                actual.add(triple);
+            }
+        }
+
+        assertEquals(actual, asList(Ex.T1, Ex.T2, Ex.T3, Ex.T4));
     }
 }

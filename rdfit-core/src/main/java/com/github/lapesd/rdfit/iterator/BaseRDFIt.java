@@ -16,6 +16,7 @@
 
 package com.github.lapesd.rdfit.iterator;
 
+import com.github.lapesd.rdfit.SourceQueue;
 import com.github.lapesd.rdfit.util.Utils;
 
 import javax.annotation.Nonnull;
@@ -23,11 +24,14 @@ import javax.annotation.Nonnull;
 public abstract class BaseRDFIt<T> implements RDFIt<T> {
     protected final @Nonnull Class<?> valueClass;
     protected final @Nonnull IterationElement itElement;
+    protected @Nonnull SourceQueue sourceQueue;
     protected boolean closed = false;
 
-    public BaseRDFIt(@Nonnull Class<?> valueClass, @Nonnull IterationElement itElement) {
+    protected BaseRDFIt(@Nonnull Class<?> valueClass, @Nonnull IterationElement itElement,
+                        @Nonnull SourceQueue sourceQueue) {
         this.valueClass = valueClass;
         this.itElement = itElement;
+        this.sourceQueue = sourceQueue;
     }
 
     @Override public @Nonnull Class<? extends T> valueClass() {
@@ -37,6 +41,10 @@ public abstract class BaseRDFIt<T> implements RDFIt<T> {
 
     @Override public @Nonnull IterationElement itElement() {
         return itElement;
+    }
+
+    @Override public @Nonnull SourceQueue getSourceQueue() {
+        return sourceQueue;
     }
 
     @Override public String toString() {

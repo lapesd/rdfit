@@ -16,6 +16,8 @@
 
 package com.github.lapesd.rdfit.iterator;
 
+import com.github.lapesd.rdfit.SourceQueue;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.NoSuchElementException;
@@ -23,8 +25,9 @@ import java.util.NoSuchElementException;
 public abstract class EagerRDFIt<T> extends BaseRDFIt<T> {
     protected T value;
 
-    public EagerRDFIt(@Nonnull Class<?> valueClass, @Nonnull IterationElement itElement) {
-        super(valueClass, itElement);
+    public EagerRDFIt(@Nonnull Class<?> valueClass, @Nonnull IterationElement itElement,
+                      @Nonnull SourceQueue sourceQueue) {
+        super(valueClass, itElement, sourceQueue);
     }
 
     protected abstract @Nullable T advance();

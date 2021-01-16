@@ -17,6 +17,7 @@
 package com.github.lapesd.rdfit.components.rdf4j.parsers.iterator.impl;
 
 import com.github.lapesd.rdfit.errors.RDFItException;
+import com.github.lapesd.rdfit.impl.ClosedSourceQueue;
 import com.github.lapesd.rdfit.iterator.BaseRDFIt;
 import com.github.lapesd.rdfit.iterator.IterationElement;
 import com.github.lapesd.rdfit.util.Utils;
@@ -38,7 +39,7 @@ public class RepositoryResultRDFIt extends BaseRDFIt<Statement> {
     public RepositoryResultRDFIt(@Nonnull IterationElement itElement, @Nonnull Object source,
                                  @Nullable RepositoryConnection connection,
                                  @Nonnull RepositoryResult<?> result) {
-        super(Statement.class, itElement);
+        super(Statement.class, itElement, new ClosedSourceQueue());
         this.source = source;
         this.connection = connection;
         this.result = result;

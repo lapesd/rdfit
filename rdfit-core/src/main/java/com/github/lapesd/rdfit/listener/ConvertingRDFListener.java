@@ -16,6 +16,7 @@
 
 package com.github.lapesd.rdfit.listener;
 
+import com.github.lapesd.rdfit.SourceQueue;
 import com.github.lapesd.rdfit.components.ListenerParser;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
 import com.github.lapesd.rdfit.components.converters.util.ConversionCache;
@@ -87,6 +88,10 @@ public class ConvertingRDFListener<T, Q> implements RDFListener<T, Q> {
 
     @Override public @Nullable Class<Q> quadType() {
         return quadType;
+    }
+
+    @Override public void attachSourceQueue(@Nonnull SourceQueue queue) {
+        target.attachSourceQueue(queue);
     }
 
     @Override public void triple(@Nonnull T triple) throws InconvertibleException {

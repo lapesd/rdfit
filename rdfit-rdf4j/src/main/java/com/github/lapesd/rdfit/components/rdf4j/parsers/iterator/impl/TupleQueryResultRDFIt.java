@@ -17,6 +17,7 @@
 package com.github.lapesd.rdfit.components.rdf4j.parsers.iterator.impl;
 
 import com.github.lapesd.rdfit.errors.RDFItException;
+import com.github.lapesd.rdfit.impl.ClosedSourceQueue;
 import com.github.lapesd.rdfit.iterator.EagerRDFIt;
 import com.github.lapesd.rdfit.iterator.IterationElement;
 import org.eclipse.rdf4j.model.IRI;
@@ -42,7 +43,7 @@ public class TupleQueryResultRDFIt extends EagerRDFIt<Statement> {
 
     public TupleQueryResultRDFIt(@Nonnull IterationElement itElement, @Nonnull Object source,
                                  @Nonnull TupleQueryResult result) {
-        super(Statement.class, itElement);
+        super(Statement.class, itElement, new ClosedSourceQueue());
         this.source = source;
         this.result = result;
         this.vars = result.getBindingNames();

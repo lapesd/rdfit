@@ -16,6 +16,7 @@
 
 package com.github.lapesd.rdfit.listener;
 
+import com.github.lapesd.rdfit.SourceQueue;
 import com.github.lapesd.rdfit.errors.InconvertibleException;
 import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;
@@ -46,6 +47,18 @@ public interface RDFListener<T, Q> {
      *         should not be called.
      */
     @Nullable Class<Q> quadType();
+
+    /**
+     * Attach this {@link RDFListener} to a {@link SourceQueue}, allowing it to later
+     * queue additional sources.
+     *
+     * The attachment is only valid until {@link #finish()} is called, i.e., until parsing of
+     * the queue finishes. Trying to {@link SourceQueue#add(SourceQueue.When, Object)} after
+     * the queue has been fully processed will cause an {@link IllegalStateException}.
+     *
+     * @param queue the {@link SourceQueue} to use when queueing additional sources.
+     */
+    void attachSourceQueue(@Nonnull SourceQueue queue);
 
     /**
      * Notify that a triple from source could not be converted to {@link #tripleType()}.
