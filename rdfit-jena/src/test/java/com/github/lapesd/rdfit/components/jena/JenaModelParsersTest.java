@@ -16,7 +16,6 @@
 
 package com.github.lapesd.rdfit.components.jena;
 
-import com.github.lapesd.rdfit.DefaultRDFItFactory;
 import com.github.lapesd.rdfit.RDFItFactory;
 import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
 import com.github.lapesd.rdfit.components.normalizers.DefaultSourceNormalizerRegistry;
@@ -24,6 +23,7 @@ import com.github.lapesd.rdfit.components.parsers.DefaultParserRegistry;
 import com.github.lapesd.rdfit.errors.InconvertibleException;
 import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;
+import com.github.lapesd.rdfit.impl.DefaultRDFItFactory;
 import com.github.lapesd.rdfit.listener.RDFListenerBase;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;

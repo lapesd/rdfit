@@ -14,8 +14,10 @@
  *    limitations under the License.
  */
 
-package com.github.lapesd.rdfit;
+package com.github.lapesd.rdfit.impl;
 
+import com.github.lapesd.rdfit.RDFItFactory;
+import com.github.lapesd.rdfit.RIt;
 import com.github.lapesd.rdfit.components.ItParser;
 import com.github.lapesd.rdfit.components.ListenerParser;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;

@@ -16,7 +16,6 @@
 
 package com.github.lapesd.rdfit.components.rdf4j.parsers;
 
-import com.github.lapesd.rdfit.DefaultRDFItFactory;
 import com.github.lapesd.rdfit.RDFItFactory;
 import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
 import com.github.lapesd.rdfit.components.normalizers.DefaultSourceNormalizerRegistry;
@@ -25,6 +24,7 @@ import com.github.lapesd.rdfit.components.rdf4j.RDF4JParsers;
 import com.github.lapesd.rdfit.errors.InconvertibleException;
 import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;
+import com.github.lapesd.rdfit.impl.DefaultRDFItFactory;
 import com.github.lapesd.rdfit.iterator.RDFIt;
 import com.github.lapesd.rdfit.listener.RDFListenerBase;
 import com.github.lapesd.rdfit.listener.TripleListenerBase;

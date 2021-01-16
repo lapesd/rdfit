@@ -17,7 +17,6 @@
 package com.github.lapesd.rdfit.components.parsers;
 
 
-import com.github.lapesd.rdfit.DefaultRDFItFactory;
 import com.github.lapesd.rdfit.RDFItFactory;
 import com.github.lapesd.rdfit.components.ItParser;
 import com.github.lapesd.rdfit.components.ListenerParser;
@@ -26,6 +25,7 @@ import com.github.lapesd.rdfit.components.parsers.impl.iterator.IterableItParser
 import com.github.lapesd.rdfit.components.parsers.impl.listener.IterableListenerParser;
 import com.github.lapesd.rdfit.components.parsers.impl.listener.QuadArrayListenerParser;
 import com.github.lapesd.rdfit.components.parsers.impl.listener.TripleArrayListenerParser;
+import com.github.lapesd.rdfit.impl.DefaultRDFItFactory;
 import com.github.lapesd.rdfit.iterator.IterationElement;
 
 import javax.annotation.Nonnull;

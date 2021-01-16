@@ -21,6 +21,7 @@ import com.github.lapesd.rdfit.components.converters.quad.QuadLifter;
 import com.github.lapesd.rdfit.components.normalizers.CoreSourceNormalizers;
 import com.github.lapesd.rdfit.components.normalizers.DefaultSourceNormalizerRegistry;
 import com.github.lapesd.rdfit.components.parsers.DefaultParserRegistry;
+import com.github.lapesd.rdfit.impl.DefaultRDFItFactory;
 import com.github.lapesd.rdfit.iterator.RDFIt;
 import com.github.lapesd.rdfit.listener.RDFListener;
 import com.github.lapesd.rdfit.listener.TripleListenerBase;

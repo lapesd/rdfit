@@ -16,7 +16,7 @@
 
 package com.github.lapesd.rdfit.integration;
 
-import com.github.lapesd.rdfit.DefaultRDFItFactory;
+import com.github.lapesd.rdfit.impl.DefaultRDFItFactory;
 import com.github.lapesd.rdfit.RDFItFactory;
 import com.github.lapesd.rdfit.RIt;
 import com.github.lapesd.rdfit.errors.InconvertibleException;

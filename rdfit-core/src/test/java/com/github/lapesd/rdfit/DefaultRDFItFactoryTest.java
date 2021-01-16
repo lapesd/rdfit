@@ -23,6 +23,7 @@ import com.github.lapesd.rdfit.components.normalizers.DefaultSourceNormalizerReg
 import com.github.lapesd.rdfit.components.parsers.DefaultParserRegistry;
 import com.github.lapesd.rdfit.data.ConverterLib;
 import com.github.lapesd.rdfit.data.ModelLib;
+import com.github.lapesd.rdfit.impl.DefaultRDFItFactory;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
