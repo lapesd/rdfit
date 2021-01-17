@@ -39,11 +39,13 @@ public class StreamRDFListener extends RDFListenerBase<Triple, Quad> {
         streamRDF.quad(quad);
     }
 
-    @Override public void finish(@Nonnull Object source) {
-        streamRDF.finish();
+    @Override public void start(@Nonnull Object source) {
+        super.start(source);
+        streamRDF.start();
     }
 
-    @Override public void start(@Nonnull Object source) {
-        streamRDF.start();
+    @Override public void finish(@Nonnull Object source) {
+        streamRDF.finish();
+        super.finish(source);
     }
 }

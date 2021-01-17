@@ -43,8 +43,8 @@ public class RDFHandlerListener extends RDFListenerBase<Statement, Statement> {
     }
 
     @Override public void start(@Nonnull Object source) {
-        handler.startRDF();
         super.start(source);
+        handler.startRDF();
     }
 
     @Override public void finish(@Nonnull Object source) {

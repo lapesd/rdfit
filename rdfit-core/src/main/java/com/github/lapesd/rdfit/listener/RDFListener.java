@@ -163,6 +163,23 @@ public interface RDFListener<T, Q> {
     void start(@Nonnull Object source);
 
     /**
+     * Called when the source defines a base URI (e.g., Turtle/TriG @base) or just after start()
+     * if the particular source has an implicit value (e.g., the source originates from an URL,
+     * which then becomes the base IRI).
+     *
+     * This method may be called twice for a given source if it was loaded from an IRI and its
+     * contents also define an explicit @base. In such scenario, the base IRI defined within
+     * the source will be delivered later.
+     *
+     * <strong>Important:</strong> triples and quads are always delivered with absolute IRIs unless
+     * the particular parser absolutely cannot create an absolute IRI. {@link RDFListener}s can
+     * safely ignore this method.
+     *
+     * @param baseIRI the baseIRI
+     */
+    void baseIRI(@Nonnull String baseIRI);
+
+    /**
      * Notifies that a source finished parsing.
      *
      * This method is not called after a {@link #notifySourceError(RDFItException)}

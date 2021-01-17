@@ -17,6 +17,7 @@
 package com.github.lapesd.rdfit.components.rdf4j.listener;
 
 import com.github.lapesd.rdfit.listener.RDFListener;
+import com.github.lapesd.rdfit.source.RDFInputStream;
 import com.github.lapesd.rdfit.util.Utils;
 import org.eclipse.rdf4j.model.Statement;
 import org.eclipse.rdf4j.rio.RDFHandler;
@@ -25,6 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.File;
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.Path;
 
 import static java.lang.String.format;
 
@@ -38,6 +44,7 @@ public class RDFListenerHandler implements RDFHandler, AutoCloseable {
     private final @Nonnull Object source;
     private final boolean deliverQuads, deliverTriples;
     private int started = 0, finished = 0;
+    private final @Nullable String startBaseIRI;
 
     public RDFListenerHandler(@Nonnull RDFListener<?, ?> target, @Nonnull Object source) {
         Class<?> tt = target.tripleType(), qt = target.quadType();
@@ -51,6 +58,18 @@ public class RDFListenerHandler implements RDFHandler, AutoCloseable {
         this.deliverQuads = qt != null;
         this.target = target;
         this.source = source;
+        if (source instanceof RDFInputStream)
+            this.startBaseIRI = ((RDFInputStream) source).getBaseIRI();
+        else if (source instanceof URL)
+            this.startBaseIRI = Utils.toASCIIString((URL)source);
+        else if (source instanceof URI)
+            this.startBaseIRI = Utils.toASCIIString((URI)source);
+        else if (source instanceof File)
+            this.startBaseIRI = Utils.toASCIIString(((File)source).toURI());
+        else if (source instanceof Path)
+            this.startBaseIRI = Utils.toASCIIString(((Path)source).toUri());
+        else
+            this.startBaseIRI = null;
     }
 
     public @Nonnull RDFListener<?, ?> getTarget() {
@@ -60,6 +79,8 @@ public class RDFListenerHandler implements RDFHandler, AutoCloseable {
     @Override public void startRDF() throws RDFHandlerException {
         ++started;
         target.start(source);
+        if (startBaseIRI != null)
+            target.baseIRI(startBaseIRI);
     }
 
     @Override public void endRDF() throws RDFHandlerException {

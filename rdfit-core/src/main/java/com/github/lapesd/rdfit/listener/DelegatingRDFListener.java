@@ -14,6 +14,8 @@ import java.util.Objects;
 public class DelegatingRDFListener<T, Q> implements RDFListener<T, Q> {
     protected final @Nonnull RDFListener<?, ?> target;
     protected @Nonnull Object source = NoSource.INSTANCE;
+    protected @Nullable String baseIRI = null;
+    protected @Nullable SourceQueue sourceQueue = null;
 
     public DelegatingRDFListener(@Nonnull RDFListener<?, ?> target) {
         this.target = target;
@@ -28,6 +30,7 @@ public class DelegatingRDFListener<T, Q> implements RDFListener<T, Q> {
     }
 
     @Override public void attachSourceQueue(@Nonnull SourceQueue queue) {
+        this.sourceQueue = queue;
         target.attachSourceQueue(queue);
     }
 
@@ -72,18 +75,26 @@ public class DelegatingRDFListener<T, Q> implements RDFListener<T, Q> {
     }
 
     @Override public void start(@Nonnull Object source) {
-        target.start(source);
         this.source = source;
+        this.baseIRI = null;
+        target.start(source);
+    }
+
+    @Override public void baseIRI(@Nonnull String baseIRI) {
+        this.baseIRI = baseIRI;
+        target.baseIRI(baseIRI);
     }
 
     @Override public void finish(@Nonnull Object source) {
         if (!Objects.equals(this.source, source) && this.source != NoSource.INSTANCE)
             throw new IllegalStateException("finish("+source+"), expected finish("+this.source+")");
         this.source = NoSource.INSTANCE;
+        baseIRI = null;
         target.finish(source);
     }
 
     @Override public void finish() {
         target.finish();
+        sourceQueue = null;
     }
 }

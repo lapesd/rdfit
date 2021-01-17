@@ -235,8 +235,9 @@ public class RDF4JParsersTest {
     public void testParse(@Nonnull Object source,
                           @Nonnull Collection<Statement> expected) {
         List<Statement> triples = new ArrayList<>(), quads = new ArrayList<>();
-        List<Exception> exceptions = new ArrayList<>();
+        List<Throwable> exceptions = new ArrayList<>();
         List<String> errors = new ArrayList<>();
+        List<String> baseIRIs = new ArrayList<>();
         factory.parse(new RDFListenerBase<Statement, Statement>(Statement.class, Statement.class) {
             @Override public void triple(@Nonnull Statement triple) {
                 triples.add(triple);
@@ -244,6 +245,17 @@ public class RDF4JParsersTest {
 
             @Override public void quad(@Nonnull Statement quad) {
                 quads.add(quad);
+            }
+
+            @Override public void baseIRI(@Nonnull String baseIRI) {
+                super.baseIRI(baseIRI);
+                baseIRIs.add(baseIRI);
+            }
+
+            @Override public void finish(@Nonnull Object source) {
+                super.finish(source);
+                if (baseIRI != null)
+                    exceptions.add(new AssertionError("baseIRI != null after finish"));
             }
 
             @Override
@@ -280,6 +292,11 @@ public class RDF4JParsersTest {
         split(expected, exTriples, exQuads);
         assertEqualStatements(triples, exTriples);
         assertEqualStatements(quads, exQuads);
+
+        String expectedBase = null;
+        if (source instanceof RDFInputStream)
+            expectedBase = ((RDFInputStream)source).getBaseIRI();
+        assertEquals(baseIRIs, expectedBase == null ? emptyList() : singletonList(expectedBase));
     }
 
     @Test(dataProvider = "testData")

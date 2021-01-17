@@ -28,7 +28,9 @@ import com.github.lapesd.rdfit.impl.DefaultRDFItFactory;
 import com.github.lapesd.rdfit.iterator.RDFIt;
 import com.github.lapesd.rdfit.listener.TripleListenerBase;
 import com.github.lapesd.rdfit.source.RDFFile;
+import com.github.lapesd.rdfit.source.RDFInputStream;
 import com.github.lapesd.rdfit.source.syntax.RDFLangs;
+import com.github.lapesd.rdfit.util.Utils;
 import org.rdfhdt.hdt.hdt.HDT;
 import org.rdfhdt.hdt.hdt.HDTManager;
 import org.rdfhdt.hdt.options.HDTSpecification;
@@ -42,14 +44,18 @@ import org.testng.annotations.Test;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.fail;
 
@@ -146,8 +152,32 @@ public class HDTItParserTest {
 
     @Test(dataProvider = "testData")
     public void testParse(Object source, @Nonnull List<TripleString> expected) {
+        String expectedBaseIRI;
+        if (source instanceof RDFInputStream) {
+            expectedBaseIRI = ((RDFInputStream) source).getBaseIRI();
+        } else if (source instanceof HDT || source instanceof Collection
+                   || Object[].class.isAssignableFrom(source.getClass()))  {
+            expectedBaseIRI = null;
+        } else if (source instanceof URL) {
+            expectedBaseIRI = Utils.toASCIIString((URL) source);
+        } else if (source instanceof URI) {
+            expectedBaseIRI = Utils.toASCIIString((URI) source);
+        } else if (source instanceof String) {
+            String s = source.toString();
+            if (s.startsWith("file:"))
+                expectedBaseIRI = s.replaceFirst("^file:/([^/])", "file:///$1");
+            else
+                expectedBaseIRI = "file://" + s;
+        } else {
+            expectedBaseIRI = source.toString();
+            if (!expectedBaseIRI.matches("^(file|https?):.*"))
+                expectedBaseIRI = "file://"+expectedBaseIRI;
+        }
+
+
         List<TripleString> actual = new ArrayList<>();
-        List<Exception> exceptions = new ArrayList<>();
+        List<Throwable> exceptions = new ArrayList<>();
+        List<String> baseIRIs = new ArrayList<>(), messages = new ArrayList<>();
         factory.parse(new TripleListenerBase<TripleString>(TripleString.class) {
             @Override public void triple(@Nonnull TripleString triple) {
                 actual.add(triple);
@@ -170,10 +200,40 @@ public class HDTItParserTest {
                 exceptions.add(e);
                 return true;
             }
+
+            @Override public void start(@Nonnull Object source) {
+                super.start(source);
+                if (baseIRI != null)
+                    exceptions.add(new AssertionError("baseIRI != null after start()"));
+            }
+
+            @Override public void baseIRI(@Nonnull String baseIRI) {
+                super.baseIRI(baseIRI);
+                baseIRIs.add(baseIRI);
+            }
+
+            @Override public void finish(@Nonnull Object source) {
+                super.finish(source);
+                if (baseIRI != null)
+                    exceptions.add(new AssertionError("baseIRI != null after finish()"));
+            }
+
+            @Override public boolean notifyParseWarning(@Nonnull String message) {
+                messages.add(message);
+                return super.notifyParseWarning(message);
+            }
+
+            @Override public boolean notifyParseError(@Nonnull String message) {
+                messages.add(message);
+                return super.notifyParseError(message);
+            }
         }, source);
 
         assertTripleStringsEqual(actual, expected);
-        assertEquals(exceptions, Collections.emptyList());
+        assertEquals(exceptions, emptyList());
+        assertEquals(messages, emptyList());
+        assertEquals(baseIRIs,
+                     expectedBaseIRI == null ? emptyList() : singletonList(expectedBaseIRI));
     }
 
 }

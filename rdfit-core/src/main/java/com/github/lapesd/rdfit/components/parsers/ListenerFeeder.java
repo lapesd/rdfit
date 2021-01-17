@@ -25,12 +25,17 @@ import com.github.lapesd.rdfit.errors.InconvertibleException;
 import com.github.lapesd.rdfit.errors.InterruptParsingException;
 import com.github.lapesd.rdfit.errors.RDFItException;
 import com.github.lapesd.rdfit.listener.RDFListener;
+import com.github.lapesd.rdfit.source.RDFInputStream;
 import com.github.lapesd.rdfit.util.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.File;
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.Path;
 
 import static com.github.lapesd.rdfit.components.converters.util.ConversionPathSingletonCache.createCache;
 
@@ -74,8 +79,18 @@ public class ListenerFeeder implements AutoCloseable {
             target.finish(this.source);
         this.notifySource = notifySource;
         this.source = source;
-        if (this.source != null)
+        if (this.source != null) {
             target.start(this.source);
+            if (source instanceof RDFInputStream) {
+                target.baseIRI(((RDFInputStream) source).getBaseIRI());
+            } else if (source instanceof URL || source instanceof URI) {
+                target.baseIRI(source.toString().replaceFirst("^file:/", "file://"));
+            } else if (source instanceof File || source instanceof Path) {
+                File file = source instanceof File ? (File)source : ((Path)source).toFile();
+                String string = file.toURI().toASCIIString();
+                target.baseIRI(string.replaceFirst("^file:/", "file://"));
+            }
+        }
         return this;
     }
     public @Nonnull ListenerFeeder setSource(@Nullable Object source) {

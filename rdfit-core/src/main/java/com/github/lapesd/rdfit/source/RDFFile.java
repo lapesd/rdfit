@@ -35,20 +35,32 @@ public class RDFFile extends RDFInputStream {
     private final @Nonnull File file;
     private boolean deleteOnClose;
 
+    private static @Nonnull String computeBaseIRI(@Nullable String offeredBaseIRI,
+                                                  @Nonnull File file) {
+        if (offeredBaseIRI != null && !offeredBaseIRI.isEmpty())
+            return offeredBaseIRI;
+        return Utils.toASCIIString(file.toURI());
+    }
+
     public RDFFile(@Nonnull File file) {
         this(file, false);
     }
-
     public RDFFile(@Nonnull File file, @Nullable RDFLang lang) {
         this(file, lang, false);
     }
-
     public RDFFile(@Nonnull File file, boolean deleteOnClose) {
         this(file, null, deleteOnClose);
     }
     public RDFFile(@Nonnull File file, @Nullable RDFLang lang, boolean deleteOnClose) {
-        super(null, lang,
-              file.toURI().toString().replaceFirst("^file:", "file://"), true);
+        this(file, lang, null, deleteOnClose);
+    }
+    public RDFFile(@Nonnull File file, @Nullable RDFLang lang, @Nullable String baseIRI) {
+        this(file, lang, baseIRI, false);
+    }
+
+    public RDFFile(@Nonnull File file, @Nullable RDFLang lang, @Nullable String baseIRI,
+                   boolean deleteOnClose) {
+        super(null, lang, computeBaseIRI(baseIRI, file), true);
         this.file = file;
         this.deleteOnClose = deleteOnClose;
     }

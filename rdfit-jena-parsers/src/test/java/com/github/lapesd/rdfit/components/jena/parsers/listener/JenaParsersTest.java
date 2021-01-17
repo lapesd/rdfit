@@ -17,6 +17,7 @@
 package com.github.lapesd.rdfit.components.jena.parsers.listener;
 
 import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
+import com.github.lapesd.rdfit.components.converters.util.ConversionCache;
 import com.github.lapesd.rdfit.components.jena.JenaParsers;
 import com.github.lapesd.rdfit.components.normalizers.CoreSourceNormalizers;
 import com.github.lapesd.rdfit.components.normalizers.DefaultSourceNormalizerRegistry;
@@ -30,6 +31,7 @@ import com.github.lapesd.rdfit.listener.TripleListenerBase;
 import com.github.lapesd.rdfit.source.RDFFile;
 import com.github.lapesd.rdfit.source.RDFInputStream;
 import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
+import com.github.lapesd.rdfit.util.NoSource;
 import org.apache.jena.ext.com.google.common.collect.Lists;
 import org.apache.jena.graph.Graph;
 import org.apache.jena.graph.Triple;
@@ -58,6 +60,7 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static com.github.lapesd.rdfit.components.converters.util.ConversionPathSingletonCache.createCache;
 import static com.github.lapesd.rdfit.source.syntax.RDFLangs.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
@@ -419,6 +422,89 @@ public class JenaParsersTest {
         addConverted(exTriples, quadCls, expected);
         factory.iterateQuads(quadCls, input).forEachRemaining(actual::add);
         assertUnorderedEquals(actual, expected);
+    }
+
+    @DataProvider public @Nonnull Object[][] notifyBaseIRIData() {
+        return Stream.of(Triple.class, Statement.class, Quad.class)
+                .map(c -> new Object[]{c}).toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "notifyBaseIRIData")
+    public void testNotifyBaseIRI(@Nonnull Class<?> tripleClass) {
+        String ttl1 = "@prefix ex: <" + EX + ">.\n@base <" + EX + "base>.\nex:S ex:P ex:O.\n";
+        String ttl2 = "@prefix ex: <" + EX + ">.\n@base <" + EX + "base2>.\nex:S ex:P ex:O.\n";
+        ByteArrayInputStream is1 = new ByteArrayInputStream(ttl1.getBytes(UTF_8));
+        ByteArrayInputStream is2 = new ByteArrayInputStream(ttl2.getBytes(UTF_8));
+        RDFInputStream ris1 = new RDFInputStream(is1, TTL, EX + "file1.ttl");
+        RDFInputStream ris2 = new RDFInputStream(is2, TTL, EX + "file2.ttl");
+        List<Object> triples = new ArrayList<>();
+        List<Throwable> exceptions = new ArrayList<>();
+        List<String> messages = new ArrayList<>();
+        List<String> baseIRIs = new ArrayList<>();
+        //noinspection unchecked
+        factory.parse(new TripleListenerBase<Object>((Class<Object>) tripleClass) {
+            @Override public void triple(@Nonnull Object triple) {
+                triples.add(triple);
+            }
+
+            @Override public void finish(@Nonnull Object source) {
+                super.finish(source);
+                if (baseIRI != null)
+                    exceptions.add(new AssertionError("baseIRI != null after finish()"));
+            }
+
+            @Override public void start(@Nonnull Object source) {
+                if (baseIRI != null)
+                    exceptions.add(new AssertionError("baseIRI != null before start()"));
+                super.start(source);
+                if (baseIRI != null)
+                    exceptions.add(new AssertionError("baseIRI != null after start()"));
+            }
+
+            @Override public void baseIRI(@Nonnull String baseIRI) {
+                baseIRIs.add(baseIRI);
+                super.baseIRI(baseIRI);
+                if (this.baseIRI == null)
+                    exceptions.add(new AssertionError("baseIRI == null after baseIRI()"));
+            }
+
+            @Override
+            public boolean notifyInconvertibleTriple(@Nonnull InconvertibleException e) throws InterruptParsingException {
+                exceptions.add(e);
+                return super.notifyInconvertibleTriple(e);
+            }
+
+            @Override
+            public boolean notifyInconvertibleQuad(@Nonnull InconvertibleException e) throws InterruptParsingException {
+                exceptions.add(e);
+                return super.notifyInconvertibleQuad(e);
+            }
+
+            @Override public boolean notifySourceError(@Nonnull RDFItException e) {
+                exceptions.add(e);
+                return super.notifySourceError(e);
+            }
+
+            @Override public boolean notifyParseWarning(@Nonnull String message) {
+                messages.add(message);
+                return super.notifyParseWarning(message);
+            }
+
+            @Override public boolean notifyParseError(@Nonnull String message) {
+                messages.add(message);
+                return super.notifyParseError(message);
+            }
+        }, ris1, ris2);
+
+        List<Object> expectedTriples = new ArrayList<>();
+        ConversionCache conversion = createCache(factory.getConversionManager(), tripleClass);
+        for (int i = 0; i < 2; i++)
+            expectedTriples.add(conversion.convert(NoSource.INSTANCE, T1));
+        assertEquals(triples, expectedTriples);
+
+        assertEquals(baseIRIs, asList(EX+"file1.ttl", EX+"base", EX+"file2.ttl", EX+"base2"));
+        assertEquals(exceptions, emptyList());
+        assertEquals(messages, emptyList());
     }
 
 }

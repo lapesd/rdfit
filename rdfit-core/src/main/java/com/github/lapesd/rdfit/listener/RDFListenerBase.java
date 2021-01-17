@@ -35,6 +35,7 @@ public abstract class RDFListenerBase<T, Q> implements RDFListener<T, Q> {
     protected @Nullable Class<T> tripleType;
     protected @Nullable Class<Q> quadType;
     protected @Nonnull Object source = NoSource.INSTANCE;
+    protected @Nullable String baseIRI = null;
     protected @Nullable SourceQueue sourceQueue = null;
 
     public RDFListenerBase(@Nullable Class<T> tripleType) {
@@ -118,12 +119,18 @@ public abstract class RDFListenerBase<T, Q> implements RDFListener<T, Q> {
 
     @Override public void finish(@Nonnull Object source) {
         logger.debug("{}.finish({})", this, source);
+        this.baseIRI = null;
         this.source = NoSource.INSTANCE;
     }
 
     @Override public void start(@Nonnull Object source) {
         this.source = source;
+        this.baseIRI = null;
         logger.debug("{}.start({})", this, source);
+    }
+
+    @Override public void baseIRI(@Nonnull String baseIRI) {
+        this.baseIRI = baseIRI;
     }
 
     @Override public void finish() {

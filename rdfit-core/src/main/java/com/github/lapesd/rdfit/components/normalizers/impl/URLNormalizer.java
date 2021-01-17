@@ -23,6 +23,7 @@ import com.github.lapesd.rdfit.source.RDFInputStreamSupplier;
 import com.github.lapesd.rdfit.source.syntax.RDFLangs;
 import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import com.github.lapesd.rdfit.util.URLCache;
+import com.github.lapesd.rdfit.util.Utils;
 import com.github.lapesd.rdfit.util.impl.WeighedURLCache;
 
 import javax.annotation.Nonnull;
@@ -132,6 +133,6 @@ public class URLNormalizer extends BaseSourceNormalizer {
             URLConnection c = url.openConnection();
             c.setRequestProperty("Accept", getAcceptString());
             return c.getInputStream();
-        });
+        }, null, Utils.toASCIIString(url));
     }
 }

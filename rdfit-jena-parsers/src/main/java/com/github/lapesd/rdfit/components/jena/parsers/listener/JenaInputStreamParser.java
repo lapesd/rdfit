@@ -79,7 +79,7 @@ public class JenaInputStreamParser extends BaseListenerParser {
         try (RDFInputStream ris = (RDFInputStream) source) {
             RDFLang lang = ris.getOrDetectLang();
             Lang jLang = JenaHelpers.toJenaLang(lang);
-            ListenerStreamRDF adaptor = new ListenerStreamRDF(listener, source);
+            ListenerStreamRDF adaptor = new ListenerStreamRDF(listener, source, ris.getBaseIRI());
             if (ris.hasBaseIri())
                 RDFDataMgr.parse(adaptor, ris.getInputStream(), ris.getBaseIRI(), jLang);
             else

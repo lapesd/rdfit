@@ -27,21 +27,19 @@ import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.riot.system.StreamRDF;
 import org.apache.jena.sparql.core.Quad;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static java.lang.String.format;
 
 public class ListenerStreamRDF implements StreamRDF {
-    private static final Logger logger = LoggerFactory.getLogger(ListenerStreamRDF.class);
-
     private final @Nonnull RDFListener<?, ?> target;
     private final @Nonnull Object source;
+    private final @Nullable String startBaseIRI;
 
     public ListenerStreamRDF(@Nonnull RDFListener<?, ?> target,
-                             @Nonnull Object source) {
+                             @Nonnull Object source, @Nullable String startBaseIRI) {
         Class<?> tt = target.tripleType(), qt = target.quadType();
         if (tt == null && qt == null)
             throw new IllegalArgumentException("target has no tripleType nor quadType");
@@ -51,12 +49,9 @@ public class ListenerStreamRDF implements StreamRDF {
             throw new IllegalArgumentException("target expects "+qt+" quads");
         this.target = target;
         this.source = source;
+        this.startBaseIRI = startBaseIRI;
     }
 
-
-    @Override public void start() {
-        target.start(source);
-    }
 
     @SuppressWarnings("unchecked") @Override public void triple(Triple triple) {
         assert triple != null;
@@ -129,8 +124,14 @@ public class ListenerStreamRDF implements StreamRDF {
         }
     }
 
+    @Override public void start() {
+        target.start(source);
+        if (startBaseIRI != null)
+            target.baseIRI(startBaseIRI);
+    }
+
     @Override public void base(String base) {
-        logger.trace("{}.base({})", this, base);
+        target.baseIRI(base);
     }
 
     @Override public void prefix(String prefix, String iri) {

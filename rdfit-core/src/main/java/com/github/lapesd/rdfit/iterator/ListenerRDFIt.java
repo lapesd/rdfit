@@ -217,10 +217,6 @@ public class ListenerRDFIt<T> extends EagerRDFIt<T> {
             return false;
         }
 
-        @Override public void finish(@Nonnull Object source) {
-            super.finish(source);
-        }
-
         @Override public void finish() {
             super.finish();
             synchronized (ListenerRDFIt.this) {
