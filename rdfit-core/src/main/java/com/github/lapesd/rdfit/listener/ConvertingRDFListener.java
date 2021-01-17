@@ -16,33 +16,28 @@
 
 package com.github.lapesd.rdfit.listener;
 
-import com.github.lapesd.rdfit.SourceQueue;
 import com.github.lapesd.rdfit.components.ListenerParser;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
 import com.github.lapesd.rdfit.components.converters.util.ConversionCache;
 import com.github.lapesd.rdfit.components.converters.util.ConversionPathSingletonCache;
 import com.github.lapesd.rdfit.errors.InconvertibleException;
-import com.github.lapesd.rdfit.errors.InterruptParsingException;
-import com.github.lapesd.rdfit.errors.RDFItException;
-import com.github.lapesd.rdfit.util.NoSource;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
 
-public class ConvertingRDFListener<T, Q> implements RDFListener<T, Q> {
+public class ConvertingRDFListener<T, Q> extends DelegatingRDFListener<T, Q> {
     protected @Nullable Class<T> tripleType;
     protected @Nullable Class<Q> quadType;
     protected @Nonnull RDFListener<Object, Object> target;
     protected @Nonnull ConversionCache tripleConversion;
     protected @Nonnull ConversionCache quadConversion;
     protected @Nonnull ConversionCache upgrader, downgrader;
-    private @Nonnull Object source = NoSource.INSTANCE;
 
     public ConvertingRDFListener(@Nonnull RDFListener<?, ?> target,
                                  @Nullable Class<T> rcvTripleType,
                                  @Nullable Class<Q> rcvQuadType,
                                  @Nonnull ConversionManager convMgr) {
+        super(target);
         if (rcvTripleType == null && rcvQuadType != null)
             throw new IllegalArgumentException("Both rcvTripleType and rcvQuadType are null");
         //noinspection unchecked
@@ -90,10 +85,6 @@ public class ConvertingRDFListener<T, Q> implements RDFListener<T, Q> {
         return quadType;
     }
 
-    @Override public void attachSourceQueue(@Nonnull SourceQueue queue) {
-        target.attachSourceQueue(queue);
-    }
-
     @Override public void triple(@Nonnull T triple) throws InconvertibleException {
         assert tripleType != null;
         if (target.tripleType() == null)
@@ -114,47 +105,5 @@ public class ConvertingRDFListener<T, Q> implements RDFListener<T, Q> {
             target.triple(downgrader.convert(source, quad));
         else
             target.quad(quadConversion.convert(source, quad));
-    }
-
-    @Override public void prefix(@Nonnull String prefixLabel, @Nonnull String iriPrefix) {
-        target.prefix(prefixLabel, iriPrefix);
-    }
-
-    @Override public void start(@Nonnull Object source) {
-        this.source = source;
-        target.start(source);
-    }
-
-    @Override public void finish(@Nonnull Object source) {
-        if (!Objects.equals(this.source, source) && this.source != NoSource.INSTANCE)
-            throw new IllegalStateException("finish("+source+"), expected finish("+this.source+")");
-        this.source = NoSource.INSTANCE;
-        target.finish(source);
-    }
-
-    @Override public boolean notifyInconvertibleTriple(@Nonnull InconvertibleException e)
-            throws InterruptParsingException {
-        return target.notifyInconvertibleTriple(e);
-    }
-
-    @Override public boolean notifyInconvertibleQuad(@Nonnull InconvertibleException e)
-            throws InterruptParsingException {
-        return target.notifyInconvertibleQuad(e);
-    }
-
-    @Override public boolean notifyParseWarning(@Nonnull String message) {
-        return target.notifyParseWarning(message);
-    }
-
-    @Override public boolean notifyParseError(@Nonnull String message) {
-        return target.notifyParseError(message);
-    }
-
-    @Override public boolean notifySourceError(@Nonnull RDFItException exception) {
-        return target.notifySourceError(exception);
-    }
-
-    @Override public void finish() {
-        target.finish();
     }
 }
