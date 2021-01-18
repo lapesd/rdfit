@@ -177,12 +177,6 @@
 
   <profiles>
     <profile>
-      <id>integration</id>
-      <modules>
-        <module>rdfit-integration-tests</module>
-      </modules>
-    </profile>
-    <profile>
       <id>release</id>
       <build>
         <plugins>

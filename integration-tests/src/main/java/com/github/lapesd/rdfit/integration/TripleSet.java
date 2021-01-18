@@ -39,7 +39,7 @@ import static org.apache.jena.sparql.core.Quad.defaultGraphIRI;
 import static org.apache.jena.sparql.core.Quad.defaultGraphNodeGenerated;
 
 public class TripleSet {
-    private List<Quad> quads = new ArrayList<>();
+    private final List<Quad> quads = new ArrayList<>();
 
     public TripleSet(@Nonnull Quad... quads) {
         this.quads.addAll(Arrays.asList(quads));

@@ -97,7 +97,14 @@ public class TestDataGenerator {
         }
     }
 
-    public static @Nonnull List<TestData> generateTestData() {
+    public static @Nonnull List<TestData> generateTestData(SourceGenerator... generators) {
+        if (generators.length == 0)
+            return generateTestData(TestDataGenerator.generators);
+        else
+            return generateTestData(asList(generators));
+    }
+
+    public static @Nonnull List<TestData> generateTestData(List<SourceGenerator> generators) {
         List<TripleSet> sets = new ArrayList<>();
         for (Node object : objects) {
             sets.add(new TripleSet(new Triple(S, P, object)));
