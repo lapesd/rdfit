@@ -361,6 +361,13 @@ an indirection layer. There are several ways to do this:
       `RepositoryConnectionFeeder` add all triples and quads to a `Model`, 
       `Repository` or `RepositoryConnection`.
 
+### Does it fetch owl:imports?
+Yes. If using a RDFListener, wrap it with one of the *ImportingRDFListener 
+classes: `JenaImportingRDFListener`, `HDTImportingRDFListener` or 
+`RDF4JImportingRDFListener`. If using a RDFIt, wrap it with one of the 
+`*ImportingRDFIt` classes: `JenaImportingRDFIt`, `HDTImportingRDFIt` or
+`RDF4JImportingRDFIt`.
+
 ### Does it support RDF*?
 RDF4J and Jena do. Import the parser module for the one you prefer. 
 On your code, conversions between representations of both libraries preserve 
