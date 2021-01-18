@@ -120,12 +120,8 @@ public class JenaRDF4JConverters {
         throw new IllegalArgumentException("Unexpected Value type "+value.getClass());
     }
 
-    public static abstract class BaseJenaRDF4JConverter extends BaseConverter {
-        @Override public void attachTo(@Nonnull ConversionManager ignored) { }
-    }
-
     @Accepts(Triple.class) @Outputs(Statement.class)
-    public static class Triple2RDF4J extends BaseJenaRDF4JConverter {
+    public static class Triple2RDF4J extends DetachedBaseConverter {
         public static final Triple2RDF4J INSTANCE = new Triple2RDF4J();
 
         @Override public boolean canConvert(@Nonnull Object input) {
@@ -142,7 +138,7 @@ public class JenaRDF4JConverters {
     }
 
     @Accepts(Quad.class) @Outputs(Statement.class)
-    public static class Quad2RDF4J extends BaseJenaRDF4JConverter {
+    public static class Quad2RDF4J extends DetachedBaseConverter {
         public static final Quad2RDF4J INSTANCE = new Quad2RDF4J();
 
         @Override public boolean canConvert(@Nonnull Object input) {
@@ -162,7 +158,7 @@ public class JenaRDF4JConverters {
     }
 
     @Accepts(org.apache.jena.rdf.model.Statement.class) @Outputs(Statement.class)
-    public static class Statement2RDF4J extends BaseJenaRDF4JConverter {
+    public static class Statement2RDF4J extends DetachedBaseConverter {
         public static final Statement2RDF4J INSTANCE = new Statement2RDF4J();
 
         @Override public @Nonnull Statement convert(@Nonnull Object input) throws ConversionException {
@@ -172,7 +168,7 @@ public class JenaRDF4JConverters {
     }
 
     @Accepts(Statement.class) @Outputs(Triple.class)
-    public static class RDF4J2Triple extends BaseJenaRDF4JConverter {
+    public static class RDF4J2Triple extends DetachedBaseConverter {
         public static final RDF4J2Triple INSTANCE = new RDF4J2Triple();
 
         @Override public @Nonnull Triple convert(@Nonnull Object input) throws ConversionException {
@@ -183,7 +179,7 @@ public class JenaRDF4JConverters {
     }
 
     @Accepts(Statement.class) @Outputs(Quad.class)
-    public static class RDF4J2Quad extends BaseJenaRDF4JConverter {
+    public static class RDF4J2Quad extends DetachedBaseConverter {
         public static final RDF4J2Quad INSTANCE = new RDF4J2Quad();
 
         @Override public @Nonnull Quad convert(@Nonnull Object input) throws ConversionException {
@@ -194,7 +190,7 @@ public class JenaRDF4JConverters {
     }
 
     @Accepts(Statement.class) @Outputs(org.apache.jena.rdf.model.Statement.class)
-    public static class RDF4J2Statement extends BaseJenaRDF4JConverter {
+    public static class RDF4J2Statement extends DetachedBaseConverter {
         public static final RDF4J2Statement INSTANCE = new RDF4J2Statement();
 
         @Override public @Nonnull org.apache.jena.rdf.model.Statement

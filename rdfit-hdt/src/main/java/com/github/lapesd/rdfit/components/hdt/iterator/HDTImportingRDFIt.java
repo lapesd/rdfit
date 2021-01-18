@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import java.util.regex.Pattern;
 
 public class HDTImportingRDFIt<T> extends BaseImportingRDFIt<T> {
-    private static final Pattern URL_RX = Pattern.compile("^[^:/]+://");
+    private static final Pattern URL_RX = Pattern.compile("^([^:/]+://|file:)");
     private static final String imports = "http://www.w3.org/2002/07/owl#imports";
 
     private final ConversionCache conversion;

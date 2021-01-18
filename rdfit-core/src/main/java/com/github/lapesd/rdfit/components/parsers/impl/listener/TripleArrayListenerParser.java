@@ -22,6 +22,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 public class TripleArrayListenerParser extends BaseJavaListenerParser {
+    public TripleArrayListenerParser(@Nonnull Class<?> memberClass, @Nonnull Class<?> tripleClass,
+                                     @Nonnull Class<?> quadClass) {
+        super(Array.newInstance(memberClass, 0).getClass(), tripleClass, quadClass);
+
+    }
     public TripleArrayListenerParser(@Nonnull Class<?> tripleClass) {
         super(Array.newInstance(tripleClass, 0).getClass(), tripleClass, null);
     }

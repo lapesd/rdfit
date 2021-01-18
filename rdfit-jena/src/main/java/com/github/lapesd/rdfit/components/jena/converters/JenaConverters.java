@@ -20,8 +20,8 @@ import com.github.lapesd.rdfit.RDFItFactory;
 import com.github.lapesd.rdfit.components.Converter;
 import com.github.lapesd.rdfit.components.annotations.Accepts;
 import com.github.lapesd.rdfit.components.annotations.Outputs;
-import com.github.lapesd.rdfit.components.converters.BaseConverter;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
+import com.github.lapesd.rdfit.components.converters.DetachedBaseConverter;
 import com.github.lapesd.rdfit.errors.ConversionException;
 import org.apache.jena.graph.Triple;
 import org.apache.jena.rdf.model.RDFNode;
@@ -63,12 +63,8 @@ public class JenaConverters {
         unregisterAll(factory.getConversionManager());
     }
 
-    private static abstract class JenaBasicConverter extends BaseConverter {
-        @Override public void attachTo(@Nonnull ConversionManager ignored) { }
-    }
-
     @Accepts(Quad.class) @Outputs(Triple.class)
-    public static class Quad2Triple extends JenaBasicConverter {
+    public static class Quad2Triple extends DetachedBaseConverter {
         public static final @Nonnull Quad2Triple INSTANCE = new Quad2Triple();
         @Override public @Nonnull Triple convert(@Nonnull Object input) {
             return ((Quad) input).asTriple();
@@ -76,7 +72,7 @@ public class JenaConverters {
     }
 
     @Accepts(Statement.class) @Outputs(Triple.class)
-    public static class Statement2Triple extends JenaBasicConverter {
+    public static class Statement2Triple extends DetachedBaseConverter {
         public static final @Nonnull Statement2Triple INSTANCE = new Statement2Triple();
         @Override public @Nonnull Triple convert(@Nonnull Object input) {
             return ((Statement)input).asTriple();
@@ -84,7 +80,7 @@ public class JenaConverters {
     }
 
     @Accepts(Triple.class) @Outputs(Statement.class)
-    public static class Triple2Statement extends JenaBasicConverter {
+    public static class Triple2Statement extends DetachedBaseConverter {
         public static final @Nonnull Triple2Statement INSTANCE = new Triple2Statement();
 
         @Override public boolean canConvert(@Nonnull Object input) {
@@ -110,7 +106,7 @@ public class JenaConverters {
     }
 
     @Accepts(Quad.class) @Outputs(Statement.class)
-    public static class Quad2Statement extends JenaBasicConverter {
+    public static class Quad2Statement extends DetachedBaseConverter {
         public static final @Nonnull Quad2Statement INSTANCE = new Quad2Statement();
 
         @Override public boolean canConvert(@Nonnull Object input) {
@@ -124,7 +120,7 @@ public class JenaConverters {
     }
 
     @Accepts(Triple.class) @Outputs(Quad.class)
-    public static class Triple2Quad extends JenaBasicConverter {
+    public static class Triple2Quad extends DetachedBaseConverter {
         public static final @Nonnull Triple2Quad INSTANCE = new Triple2Quad();
         @Override public @Nonnull Quad convert(@Nonnull Object input) {
             return new Quad(Quad.defaultGraphIRI, (Triple)input);
@@ -132,7 +128,7 @@ public class JenaConverters {
     }
 
     @Accepts(Statement.class) @Outputs(Quad.class)
-    public static class Statement2Quad extends JenaBasicConverter {
+    public static class Statement2Quad extends DetachedBaseConverter {
         public static final @Nonnull Statement2Quad INSTANCE = new Statement2Quad();
         @Override public @Nonnull Quad convert(@Nonnull Object input) {
             return new Quad(Quad.defaultGraphIRI, ((Statement)input).asTriple());

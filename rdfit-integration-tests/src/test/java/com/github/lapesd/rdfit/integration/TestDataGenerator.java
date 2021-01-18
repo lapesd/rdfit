@@ -41,10 +41,18 @@ public class TestDataGenerator {
     private static final Node P = NodeFactory.createURI(EX+"P");
     private static final Node G = NodeFactory.createURI(EX+"G");
     private static final Object nil = new Object();
-    private static final List<Object> tripleClasses = asList(Triple.class, Statement.class,
-            Quad.class, org.eclipse.rdf4j.model.Statement.class, nil);
-    private static final List<Object> quadClasses = asList(Quad.class,
-            org.eclipse.rdf4j.model.Statement.class, nil);
+    private static final List<Object> tripleClasses = asList(
+            Triple.class,
+            Statement.class,
+            Quad.class,
+            org.eclipse.rdf4j.model.Statement.class,
+            org.apache.commons.rdf.api.Triple.class,
+            nil);
+    private static final List<Object> quadClasses = asList(
+            Quad.class,
+            org.eclipse.rdf4j.model.Statement.class,
+            org.apache.commons.rdf.api.Quad.class,
+            nil);
     private static final List<Node> objects = asList(
             NodeFactory.createURI(EX+"O1"),
             NodeFactory.createLiteral("O3"),

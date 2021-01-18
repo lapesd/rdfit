@@ -20,8 +20,8 @@ import com.github.lapesd.rdfit.RDFItFactory;
 import com.github.lapesd.rdfit.components.Converter;
 import com.github.lapesd.rdfit.components.annotations.Accepts;
 import com.github.lapesd.rdfit.components.annotations.Outputs;
-import com.github.lapesd.rdfit.components.converters.BaseConverter;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
+import com.github.lapesd.rdfit.components.converters.DetachedBaseConverter;
 import com.github.lapesd.rdfit.components.jena.converters.JenaConverters;
 import com.github.lapesd.rdfit.errors.ConversionException;
 import com.github.lapesd.rdfit.util.Literal;
@@ -111,13 +111,8 @@ public class HDTConverters {
         }
     }
 
-    private static abstract class HDTBaseConverter extends BaseConverter {
-        @Override public void attachTo(@Nonnull ConversionManager ignored) {
-        }
-    }
-
     @Accepts(TripleString.class) @Outputs(Triple.class)
-    public static class TripleString2Triple extends HDTBaseConverter {
+    public static class TripleString2Triple extends DetachedBaseConverter {
         public static final @Nonnull TripleString2Triple INSTANCE = new TripleString2Triple();
 
         protected @Nonnull Node convertTerm(@Nonnull TripleString ts, @Nonnull CharSequence term,
@@ -143,7 +138,7 @@ public class HDTConverters {
     }
 
     @Accepts(Triple.class) @Outputs(TripleString.class)
-    public static class Triple2TripleString extends HDTBaseConverter {
+    public static class Triple2TripleString extends DetachedBaseConverter {
         public static final @Nonnull Triple2TripleString INSTANCE = new Triple2TripleString();
 
         private @Nonnull String toHDTString(@Nonnull Node node,

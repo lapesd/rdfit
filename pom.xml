@@ -75,6 +75,7 @@
     <maven.surefire.plugin>2.22.1</maven.surefire.plugin>
     <rdfit.rdf4j.version>3.5.0</rdfit.rdf4j.version>
     <rdfit.jena.version>3.13.1</rdfit.jena.version>
+    <rdfit.commons-rdf.version>0.5.0</rdfit.commons-rdf.version>
     <rdfit.hdt.version>2.1.2</rdfit.hdt.version>
   </properties>
 
@@ -83,6 +84,9 @@
     <module>rdfit-jena</module>
     <module>rdfit-jena-parsers</module>
     <module>rdfit-hdt</module>
+    <module>rdfit-commons-rdf</module>
+    <module>rdfit-commons-rdf-jena</module>
+    <module>rdfit-commons-rdf-rdf4j</module>
     <module>rdfit-rdf4j</module>
     <module>rdfit-rdf4j-parsers</module>
     <module>rdfit-compress</module>

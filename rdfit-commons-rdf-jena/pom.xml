@@ -24,33 +24,56 @@
     <artifactId>rdfit-parent</artifactId>
     <version>1.0.4-SNAPSHOT</version>
   </parent>
-  <artifactId>rdfit-jena-libs</artifactId>
-  <packaging>pom</packaging>
+  <artifactId>rdfit-commons-rdf-jena</artifactId>
+  <packaging>jar</packaging>
 
-  <name>rdfit-jena-libs</name>
+  <name>rdfit-commons-rdf-jena</name>
 
   <dependencies>
-    <!-- pulls rdfit-core and rdfit-jena -->
     <dependency>
       <groupId>com.github.lapesd.rdfit</groupId>
-      <artifactId>rdfit-hdt</artifactId>
+      <artifactId>rdfit-commons-rdf</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.github.lapesd.rdfit</groupId>
-      <artifactId>rdfit-jena-parsers</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-rdf-jena</artifactId>
+      <version>${rdfit.commons-rdf.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.jena</groupId>
+          <artifactId>apache-jena-libs</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.jena</groupId>
+          <artifactId>jena-osgi</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.servicemix.bundles</groupId>
+          <artifactId>org.apache.servicemix.bundles.xerces</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.github.andrewoma.dexx</groupId>
+          <artifactId>collection</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
-      <groupId>com.github.lapesd.rdfit</groupId>
-      <artifactId>rdfit-compress-libs</artifactId>
-      <version>${project.version}</version>
-      <type>pom</type>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-core</artifactId>
+      <version>${rdfit.jena.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.github.lapesd.rdfit</groupId>
-      <artifactId>rdfit-commons-rdf-jena</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.apache.jena</groupId>
+      <artifactId>jena-arq</artifactId>
+      <version>${rdfit.jena.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>6.14.3</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

@@ -16,6 +16,7 @@
 
 package com.github.lapesd.rdfit.integration;
 
+import com.github.lapesd.rdfit.components.commonsrdf.converters.CommonsJenaConverters;
 import com.github.lapesd.rdfit.components.converters.JenaRDF4JConverters;
 import com.github.lapesd.rdfit.components.jena.converters.JenaConverters;
 import com.github.lapesd.rdfit.errors.ConversionException;
@@ -85,6 +86,10 @@ public class TripleSet {
                     list.add(JenaConverters.Quad2Statement.INSTANCE.convert(q));
                 else if (cls.equals(org.eclipse.rdf4j.model.Statement.class))
                     list.add(JenaRDF4JConverters.Quad2RDF4J.INSTANCE.convert(q));
+                else if (cls.equals(org.apache.commons.rdf.api.Triple.class))
+                    list.add(CommonsJenaConverters.JenaQuad2Triple.INSTANCE.convert(q));
+                else if (cls.equals(org.apache.commons.rdf.api.Quad.class))
+                    list.add(CommonsJenaConverters.JenaQuad2Quad.INSTANCE.convert(q));
                 else
                     throw new IllegalArgumentException("Bad Class: "+cls);
             }
