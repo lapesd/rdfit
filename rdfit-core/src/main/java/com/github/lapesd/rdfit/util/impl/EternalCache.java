@@ -19,9 +19,12 @@ package com.github.lapesd.rdfit.util.impl;
 import com.github.lapesd.rdfit.source.RDFInputStream;
 import com.github.lapesd.rdfit.util.URLCache;
 import com.github.lapesd.rdfit.util.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -29,6 +32,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class EternalCache implements URLCache {
+    private static final Logger logger = LoggerFactory.getLogger(EternalCache.class);
     private static EternalCache INSTANCE = null;
     private final @Nonnull Map<String, Supplier<RDFInputStream>> map = new HashMap<>();
 
@@ -58,6 +62,19 @@ public class EternalCache implements URLCache {
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("Bad IRI "+iri, e);
         }
+    }
+
+    public synchronized @Nonnull Map<String, RDFBlob> dump() {
+        Map<String, RDFBlob> map = new HashMap<>();
+        for (Map.Entry<String, Supplier<RDFInputStream>> e : this.map.entrySet()) {
+            try {
+                map.put(e.getKey(), RDFBlob.fromSupplier(e.getValue()));
+            } catch (IOException ioException) {
+                logger.warn("Ignoring RDFBlob.fromSupplier failed for entry {} on dump().",
+                            e.getKey(), ioException);
+            }
+        }
+        return map;
     }
 
     @Override public synchronized

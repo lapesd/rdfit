@@ -17,6 +17,7 @@
 package com.github.lapesd.rdfit.util.impl;
 
 import com.github.lapesd.rdfit.source.RDFInputStream;
+import com.github.lapesd.rdfit.source.RDFResource;
 import com.github.lapesd.rdfit.source.syntax.RDFLangs;
 import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import com.github.lapesd.rdfit.util.Utils;
@@ -94,6 +95,16 @@ public class RDFBlob implements Supplier<RDFInputStream> {
     fromSupplier(@Nonnull Supplier<RDFInputStream> supplier) throws IOException {
         if (supplier instanceof RDFBlob) return (RDFBlob) supplier;
         return new RDFBlob(supplier.get());
+    }
+
+    public @Nullable RDFResource asRDFResource() {
+        if (resourcePath != null) {
+            if (refClass != null)
+                return new RDFResource(refClass, resourcePath, lang, baseIRI);
+            else
+                return new RDFResource(resourcePath, lang, baseIRI);
+        }
+        return null;
     }
 
     public int getLength() {
