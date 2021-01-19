@@ -348,7 +348,9 @@ the writer in your preferred RDF library will be simpler than using
 an indirection layer. There are several ways to do this:
 - Direct feeding the `RDFIt<>` to:
   - Jena's `RDFDataMgr.writeTriples()`/`writeQuads()`
-  - hdt-java's `HDTManager.generateHDT()`/`getHDTWriter()`
+  - hdt-java's `HDTHelpers.generateHDT()`/`getHDTWriter()`
+    - Sending the iterator to `HDTHelper.toHDT{,File}()`
+    - Using a listener created from `HDTHelper.{file,}Feeder()`
 - Wrapping a callback
   - `RDFHandlerListener(rdfWriter)` feeds the given RDF4J `RDFWriter`
   - `StreamRDFListener(streamRDF)` feeds the given Jena `StreamRDF`

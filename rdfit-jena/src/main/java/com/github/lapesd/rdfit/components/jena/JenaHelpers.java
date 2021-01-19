@@ -17,11 +17,13 @@
 package com.github.lapesd.rdfit.components.jena;
 
 import com.github.lapesd.rdfit.RDFItFactory;
+import com.github.lapesd.rdfit.RIt;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
 import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
 import com.github.lapesd.rdfit.components.converters.util.ConversionCache;
 import com.github.lapesd.rdfit.components.converters.util.ConversionPathSingletonCache;
 import com.github.lapesd.rdfit.components.jena.converters.JenaConverters;
+import com.github.lapesd.rdfit.components.jena.iterators.JenaImportingRDFIt;
 import com.github.lapesd.rdfit.iterator.RDFIt;
 import com.github.lapesd.rdfit.source.syntax.RDFLangs;
 import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
@@ -66,40 +68,84 @@ public class JenaHelpers {
         else                                  return null;
     }
 
-    public static @Nonnull Model toModel(@Nonnull Model model, @Nonnull RDFIt<?> it) {
+    public static @Nonnull Model toModel(@Nonnull Model model, @Nonnull RDFIt<?> inIt,
+                                         boolean fetchImports) {
         ConversionManager mgr = DefaultConversionManager.INSTANCE;
-        try {
+        try (RDFIt<?> it = fetchImports ? new JenaImportingRDFIt<>(inIt) : inIt) {
             ConversionCache cache = ConversionPathSingletonCache.createCache(mgr, Statement.class);
             while (it.hasNext()) {
                 Object next = it.next();
                 model.add((Statement) cache.convert(it.getSource(), next));
             }
-        } finally {
-            it.close();
         }
         return model;
     }
-
+    public static @Nonnull Model toModelImporting(@Nonnull Model model, @Nonnull RDFIt<?> it) {
+        return toModel(model, it, true);
+    }
+    public static @Nonnull Model toModelImporting(@Nonnull Model model, @Nonnull Object... sources) {
+        return toModel(model, RIt.iterateTriples(Statement.class, sources), true);
+    }
+    public static @Nonnull Model toModel(@Nonnull Model model, @Nonnull RDFIt<?> it) {
+        return toModel(model, it, false);
+    }
+    public static @Nonnull Model toModel(@Nonnull Model model, @Nonnull Object... sources) {
+        return toModel(model, RIt.iterateTriples(Statement.class, sources), false);
+    }
+    public static @Nonnull Model toModel(@Nonnull RDFIt<?> it, boolean fetchImports) {
+        return toModel(ModelFactory.createDefaultModel(), it, fetchImports);
+    }
+    public static @Nonnull Model toModelImporting(@Nonnull RDFIt<?> it) {
+        return toModel(it, true);
+    }
+    public static @Nonnull Model toModelImporting(@Nonnull Object... sources) {
+        return toModel(RIt.iterateTriples(Statement.class, sources), true);
+    }
     public static @Nonnull Model toModel(@Nonnull RDFIt<?> it) {
-        return toModel(ModelFactory.createDefaultModel(), it);
+        return toModel(it, false);
+    }
+    public static @Nonnull Model toModel(@Nonnull Object... sources) {
+        return toModel(RIt.iterateTriples(Statement.class, sources), false);
     }
 
-    public static @Nonnull Graph toGraph(@Nonnull Graph graph, @Nonnull RDFIt<?> it) {
+    public static @Nonnull Graph toGraph(@Nonnull Graph graph, @Nonnull RDFIt<?> inIt,
+                                         boolean fetchImports) {
         ConversionManager mgr = DefaultConversionManager.INSTANCE;
-        try {
+        try (RDFIt<?> it = fetchImports ? new JenaImportingRDFIt<>(inIt) : inIt) {
             ConversionCache cache = ConversionPathSingletonCache.createCache(mgr, Triple.class);
             while (it.hasNext()) {
                 Object next = it.next();
                 graph.add((Triple) cache.convert(it.getSource(), next));
             }
-        } finally {
-            it.close();
         }
         return graph;
     }
-
+    public static @Nonnull Graph toGraphImporting(@Nonnull Graph graph, @Nonnull RDFIt<?> it) {
+        return toGraph(graph, it, true);
+    }
+    public static @Nonnull Graph toGraphImporting(@Nonnull Graph graph, @Nonnull Object... sources) {
+        return toGraph(graph, RIt.iterateTriples(Triple.class, sources), true);
+    }
+    public static @Nonnull Graph toGraph(@Nonnull Graph graph, @Nonnull RDFIt<?> it) {
+        return toGraph(graph, it, false);
+    }
+    public static @Nonnull Graph toGraph(@Nonnull Graph graph, @Nonnull Object... sources) {
+        return toGraph(graph, RIt.iterateTriples(Triple.class, sources), false);
+    }
+    public static @Nonnull Graph toGraph(@Nonnull RDFIt<?> it, boolean fetchImports) {
+        return toGraph(GraphFactory.createDefaultGraph(), it, fetchImports);
+    }
+    public static @Nonnull Graph toGraphImporting(@Nonnull RDFIt<?> it) {
+        return toGraph(it, true);
+    }
+    public static @Nonnull Graph toGraphImporting(@Nonnull Object... sources) {
+        return toGraph(RIt.iterateTriples(Triple.class, sources), true);
+    }
     public static @Nonnull Graph toGraph(@Nonnull RDFIt<?> it) {
-        return toGraph(GraphFactory.createDefaultGraph(), it);
+        return toGraph(it, false);
+    }
+    public static @Nonnull Graph toGraph(@Nonnull Object... sources) {
+        return toGraph(RIt.iterateTriples(Triple.class, sources), false);
     }
 
     public static @Nonnull GraphFeeder createFeeder(@Nonnull Graph graph) {
