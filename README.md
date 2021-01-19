@@ -200,8 +200,9 @@ Supported sources objects:
 - External sources (RDF syntax is guessed):
   - `URI` (converted to a `File` or to an `URL`)
   - `URL` remote content is fetched, using content negotiation if possible 
-  - `File`/`Path`
-  - `InputStream`
+  - `File`/`Path` (can be wrapped with `RDFFile`)
+  - `InputStream` (can be wrapped with `RDFInputStream`)
+  - Java resources, wrapped with `RDFResource`
   - `Reader`
   - `byte[]` with data that could've been read from an `InputStream` 
   - `CharSequence`/`String` containing either URIs or file paths

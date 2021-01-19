@@ -28,6 +28,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
+    private static final @Nonnull Pattern ANY_UP_STEP_RX = Pattern.compile("(^|/)\\.\\.(/|$)");
     private static final @Nonnull Pattern UP_STEP_RX = Pattern.compile("\\.\\./");
 
     public static @Nonnull String compactClass(@Nullable Class<?> cls) {
@@ -166,7 +167,7 @@ public class Utils {
         }
 
         //try the system class loader
-        String fullPath = toFullPath(relativeResourcePath, tl);
+        String fullPath = toFullResourcePath(relativeResourcePath, tl);
         String absPath = "/" + fullPath;
         is = ClassLoader.getSystemResourceAsStream(fullPath);
         if (is != null) return is;
@@ -204,12 +205,59 @@ public class Utils {
                                             relativeResourcePath+" relative to "+refClass);
     }
 
-    private static @Nonnull String toFullPath(@Nonnull String relativeResourcePath, Class<?> cls) {
+    /**
+     * Opens an InputStream reading the resource at the given absolute or full path (no leading '/').
+     *
+     * @param resourcePath the path to the resource. Will be interpreted as an absolute path
+     *                    regardless of a leading '/'. For tolerance, will try loading both
+     *                     as an absolute path (leading '/') and as a full path.
+     * @return A non-null InputStream reading the resource.
+     * @throws IllegalArgumentException if the resource could not be found.
+     */
+    public static @Nonnull InputStream openResource(@Nonnull String resourcePath) {
+        String fullPath = resourcePath.replaceFirst("^/+", "");
+        String absPath = "/" + fullPath;
+
+        InputStream is = ClassLoader.getSystemResourceAsStream(fullPath);
+        if (is != null) return is;
+
+        //try fullPath on current thread ClassLoader
+        ClassLoader threadLoader = Thread.currentThread().getContextClassLoader();
+        is = threadLoader.getResourceAsStream(fullPath);
+        if (is != null) return is;
+
+        // try absolute paths on ClassLoaders
+        is = ClassLoader.getSystemResourceAsStream(absPath);
+        if (is != null) return is;
+        is = threadLoader.getResourceAsStream(absPath);
+        if (is != null) return is;
+
+        // resource does not exist, this is likely the programmers fault
+        throw new IllegalArgumentException("Could not find resource file "+resourcePath);
+    }
+
+    /**
+     * Createa a full path (no leading '/') to a resource that may be relative to the given class.
+     *
+     * @param resourcePath the resource path. If cls != null, this is considered relative,
+     *                     unless it starts with '/'. If cls == null, it is assumed to be absolute
+     *                     but must not contain '..' steps
+     * @param cls the class to which the resourcePath is relative.
+     * @return A full path (an absolute path that does not start with '/').
+     * @throws IllegalArgumentException if resourcePath contains '..' steps in the path
+     *                                  and cls == null.
+     */
+    public static @Nonnull String toFullResourcePath(@Nonnull String resourcePath,
+                                                     @Nullable Class<?> cls) {
         String fullPath; // absolute path that does not start with '/'
-        if (relativeResourcePath.startsWith("/")) {
-            fullPath = relativeResourcePath.replaceAll("^/+", "");
+        if (resourcePath.startsWith("/")) {
+            fullPath = resourcePath.replaceAll("^/+", "");
+        } else if (cls == null) {
+            if (ANY_UP_STEP_RX.matcher(resourcePath).find())
+                throw new IllegalArgumentException("cls == null with relative path (has ..)");
+            fullPath = resourcePath;
         } else {
-            Matcher matcher = UP_STEP_RX.matcher(relativeResourcePath);
+            Matcher matcher = UP_STEP_RX.matcher(resourcePath);
             int stepsUp = 0;
             while (matcher.find())
                 ++stepsUp;
@@ -217,8 +265,8 @@ public class Utils {
             String[] segments = cls.getName().split("\\.");
             for (int i = 0, size = segments.length - stepsUp - 1; i < size; i++)
                 fullPathBuilder.append(segments[i]).append('/');
-            int filenameIdx = relativeResourcePath.lastIndexOf('/') + 1;
-            fullPathBuilder.append(relativeResourcePath.substring(filenameIdx));
+            int filenameIdx = resourcePath.lastIndexOf('/') + 1;
+            fullPathBuilder.append(resourcePath.substring(filenameIdx));
             fullPath = fullPathBuilder.toString();
         }
         return fullPath;

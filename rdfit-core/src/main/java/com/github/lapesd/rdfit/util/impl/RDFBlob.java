@@ -44,7 +44,7 @@ public class RDFBlob implements Supplier<RDFInputStream> {
 
     public RDFBlob(@Nonnull RDFInputStream ris) throws IOException {
         this(Utils.toBytes(ris.getInputStream()), ris.getLang(),
-                           ris.hasBaseIri() ? ris.getBaseIRI() : null);
+                           ris.hasBaseIRI() ? ris.getBaseIRI() : null);
     }
 
     public static @Nonnull RDFBlob

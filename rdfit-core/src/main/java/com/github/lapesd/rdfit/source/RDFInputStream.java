@@ -67,7 +67,7 @@ public class RDFInputStream implements AutoCloseable {
         return format("urn:inputstream:%x", System.identityHashCode(getInputStream()));
     }
 
-    public boolean hasBaseIri() {
+    public boolean hasBaseIRI() {
         return baseIRI != null;
     }
 
