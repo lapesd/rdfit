@@ -32,28 +32,62 @@ import java.util.Base64;
 import java.util.function.Supplier;
 
 public class RDFBlob implements Supplier<RDFInputStream> {
-    private final byte[] data;
+    private final @Nullable byte[] data;
+    private final @Nullable Class<?> refClass;
+    private final @Nullable String resourcePath;
     private final @Nullable RDFLang lang;
     private final @Nullable String baseIRI;
+    private @Nullable Integer length;
 
-    public RDFBlob(byte[] data, @Nullable RDFLang lang, @Nullable String baseIRI) {
+    public RDFBlob(@Nonnull byte[] data, @Nullable RDFLang lang, @Nullable String baseIRI) {
         this.data = data;
+        this.refClass = null;
+        this.resourcePath = null;
         this.lang = lang;
         this.baseIRI = baseIRI;
+    }
+
+    public RDFBlob(@Nonnull Class<?> refClass, @Nonnull String resourcePath,
+               @Nullable String baseIRI) throws IllegalArgumentException {
+        this(refClass, resourcePath, null, baseIRI);
+    }
+
+    public RDFBlob(@Nonnull Class<?> refClass, @Nonnull String resourcePath,
+                   @Nullable RDFLang lang,
+                   @Nullable String baseIRI) throws IllegalArgumentException {
+        this.data = null;
+        this.refClass = refClass;
+        this.resourcePath = resourcePath;
+        if (lang == null)
+            lang = RDFLangs.fromExtension(resourcePath);
+        if (!RDFLangs.isKnown(lang))
+            lang = null;
+        this.lang = lang;
+        this.baseIRI = baseIRI;
+        try (RDFInputStream ris = get()) {
+            @SuppressWarnings("unused") InputStream ignored = ris.getInputStream();
+            if (!RDFLangs.isKnown(ris.getOrDetectLang())) {
+                throw new IllegalArgumentException("Could not determine RDFLang for resource "+
+                                                   resourcePath+" relative to "+refClass);
+            }
+        } catch (IOException|RuntimeException|Error exception) {
+            Throwable t = exception;
+            if (t.getCause() instanceof IOException)
+                t = exception.getCause();
+            if (t instanceof RuntimeException) {
+                throw (RuntimeException) t;
+            } else if (t instanceof Error) {
+                throw (Error)t;
+            } else  {
+                throw new IllegalArgumentException("IOException reading from resource "+
+                                                   resourcePath+" relative to "+refClass, t);
+            }
+        }
     }
 
     public RDFBlob(@Nonnull RDFInputStream ris) throws IOException {
         this(Utils.toBytes(ris.getInputStream()), ris.getLang(),
                            ris.hasBaseIRI() ? ris.getBaseIRI() : null);
-    }
-
-    public static @Nonnull RDFBlob
-    fromResource(@Nonnull Class<?> refClass, @Nonnull String resourcePath,
-                 @Nonnull String baseIRI) throws IOException {
-        try (InputStream in = Utils.openResource(refClass, resourcePath)) {
-            RDFLang lang = RDFLangs.fromExtension(resourcePath);
-            return new RDFBlob(Utils.toBytes(in), RDFLangs.isKnown(lang) ? lang : null, baseIRI);
-        }
     }
 
     public static @Nonnull RDFBlob
@@ -63,11 +97,27 @@ public class RDFBlob implements Supplier<RDFInputStream> {
     }
 
     public int getLength() {
-        return data.length;
+        if (data != null) {
+            return data.length;
+        } else if (length == null) {
+            try {
+                length = Utils.toBytes(get().getInputStream()).length;
+            } catch (IOException e) {
+                throw new RuntimeException("Unexpected IOException", e);
+            }
+        }
+        return length;
     }
 
     @Override public @Nonnull RDFInputStream get() {
-        return new RDFInputStream(new ByteArrayInputStream(data), lang, baseIRI);
+        if (data != null) {
+            return new RDFInputStream(new ByteArrayInputStream(data), lang, baseIRI);
+        } else {
+            assert refClass != null;
+            assert resourcePath != null;
+            InputStream is = Utils.openResource(refClass, resourcePath);
+            return new RDFInputStream(is, lang, baseIRI);
+        }
     }
 
     @Override public @Nonnull String toString() {

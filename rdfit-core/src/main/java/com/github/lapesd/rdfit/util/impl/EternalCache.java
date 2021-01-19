@@ -22,7 +22,6 @@ import com.github.lapesd.rdfit.util.Utils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -55,11 +54,9 @@ public class EternalCache implements URLCache {
 
     protected void putResource(@Nonnull String iri, @Nonnull String resourcePath) {
         try {
-            put(new URL(iri), RDFBlob.fromResource(EternalCache.class, resourcePath, iri));
+            put(new URL(iri), new RDFBlob(EternalCache.class, resourcePath, iri));
         } catch (MalformedURLException e) {
             throw new IllegalArgumentException("Bad IRI "+iri, e);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Bad resourcePath "+resourcePath, e);
         }
     }
 
