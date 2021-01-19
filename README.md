@@ -273,7 +273,13 @@ Modules
   multiple RDF files inside
 - **rdfit-compress-libs**: Loads also optional dependencies from commons-compress: 
   com.github.luben:zstd-jni, org.brotli:dec and org.tukaani:xz
-  
+- **rdfit-commons-rdf**: Parsers for collections and commons-rdf Graph/Dataset 
+  instances.
+- **rdfit-commons-rdf-jena**: Converters between Jena `Triple`/`Statement`/`Quad`s 
+  and commons-rdf `Triple`/`Quad`.
+- **rdfit-commons-rdf-rdf4j**: Converters between RDF4J `Statement`
+  and commons-rdf `Triple`/`Quad`.
+
 > Too many modules? Consider one of these bundles: 
 > - **rdf-jena-libs**: core, jena, jena-parsers and hdt
 > - **rdf-rdf4j-libs**: core, rdf4j, rdf4j-parsers and hdt
