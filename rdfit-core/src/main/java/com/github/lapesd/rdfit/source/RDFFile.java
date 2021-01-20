@@ -24,10 +24,9 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.util.function.Supplier;
 
 public class RDFFile extends RDFInputStream {
     private static final Logger logger = LoggerFactory.getLogger(RDFFile.class);
@@ -65,6 +64,39 @@ public class RDFFile extends RDFInputStream {
         this.deleteOnClose = deleteOnClose;
     }
 
+    public static @Nonnull RDFFile createTemp() throws IOException {
+        return createTemp(new ByteArrayInputStream(new byte[0]));
+    }
+    public static @Nonnull RDFFile
+    createTemp(@Nonnull Supplier<RDFInputStream> supplier) throws IOException {
+        return createTemp(supplier.get());
+    }
+    public static @Nonnull RDFFile createTemp(@Nonnull RDFInputStream ris) throws IOException {
+        String hint = ris.getBaseIRI();
+        String prefix = hint.substring(hint.lastIndexOf('/') + 1);
+        int extBegin = prefix.indexOf('.') + 1;
+        String ext = "." + prefix.substring(extBegin);
+        prefix = prefix.substring(0, extBegin);
+        return createTemp(ris.getInputStream(), prefix, ext, ris.getLang(),
+                          ris.hasBaseIRI() ? ris.getBaseIRI() : null);
+
+    }
+    public static @Nonnull RDFFile createTemp(@Nonnull InputStream is) throws IOException {
+        return createTemp(is, "rdfit", "", null, null);
+    }
+    public static @Nonnull RDFFile createTemp(@Nonnull InputStream is, @Nonnull String prefix,
+                                              @Nonnull String suffix, @Nullable RDFLang lang,
+                                              @Nullable String baseIRI)  throws IOException{
+        File file = Files.createTempFile(prefix, suffix).toFile();
+        file.deleteOnExit();
+        try (FileOutputStream out = new FileOutputStream(file)) {
+            byte[] buf = new byte[256];
+            for (int n = is.read(buf); n >= 0; n = is.read(buf))
+                out.write(buf, 0, n);
+        }
+        return new RDFFile(file, lang, baseIRI, true);
+    }
+
     public @Nonnull RDFFile setDeleteOnClose() {
         return setDeleteOnClose(true);
     }
@@ -72,6 +104,10 @@ public class RDFFile extends RDFInputStream {
     public @Nonnull RDFFile setDeleteOnClose(boolean value) {
         deleteOnClose = value;
         return this;
+    }
+
+    public boolean getDeleteOnClose() {
+        return deleteOnClose;
     }
 
     public @Nonnull File getFile() {
