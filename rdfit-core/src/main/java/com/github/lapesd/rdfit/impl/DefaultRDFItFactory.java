@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -188,8 +189,10 @@ public class DefaultRDFItFactory implements RDFItFactory {
         RDFIt<Object> it;
         Class<?> tCls = quadLifter != null ? quadLifter.tripleType() : valueClass;
         ListenerParser parser = parserRegistry.getListenerParser(source, tCls, valueClass);
-        if (parser == null)
-            throw new NoParserException(source);
+        if (parser == null) {
+            handleNoParser(sourceQueue, source);
+            return new EmptyRDFIt<>(valueClass, itElement, source);
+        }
 
         ListenerRDFIt<Object> cbIt = new ListenerRDFIt<>(source, valueClass, itElement,
                                                          quadLifter, conversionMgr, sourceQueue);
@@ -206,6 +209,15 @@ public class DefaultRDFItFactory implements RDFItFactory {
         });
         it = cbIt;
         return it;
+    }
+
+    private void handleNoParser(@Nonnull SourceQueue sourceQueue, @Nonnull Object source) {
+        if (source instanceof Iterable)
+            sourceQueue.addAll(SourceQueue.When.Soon, (Iterable<?>) source);
+        else if (source instanceof Object[])
+            sourceQueue.addAll(SourceQueue.When.Soon, Arrays.asList((Object[]) source));
+        else
+            throw new NoParserException(source);
     }
 
     @Override
@@ -249,7 +261,7 @@ public class DefaultRDFItFactory implements RDFItFactory {
                         throw (RDFItException) s;
                     }
                     //noinspection unchecked
-                    parseSource((RDFListener<Object, Object>) listener, s);
+                    parseSource(queue, (RDFListener<Object, Object>) listener, s);
                 } catch (InterruptParsingException e) {
                     break;
                 } catch (Throwable t) {
@@ -273,7 +285,8 @@ public class DefaultRDFItFactory implements RDFItFactory {
         }
     }
 
-    protected void parseSource(@Nonnull RDFListener<Object, Object> cb,
+    protected void parseSource(@Nonnull SourceQueue sourceQueue,
+                               @Nonnull RDFListener<Object, Object> cb,
                                @Nonnull Object source) throws InterruptParsingException,
                                                               RDFItException {
         Class<?> cTT = cb.tripleType(), cQT = cb.quadType();
@@ -285,8 +298,10 @@ public class DefaultRDFItFactory implements RDFItFactory {
             ItParser itP = parserRegistry.getItParser(source, QUAD, cQT);
             if (itP == null) {
                 itP = parserRegistry.getItParser(source, TRIPLE, cTT);
-                if (itP == null)
-                    throw new NoParserException(source);
+                if (itP == null) {
+                    handleNoParser(sourceQueue, source);
+                    return; // if queued, simply return to fetch new sources
+                }
             }
             IterationElement itElement = itP.itElement();
             boolean isTriple = itElement.isTriple();

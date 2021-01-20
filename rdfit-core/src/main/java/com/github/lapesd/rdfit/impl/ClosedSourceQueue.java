@@ -24,6 +24,10 @@ public class ClosedSourceQueue implements ConsumableSourceQueue {
         throw new IllegalStateException("SourceQueue is closed");
     }
 
+    @Override public void addAll(@Nonnull When when, @Nonnull Iterable<?> sources) {
+        throw new IllegalStateException("SourceQueue is closed");
+    }
+
     @Override public int length() {
         return 0;
     }

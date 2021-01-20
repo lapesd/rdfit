@@ -44,6 +44,14 @@ public interface SourceQueue extends AutoCloseable {
     void add(@Nonnull When when, @Nonnull Object source);
 
     /**
+     * Equivalent to {@link #add(When, Object)}, but keeps the original order of sources intact
+     *
+     * @param when whether to add sources to the beginning (Soon) or to the end (Later)
+     * @param sources Iterable of sources to add
+     */
+    void addAll(@Nonnull When when, @Nonnull Iterable<?> sources);
+
+    /**
      * Get the number of pending sources to be loaded in this queue.
      *
      * The number of actual sources loaded may vary as some scheduled sources may end up being

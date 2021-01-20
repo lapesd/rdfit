@@ -23,8 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayDeque;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static java.lang.String.format;
 
@@ -47,6 +46,26 @@ public class DefaultSourceQueue implements ConsumableSourceQueue {
         if      (when == When.Soon ) deque.addFirst(source);
         else if (when == When.Later) deque.addLast(source);
         else                         throw new IllegalArgumentException("Unexpected when="+when);
+    }
+
+    @Override public void addAll(@Nonnull When when, @Nonnull Iterable<?> sources) {
+        logger.debug("{}.addAll({}, {})", this, when, sources);
+        if (when == When.Soon) {
+            List<?> list;
+            if (sources instanceof List) {
+                list = (List<?>) sources;
+            } else {
+                ArrayList<Object> oList = new ArrayList<>();
+                for (Object s : sources) oList.add(s);
+                list = oList;
+            }
+            for (ListIterator<?> it = list.listIterator(list.size()); it.hasPrevious(); )
+                deque.addFirst(it.previous());
+        } else if (when == When.Later) {
+            for (Object source : sources) deque.addLast(source);
+        } else {
+            throw new IllegalArgumentException("Unexpected when="+when);
+        }
     }
 
     @Override public synchronized int length() {
