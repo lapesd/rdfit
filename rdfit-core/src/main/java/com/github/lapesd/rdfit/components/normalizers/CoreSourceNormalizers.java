@@ -24,6 +24,9 @@ import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Supplier;
 
+/**
+ * Helper to register the {@link SourceNormalizer} instances in rdfit-core
+ */
 public class CoreSourceNormalizers {
     private static final @Nonnull Set<Class<? extends SourceNormalizer>> CLASSES
             = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(
@@ -37,16 +40,34 @@ public class CoreSourceNormalizers {
             SupplierNormalizer::new, CallableNormalizer::new, ByteArrayNormalizer::new
     );
 
+    /**
+     * Register all normalizers
+     * @param registry where to register them
+     */
     public static void registerAll(@Nonnull SourceNormalizerRegistry registry) {
         for (Supplier<SourceNormalizer> supplier : SUPPLIERS) registry.register(supplier.get());
     }
+
+    /**
+     * Register all normalizers on the factory's {@link RDFItFactory#getConversionManager()}
+     * @param factory the {@link RDFItFactory} where to register
+     */
     public static void registerAll(@Nonnull RDFItFactory factory) {
         registerAll(factory.getNormalizerRegistry());
     }
 
+    /**
+     * Removes all instances added by {@link #registerAll(SourceNormalizerRegistry)}
+     * @param registry the {@link SourceNormalizerRegistry}
+     */
     public static void unregisterAll(@Nonnull SourceNormalizerRegistry registry) {
         registry.unregisterIf(n -> CLASSES.contains(n.getClass()));
     }
+
+    /**
+     * Removes all instances added by {@link #registerAll(RDFItFactory)}
+     * @param factory the {@link RDFItFactory}
+     */
     public static void unregisterAll(@Nonnull RDFItFactory factory) {
         unregisterAll(factory.getNormalizerRegistry());
     }

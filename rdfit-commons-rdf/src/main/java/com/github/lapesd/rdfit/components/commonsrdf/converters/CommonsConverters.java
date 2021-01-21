@@ -27,24 +27,49 @@ import org.apache.commons.rdf.simple.SimpleRDF;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Register converters between commons-rdf Triple and Quad
+ */
 public class CommonsConverters {
     private static final @Nonnull SimpleRDF SR = new SimpleRDF();
 
+    /**
+     * Register both converters on the {@link RDFItFactory#getConversionManager()}
+     * @param factory the {@link RDFItFactory} instance
+     */
     public static void registerAll(@Nonnull RDFItFactory factory) {
         registerAll(factory.getConversionManager());
     }
+
+    /**
+     * Register both converters on the {@link ConversionManager}
+     * @param manager the {@link ConversionManager}
+     */
     public static void registerAll(@Nonnull ConversionManager manager) {
         manager.register(Quad2Triple.INSTANCE);
         manager.register(Triple2Quad.INSTANCE);
     }
+
+    /**
+     * Calls {@link #unregisterAll(ConversionManager)}
+     * @param factory the {@link RDFItFactory} whose {@link ConversionManager} will be used
+     */
     public static void unregisterAll(@Nonnull RDFItFactory factory) {
         unregisterAll(factory.getConversionManager());
     }
+
+    /**
+     * UNregister both Converter types handled by this helper class.
+     * @param manager the {@link ConversionManager} to bw affected
+     */
     public static void unregisterAll(@Nonnull ConversionManager manager) {
         manager.unregister(Quad2Triple.INSTANCE);
         manager.unregister(Triple2Quad.INSTANCE);
     }
 
+    /**
+     * Convert an commons-rdf Quad into a Triple
+     */
     @Accepts(Quad.class) @Outputs(Triple.class)
     public static class Quad2Triple extends DetachedBaseConverter {
         public static final @Nonnull Quad2Triple INSTANCE = new Quad2Triple();
@@ -53,6 +78,9 @@ public class CommonsConverters {
         }
     }
 
+    /**
+     * Convert an commons-rdf Triple into a Quad
+     */
     @Accepts(Triple.class) @Outputs(Quad.class)
     public static class Triple2Quad extends DetachedBaseConverter {
         public static final @Nonnull Triple2Quad INSTANCE = new Triple2Quad();

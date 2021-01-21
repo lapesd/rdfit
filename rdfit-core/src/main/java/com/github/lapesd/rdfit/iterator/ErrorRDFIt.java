@@ -22,10 +22,22 @@ import com.github.lapesd.rdfit.impl.ClosedSourceQueue;
 import javax.annotation.Nonnull;
 import java.util.NoSuchElementException;
 
+/**
+ * An {@link RDFIt} that will throw an {@link RDFItException} on first access
+ * @param <T> the value type
+ */
 public class ErrorRDFIt<T> extends BaseRDFIt<T> {
     private final @Nonnull Object source;
     private final @Nonnull RDFItException exception;
 
+    /**
+     * Constructor
+     *
+     * @param valueClass the value class
+     * @param itElement whether iterating triples or quads
+     * @param source the source
+     * @param exception the exception to throw
+     */
     public ErrorRDFIt(@Nonnull Class<?> valueClass, @Nonnull IterationElement itElement,
                       @Nonnull Object source, @Nonnull RDFItException exception) {
         super(valueClass, itElement, new ClosedSourceQueue());
@@ -33,6 +45,10 @@ public class ErrorRDFIt<T> extends BaseRDFIt<T> {
         this.exception = exception;
     }
 
+    /**
+     * The exception to be thrown on {@link #hasNext()}
+     * @return the exception
+     */
     public @Nonnull RDFItException getException() {
         return exception;
     }

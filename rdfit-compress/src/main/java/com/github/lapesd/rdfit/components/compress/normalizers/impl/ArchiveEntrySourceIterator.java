@@ -30,6 +30,9 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
+/**
+ * A {@link SourcesIterator} over {@link ArchiveInputStream} entries.
+ */
 public class ArchiveEntrySourceIterator implements SourcesIterator {
     private static final Logger logger = LoggerFactory.getLogger(ArchiveEntrySourceIterator.class);
 
@@ -38,6 +41,12 @@ public class ArchiveEntrySourceIterator implements SourcesIterator {
     private @Nullable Object current = null;
     private boolean exhausted = false;
 
+    /**
+     * Constructor
+     *
+     * @param source the source which yielded the {@link ArchiveInputStream}
+     * @param archive a stream of archive entries
+     */
     public ArchiveEntrySourceIterator(@Nonnull Object source,
                                       @Nonnull ArchiveInputStream archive) {
         this.source = source;

@@ -39,6 +39,9 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 
+/**
+ * Class for registering {@link Converter}s between Jena and commons-rdf
+ */
 public class CommonsJenaConverters {
     private static final JenaRDF JR = new JenaRDF();
     private static final List<Converter> CONVERTERS = asList(
@@ -56,19 +59,41 @@ public class CommonsJenaConverters {
             Triple2JenaQuad.INSTANCE
     );
 
+    /**
+     * Calls {@link #registerAll(ConversionManager)} for the factory {@link ConversionManager}
+     * @param factory the {@link RDFItFactory}
+     */
     public static void registerAll(@Nonnull RDFItFactory factory) {
         registerAll(factory.getConversionManager());
     }
+
+    /**
+     * Adds all {@link Converter}s to the given {@link ConversionManager}
+     * @param manager the {@link ConversionManager}
+     */
     public static void registerAll(@Nonnull ConversionManager manager) {
         for (Converter converter : CONVERTERS) manager.register(converter);
     }
+
+    /**
+     * Calls {@link #unregisterAll(ConversionManager)} with the factory {@link ConversionManager}
+     * @param factory the {@link RDFItFactory}
+     */
     public static void unregisterAll(@Nonnull RDFItFactory factory) {
         unregisterAll(factory.getConversionManager());
     }
+
+    /**
+     * Removes all Converters that {@link #registerAll(ConversionManager)} may have added
+     * @param manager the {@link ConversionManager} to remove from
+     */
     public static void unregisterAll(@Nonnull ConversionManager manager) {
         for (Converter converter : CONVERTERS) manager.unregister(converter);
     }
 
+    /**
+     * Converts Jena Triples into commons-rdf Triples
+     */
     @Accepts(org.apache.jena.graph.Triple.class) @Outputs(Triple.class)
     public static class JenaTriple2Triple extends DetachedBaseConverter {
         public static final JenaTriple2Triple INSTANCE = new JenaTriple2Triple();
@@ -81,6 +106,9 @@ public class CommonsJenaConverters {
         }
     }
 
+    /**
+     * Converts Jena Statements into commons-rdf Triples
+     */
     @Accepts(Statement.class) @Outputs(Triple.class)
     public static class JenaStatement2Triple extends DetachedBaseConverter {
         public static final JenaStatement2Triple INSTANCE = new JenaStatement2Triple();
@@ -93,6 +121,9 @@ public class CommonsJenaConverters {
         }
     }
 
+    /**
+     * Converts Jena Triples into commons-rdf Quads
+     */
     @Accepts(org.apache.jena.graph.Triple.class) @Outputs(Quad.class)
     public static class JenaTriple2Quad extends DetachedBaseConverter {
         public static final JenaTriple2Quad INSTANCE = new JenaTriple2Quad();
@@ -109,6 +140,9 @@ public class CommonsJenaConverters {
         }
     }
 
+    /**
+     * Converts Jena Statements into commons-rdf Quads
+     */
     @Accepts(Statement.class) @Outputs(Quad.class)
     public static class JenaStatement2Quad extends DetachedBaseConverter {
         public static final JenaStatement2Quad INSTANCE = new JenaStatement2Quad();
@@ -122,6 +156,9 @@ public class CommonsJenaConverters {
         }
     }
 
+    /**
+     * Converts Jena Quads into commons-rdf Quads
+     */
     @Accepts(org.apache.jena.sparql.core.Quad.class) @Outputs(Quad.class)
     public static class JenaQuad2Quad extends DetachedBaseConverter {
         public static final JenaQuad2Quad INSTANCE = new JenaQuad2Quad();
@@ -134,6 +171,9 @@ public class CommonsJenaConverters {
         }
     }
 
+    /**
+     * Converts Jena Quads into commons-rdf Triples
+     */
     @Accepts(org.apache.jena.sparql.core.Quad.class) @Outputs(Triple.class)
     public static class JenaQuad2Triple extends DetachedBaseConverter {
         public static final JenaQuad2Triple INSTANCE = new JenaQuad2Triple();
@@ -146,6 +186,9 @@ public class CommonsJenaConverters {
         }
     }
 
+    /**
+     * Converts commons-rdf Quads into Jena Quads
+     */
     @Accepts(Quad.class) @Outputs(org.apache.jena.sparql.core.Quad.class)
     public static class Quad2JenaQuad extends DetachedBaseConverter {
         public static final Quad2JenaQuad INSTANCE = new Quad2JenaQuad();
@@ -154,6 +197,9 @@ public class CommonsJenaConverters {
         }
     }
 
+    /**
+     * Converts commons-rdf Quads into Jena Triples
+     */
     @Accepts(Quad.class) @Outputs(org.apache.jena.graph.Triple.class)
     public static class Quad2JenaTriple extends DetachedBaseConverter {
         public static final Quad2JenaTriple INSTANCE = new Quad2JenaTriple();
@@ -162,6 +208,9 @@ public class CommonsJenaConverters {
         }
     }
 
+    /**
+     * Converts commons-rdf Quads into Jena Statements
+     */
     @Accepts(Quad.class) @Outputs(Statement.class)
     public static class Quad2JenaStatement extends DetachedBaseConverter {
         public static final Quad2JenaStatement INSTANCE = new Quad2JenaStatement();
@@ -170,6 +219,9 @@ public class CommonsJenaConverters {
         }
     }
 
+    /**
+     * Converts commons-rdf Triples into Jena Triples
+     */
     @Accepts(Triple.class) @Outputs(org.apache.jena.graph.Triple.class)
     public static class Triple2JenaTriple extends DetachedBaseConverter {
         public static final Triple2JenaTriple INSTANCE = new Triple2JenaTriple();
@@ -178,6 +230,9 @@ public class CommonsJenaConverters {
         }
     }
 
+    /**
+     * Converts commons-rdf Triples into Jena Statements
+     */
     @Accepts(Triple.class) @Outputs(Statement.class)
     public static class Triple2JenaStatement extends DetachedBaseConverter {
         public static final Triple2JenaStatement INSTANCE = new Triple2JenaStatement();
@@ -203,6 +258,9 @@ public class CommonsJenaConverters {
         }
     }
 
+    /**
+     * Converts commons-rdf Triples into Jena Quads
+     */
     @Accepts(Triple.class) @Outputs(org.apache.jena.sparql.core.Quad.class)
     public static class Triple2JenaQuad extends DetachedBaseConverter {
         public static final Triple2JenaQuad INSTANCE = new Triple2JenaQuad();

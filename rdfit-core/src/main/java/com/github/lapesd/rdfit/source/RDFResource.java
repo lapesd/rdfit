@@ -23,6 +23,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
 
+/**
+ * An {@link RDFInputStream} over java resources in the classpath.
+ */
 public class RDFResource extends RDFInputStream {
     private final @Nonnull String fallbackBaseIRI;
 

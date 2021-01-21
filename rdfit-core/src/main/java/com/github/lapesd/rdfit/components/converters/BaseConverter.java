@@ -28,6 +28,9 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * Base implementation class for {@link Converter}s
+ */
 public abstract class BaseConverter implements Converter {
     protected static final Logger logger = LoggerFactory.getLogger(BaseConverter.class);
     protected final @Nonnull Collection<Class<?>> acceptedClasses;

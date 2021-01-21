@@ -22,6 +22,16 @@ import javax.annotation.Nonnull;
  * Converts a triple instance of {@link #tripleType()} to a quad instance.
  */
 public interface QuadLifter {
+    /**
+     * The required class for input triples
+     * @return a Class instance.
+     */
     @Nonnull Class<?> tripleType();
+
+    /**
+     * Converts a triple of the given {@link #tripleType()} into a quad.
+     * @param triple the triple to lift
+     * @return a quad containing the triple
+     */
     @Nonnull Object lift(@Nonnull Object triple);
 }

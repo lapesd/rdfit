@@ -26,6 +26,9 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 
+/**
+ * Turn {@link URI} instances into {@link java.net.URL} or {@link File} instances.
+ */
 @Accepts(URI.class)
 public class URINormalizer extends BaseSourceNormalizer {
     private static final Logger logger = LoggerFactory.getLogger(URINormalizer.class);

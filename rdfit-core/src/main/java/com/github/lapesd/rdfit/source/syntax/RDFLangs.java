@@ -34,6 +34,9 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.synchronizedMap;
 
+/**
+ * Registry of {@link RDFLang} instance and helper methods
+ */
 public class RDFLangs {
     private static final Logger logger = LoggerFactory.getLogger(RDFLangs.class);
 

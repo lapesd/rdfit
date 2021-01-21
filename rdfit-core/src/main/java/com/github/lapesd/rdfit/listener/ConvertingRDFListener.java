@@ -25,6 +25,12 @@ import com.github.lapesd.rdfit.errors.InconvertibleException;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * An {@link RDFListener} that converts triple/quads and forwards to a another instance.
+ *
+ * @param <T> the triple representation class
+ * @param <Q> the quad representation class
+ */
 public class ConvertingRDFListener<T, Q> extends DelegatingRDFListener<T, Q> {
     protected @Nullable Class<T> tripleType;
     protected @Nullable Class<Q> quadType;

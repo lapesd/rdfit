@@ -40,6 +40,10 @@ import java.util.function.Supplier;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
 
+/**
+ * Helper class for registering parsers for {@link org.apache.commons.rdf.api.Graph},
+ * {@link org.apache.commons.rdf.api.Dataset} and Iterable/arrays of commons-rdf triples/quads.
+ */
 public class CommonsParsers {
     private static final Set<Class<?>> CLASSES = unmodifiableSet(new HashSet<>(asList(
             GraphItParser.class, DatasetItParser.class,
@@ -53,9 +57,18 @@ public class CommonsParsers {
             DatasetListenerParser::new
     );
 
+    /**
+     * Calls {@link #registerAll(ParserRegistry)} with {@link RDFItFactory#getParserRegistry()}.
+     * @param factory the {@link RDFItFactory}
+     */
     public static void registerAll(@Nonnull RDFItFactory factory) {
         registerAll(factory.getParserRegistry());
     }
+
+    /**
+     * Add parsers to the given {@link ParserRegistry}.
+     * @param registry the {@link ParserRegistry}
+     */
     public static void registerAll(@Nonnull ParserRegistry registry) {
         JavaParsers.registerWithQuadClass(Quad.class);
         JavaParsers.registerWithTripleClass(Triple.class);
@@ -65,10 +78,18 @@ public class CommonsParsers {
             registry.register(supplier.get());
     }
 
+    /**
+     * Calls {@link #unregisterAll(ParserRegistry)} on {@link RDFItFactory#getParserRegistry()}
+     * @param factory the {@link RDFItFactory}
+     */
     public static void unregisterAll(@Nonnull RDFItFactory factory) {
         unregisterAll(factory.getParserRegistry());
     }
 
+    /**
+     * Unregister any parser that may have been added  with {@link #registerAll(ParserRegistry)}
+     * @param registry the {@link ParserRegistry}
+     */
     public static void unregisterAll(@Nonnull ParserRegistry registry) {
         JavaParsers.unregister(registry, Quad.class);
         JavaParsers.unregister(registry, Triple.class);

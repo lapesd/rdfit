@@ -31,10 +31,26 @@ import javax.annotation.Nullable;
 import java.util.Collections;
 import java.util.Iterator;
 
+/**
+ * Create an {@link RDFIt} over a commons-rdf {@link Dataset}
+ */
 public class DatasetItParser extends BaseItParser {
+    /**
+     * Create a parser delivering triples or quads, as given.
+     * @param itElement the {@link RDFIt#itElement()} of produced {@link RDFIt} instances
+     */
     public DatasetItParser(@Nonnull IterationElement itElement) {
         this(itElement.isTriple() ? Triple.class : Quad.class, itElement);
     }
+
+    /**
+     * Create a parser whose {@link #parse(Object)}  method yields {@link RDFIt} instances
+     * with the given {@link RDFIt#valueClass()} and {@link RDFIt#itElement()}.
+     *
+     * @param valueClass the {@link RDFIt#valueClass()}. Must be {@link Triple}, {@link Quad}
+     *                   or a superclass of those
+     * @param itElement the value of {@link RDFIt#itElement()}
+     */
     public DatasetItParser(@Nonnull Class<?> valueClass, @Nonnull IterationElement itElement) {
         super(Collections.singleton(Dataset.class), valueClass, itElement);
     }

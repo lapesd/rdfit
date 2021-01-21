@@ -23,6 +23,9 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * MakesWraps an {@link InputStream} to make its {@link InputStream#close()} method a no-op
+ */
 public class CloseShield extends InputStream {
     private static final Logger logger = LoggerFactory.getLogger(CloseShield.class);
     private final @Nonnull InputStream delegate;

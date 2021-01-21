@@ -27,7 +27,13 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Iterator;
 
+/**
+ * Create an {@link RDFIt} over commons-rdf {@link Graph}s
+ */
 public class GraphItParser extends BaseItParser {
+    /**
+     * Default constructor
+     */
     public GraphItParser() {
         super(Collections.singleton(Graph.class), Triple.class, IterationElement.TRIPLE);
     }

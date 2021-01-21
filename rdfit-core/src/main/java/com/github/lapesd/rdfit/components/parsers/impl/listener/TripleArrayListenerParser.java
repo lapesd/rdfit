@@ -21,6 +21,9 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Iterator;
 
+/**
+ * A {@link com.github.lapesd.rdfit.components.ListenerParser} over triple arrays
+ */
 public class TripleArrayListenerParser extends BaseJavaListenerParser {
     public TripleArrayListenerParser(@Nonnull Class<?> memberClass, @Nonnull Class<?> tripleClass,
                                      @Nonnull Class<?> quadClass) {

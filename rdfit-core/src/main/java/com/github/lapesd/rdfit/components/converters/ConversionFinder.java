@@ -20,6 +20,10 @@ import com.github.lapesd.rdfit.errors.ConversionException;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Explores the multiple possible {@link com.github.lapesd.rdfit.components.Converter} chains that
+ * lead to a desired {@link Class}.
+ */
 public interface ConversionFinder {
     /**
      * The {@link ConversionPath} which will be used in the next {@link #convert(Object)} call.

@@ -23,6 +23,9 @@ import com.github.lapesd.rdfit.source.RDFInputStream;
 import javax.annotation.Nonnull;
 import java.io.ByteArrayInputStream;
 
+/**
+ * Turns byte[] instances into {@link RDFInputStream} instances.
+ */
 @Accepts(byte[].class)
 public class ByteArrayNormalizer extends BaseSourceNormalizer {
     @Override public @Nonnull Object normalize(@Nonnull Object source) {

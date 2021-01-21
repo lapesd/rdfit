@@ -26,6 +26,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
+/**
+ * An {@link RDFListener} that delegates all methods to another.
+ * @param <T> the triple representation class
+ * @param <Q> the quad representation class
+ */
 @SuppressWarnings("unchecked")
 public class DelegatingRDFListener<T, Q> implements RDFListener<T, Q> {
     protected final @Nonnull RDFListener<?, ?> target;

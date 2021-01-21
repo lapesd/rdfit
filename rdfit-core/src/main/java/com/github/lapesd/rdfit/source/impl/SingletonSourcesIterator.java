@@ -24,6 +24,9 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import java.util.NoSuchElementException;
 
+/**
+ * A {@link SourcesIterator} for a single source
+ */
 public class SingletonSourcesIterator implements SourcesIterator {
     private static final Logger logger = LoggerFactory.getLogger(SingletonSourcesIterator.class);
     private boolean has = true;

@@ -20,6 +20,9 @@ import com.github.lapesd.rdfit.components.converters.ConversionPath;
 
 import javax.annotation.Nonnull;
 
+/**
+ * An exception that occurred while running a {@link ConversionPath}
+ */
 public class ConversionPathException extends ConversionException {
     public ConversionPathException(@Nonnull ConversionPath path, @Nonnull ConversionException e) {
         super(e.getInput(), e.getConverter(), e.getTargetClass(),

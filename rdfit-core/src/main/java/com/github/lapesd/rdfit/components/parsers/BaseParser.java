@@ -28,6 +28,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
+/**
+ * Default implementations for some methods in {@link Parser}
+ */
 public abstract class BaseParser implements Parser {
     private static final Logger logger = LoggerFactory.getLogger(BaseParser.class);
     protected final @Nonnull Collection<Class<?>> acceptedClasses;

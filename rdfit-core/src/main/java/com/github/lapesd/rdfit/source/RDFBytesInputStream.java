@@ -29,6 +29,9 @@ import java.util.Base64;
 
 import static java.lang.String.format;
 
+/**
+ * An {@link RDFInputStream} over a byte array
+ */
 public class RDFBytesInputStream extends RDFInputStream {
     private final @Nonnull byte[] data;
 

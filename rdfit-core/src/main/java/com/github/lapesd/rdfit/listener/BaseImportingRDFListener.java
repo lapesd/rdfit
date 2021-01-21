@@ -29,6 +29,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashSet;
 
+/**
+ * An {@link RDFListener} that processes owl:imports triples and queues the referenced URIs
+ * for later loading
+ *
+ * @param <T> the triple representation class
+ * @param <Q> the quad representation class
+ */
 public abstract class BaseImportingRDFListener<T, Q> extends DelegatingRDFListener<T, Q> {
     private static final Logger logger = LoggerFactory.getLogger(BaseImportingRDFListener.class);
     private final @Nonnull HashSet<String> visited = new HashSet<>();

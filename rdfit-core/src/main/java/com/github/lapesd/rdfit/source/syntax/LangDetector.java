@@ -21,7 +21,14 @@ import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * An objects that detects the {@link RDFLang} of an input
+ */
 public interface LangDetector {
+
+    /**
+     * The detection state
+     */
     interface State {
         /**
          * Feed the next input byte to the detector, which may reach a conclusion or return null

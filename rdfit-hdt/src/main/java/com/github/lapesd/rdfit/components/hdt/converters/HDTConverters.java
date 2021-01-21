@@ -41,6 +41,9 @@ import java.util.regex.Pattern;
 import static org.apache.jena.graph.NodeFactory.createBlankNode;
 import static org.apache.jena.graph.NodeFactory.createLiteral;
 
+/**
+ * Registers/unregisters converters between Jena and HDT triples
+ */
 public class HDTConverters {
     private static final @Nonnull Pattern INT_RX = Pattern.compile("[+-]?[0-9]+");
     private static final @Nonnull Pattern DEC_RX = Pattern.compile("[+-]?[0-9]*\\.[0-9]+");
@@ -59,6 +62,11 @@ public class HDTConverters {
         PREFIXES = Collections.unmodifiableMap(map);
     }
 
+    /**
+     * Convert a string used in a {@link TripleString} to a jena {@link Node}
+     * @param seq an RDF term
+     * @return representation of the RDF term as a Jena {@link Node}
+     */
     public static @Nonnull Node hdtStringToNode(@Nonnull CharSequence seq) {
         if (seq.length() == 0) return createBlankNode();
         char f = seq.charAt(0);
@@ -111,10 +119,21 @@ public class HDTConverters {
         }
     }
 
+    /**
+     * Convert an HDT {@link TripleString} into a Jena {@link Triple}
+     */
     @Accepts(TripleString.class) @Outputs(Triple.class)
     public static class TripleString2Triple extends DetachedBaseConverter {
         public static final @Nonnull TripleString2Triple INSTANCE = new TripleString2Triple();
 
+        /**
+         * Convert a single term of a {@link TripleString}
+         * @param ts the {@link TripleString} of the term
+         * @param term a member of the {@link TripleString}
+         * @param requireResource fail if the result Node is not a blank node or URI
+         * @return a jena {@link Node} representing term
+         * @throws ConversionException If something goes wrong
+         */
         protected @Nonnull Node convertTerm(@Nonnull TripleString ts, @Nonnull CharSequence term,
                                             boolean requireResource) throws ConversionException {
             try {
@@ -137,10 +156,20 @@ public class HDTConverters {
         }
     }
 
+    /**
+     * Convers Jena {@link Triple}s into {@link TripleString}s
+     */
     @Accepts(Triple.class) @Outputs(TripleString.class)
     public static class Triple2TripleString extends DetachedBaseConverter {
         public static final @Nonnull Triple2TripleString INSTANCE = new Triple2TripleString();
 
+        /**
+         * Convert a single jena {@link Node} into a String for use in a {@link TripleString}
+         * @param node the input node
+         * @param in the triple that contains the node
+         * @return the HDT string to be used in a {@link TripleString}
+         * @throws ConversionException if something goes wrong.
+         */
         private @Nonnull String toHDTString(@Nonnull Node node,
                                             @Nonnull Triple in) throws ConversionException {
             if (node.isBlank()) {
@@ -175,18 +204,38 @@ public class HDTConverters {
         }
     }
 
+    /**
+     * Add all HDT/jena converters to the given {@link ConversionManager}
+     * @param mgr the {@link ConversionManager}
+     */
     public static void registerAll(@Nonnull ConversionManager mgr) {
         for (Converter c : CONVERTERS) mgr.register(c);
         JenaConverters.registerAll(mgr);
     }
+
+    /**
+     * Calls {@link #registerAll(ConversionManager)} with {@link RDFItFactory#getConversionManager()}
+     * @param factory the {@link RDFItFactory}
+     */
     public static void registerAll(@Nonnull RDFItFactory factory) {
         registerAll(factory.getConversionManager());
     }
 
+    /**
+     * Removes all converters that might have been added by {@link #registerAll(ConversionManager)}
+     * from the given {@link ConversionManager}.
+     * @param mgr the {@link ConversionManager}
+     */
     public static void unregisterAll(@Nonnull ConversionManager mgr) {
         for (Converter c : CONVERTERS) mgr.register(c);
         JenaConverters.unregisterAll(mgr);
     }
+
+    /**
+     * Calls {@link #unregisterAll(ConversionManager)} with
+     * {@link RDFItFactory#getConversionManager()}
+     * @param factory the {@link RDFItFactory}
+     */
     public static void unregisterAll(@Nonnull RDFItFactory factory) {
         registerAll(factory.getConversionManager());
     }

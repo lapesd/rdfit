@@ -39,12 +39,18 @@ import java.util.Set;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
 
+/**
+ * An {@link com.github.lapesd.rdfit.components.ItParser} over {@link HDT} objects.
+ */
 public class HDTItParser extends BaseItParser {
     private static final Logger logger = LoggerFactory.getLogger(HDTItParser.class);
     private static final @Nonnull Set<Class<?>> CLASSES = unmodifiableSet(new HashSet<>(asList(
             RDFInputStream.class, HDT.class
     )));
 
+    /**
+     * Default constructor
+     */
     public HDTItParser() {
         super(CLASSES, TripleString.class, IterationElement.TRIPLE);
     }

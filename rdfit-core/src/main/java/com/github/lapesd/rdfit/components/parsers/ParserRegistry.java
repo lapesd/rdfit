@@ -28,11 +28,26 @@ import javax.annotation.Nullable;
 import java.util.Set;
 import java.util.function.Predicate;
 
+/**
+ * Manages and lookups {@link Parser} instances
+ */
 public interface ParserRegistry {
+    /**
+     * The {@link ConversionManager} that {@link Parser}s shoudl use, if necessary.
+     * @return a {@link ConversionManager}
+     */
     @Nonnull ConversionManager getConversionManager();
 
+    /**
+     * Replaces the default {@link #getConversionManager()}
+     * @param mgr the new {@link ConversionManager}
+     */
     void setConversionManager(@Nonnull ConversionManager mgr);
 
+    /**
+     * all {@link RDFLang} instances supported by at least one {@link Parser}
+     * @return the {@link Set} of {@link RDFLang}s
+     */
     @Nonnull Set<RDFLang> getSupportedLangs();
 
     /**
@@ -56,6 +71,10 @@ public interface ParserRegistry {
      */
     void unregisterIf(@Nonnull Predicate<? super Parser> predicate);
 
+    /**
+     * Removes all {@link Parser}s of the given class
+     * @param aClass teh class to remove instances of
+     */
     default void unregisterAll(@Nonnull Class<? extends Parser> aClass) {
         unregisterIf(aClass::isInstance);
     }

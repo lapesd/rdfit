@@ -24,18 +24,39 @@ import org.rdfhdt.hdt.triples.TripleString;
 
 import javax.annotation.Nonnull;
 
+/**
+ * A registration helper for {@link com.github.lapesd.rdfit.components.Parser}s that handle HDT
+ */
 public class HDTParsers {
+    /**
+     * Calls {@link #registerAll(ParserRegistry)} with {@link RDFItFactory#getParserRegistry()}
+     * @param factory the {@link RDFItFactory}
+     */
     public static void registerAll(@Nonnull RDFItFactory factory) {
         registerAll(factory.getParserRegistry());
     }
+
+    /**
+     * Register all known parsers into the given {@link ParserRegistry}
+     * @param registry the {@link ParserRegistry}
+     */
     public static void registerAll(@Nonnull ParserRegistry registry) {
         registry.register(new HDTItParser());
         JavaParsers.registerWithTripleClass(registry, TripleString.class);
     }
 
+    /**
+     * Calls {@link #unregisterAll(ParserRegistry)} with {@link RDFItFactory#getParserRegistry()}
+     * @param factory the {@link RDFItFactory}
+     */
     public static void unregisterAll(@Nonnull RDFItFactory factory) {
         unregisterAll(factory.getParserRegistry());
     }
+
+    /**
+     * Removes any parser that may have been added by {@link #registerAll(ParserRegistry)}
+     * @param registry the {@link ParserRegistry}
+     */
     public static void unregisterAll(@Nonnull ParserRegistry registry) {
         registry.unregisterIf(HDTItParser.class::isInstance);
         JavaParsers.unregister(registry, TripleString.class);

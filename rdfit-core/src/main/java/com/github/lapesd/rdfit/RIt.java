@@ -42,6 +42,9 @@ import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+/**
+ * Helper class with shortcuts to the {@link DefaultRDFItFactory} and other general helpers
+ */
 public class RIt {
     private static final Logger logger = LoggerFactory.getLogger(RIt.class);
     private static boolean initialized = false;

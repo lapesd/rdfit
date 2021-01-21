@@ -23,15 +23,65 @@ import com.github.lapesd.rdfit.components.parsers.ParserRegistry;
 import javax.annotation.Nonnull;
 import java.util.function.Predicate;
 
+/**
+ * Manages and lookupts {@link SourceNormalizer} instances
+ */
 public interface SourceNormalizerRegistry {
+    /**
+     * Get the {@link ParserRegistry} instance attached to this registry
+     * @return a {@link ParserRegistry}
+     */
     @Nonnull ParserRegistry getParserRegistry();
+
+    /**
+     * Changes the {@link ParserRegistry} retruned by {@link #getParserRegistry()}
+     * @param registry the new {@link ParserRegistry}
+     */
     void setParserRegistry(@Nonnull ParserRegistry registry);
+
+    /**
+     * Get the {@link ConversionManager} that attached {@link SourceNormalizer} should use,
+     * if necessary
+     *
+     * @return the {@link ConversionManager} instance
+     */
     @Nonnull ConversionManager getConversionManager();
+
+    /**
+     * Change the {@link ConversionManager} returner by {@link #getConversionManager()}
+     * @param conversionManager the new instance.
+     */
     void setConversionManager(@Nonnull ConversionManager conversionManager);
 
+    /**
+     * Add a {@link SourceNormalizer} for new lookups.
+     * @param normalizer the new normalizer
+     */
     void register(@Nonnull SourceNormalizer normalizer);
+
+    /**
+     * Removes a specific {@link SourceNormalizer} instance,
+     * if {@link #register(SourceNormalizer)}ed.
+     *
+     * @param instance the instance to remove
+     */
     void unregister(@Nonnull SourceNormalizer instance);
+
+
+    /**
+     * Remove all {@link SourceNormalizer}s that match the given predicate.
+     *
+     * @param predicate {@link Predicate} to test if a instance should be removed
+     */
     void unregisterIf(@Nonnull Predicate<? super SourceNormalizer> predicate);
 
+    /**
+     * Repeatedly applies the first applicable {@link SourceNormalizer} instance to the given
+     * input (or objects resulting from normalization in previous iterations) until no
+     * {@link SourceNormalizer} is applicable.
+     *
+     * @param source RDF source to normalize
+     * @return normalized RDF source.
+     */
     @Nonnull Object normalize(@Nonnull Object source);
 }

@@ -29,6 +29,9 @@ import com.github.lapesd.rdfit.listener.RDFListener;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
+/**
+ * A factory for {@link RDFIt} instances and a frontend for parsing with {@link RDFListener}s.
+ */
 public interface RDFItFactory extends AutoCloseable {
     /**
      * Allows configuration of {@link Converter}s that will be transparently used during iteration.

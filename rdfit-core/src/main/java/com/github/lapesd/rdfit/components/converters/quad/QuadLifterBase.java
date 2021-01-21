@@ -20,6 +20,9 @@ import com.github.lapesd.rdfit.util.Utils;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Default implementation for some methods in {@link QuadLifter}
+ */
 public abstract class QuadLifterBase implements QuadLifter {
     protected final @Nonnull Class<?> tripleType;
 

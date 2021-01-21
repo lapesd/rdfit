@@ -27,15 +27,28 @@ public class SplitQuad {
     private final @Nonnull String graph;
     private final @Nonnull Object triple;
 
+    /**
+     * Create from a graph IRI and a triple
+     * @param graph an graph IRI or blank node representation
+     * @param triple a triple
+     */
     public SplitQuad(@Nonnull String graph, @Nonnull Object triple) {
         this.graph = graph;
         this.triple = triple;
     }
 
+    /**
+     * Get the graph IRI or blank node representation
+     * @return the graph
+     */
     public @Nonnull String getGraph() {
         return graph;
     }
 
+    /**
+     * Get the triple
+     * @return the triple instance
+     */
     public @Nonnull Object getTriple() {
         return triple;
     }

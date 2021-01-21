@@ -32,6 +32,9 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Helper class for registering {@link Converter}s between commons-rdf and RDF4J
+ */
 public class CommonsRDF4JConverters {
     private static final List<Converter> CONVERTERS = Arrays.asList(
             Statement2Triple.INSTANCE,
@@ -40,19 +43,41 @@ public class CommonsRDF4JConverters {
     );
     private static final RDF4J R = new RDF4J();
 
+    /**
+     * Register all converters in the factory {@link ConversionManager}
+     * @param factory the {@link RDFItFactory}
+     */
     public static void registerAll(@Nonnull RDFItFactory factory) {
         registerAll(factory.getConversionManager());
     }
+
+    /**
+     * Register all converters at the given {@link ConversionManager}
+     * @param manager the {@link ConversionManager}
+     */
     public static void registerAll(@Nonnull ConversionManager manager) {
         for (Converter converter : CONVERTERS) manager.register(converter);
     }
+
+    /**
+     * Remove all converters registered by this class from the factory {@link ConversionManager}
+     * @param factory the {@link RDFItFactory} whose {@link ConversionManager} will be used
+     */
     public static void unregisterAll(@Nonnull RDFItFactory factory) {
         unregisterAll(factory.getConversionManager());
     }
+
+    /**
+     * Remove all converters registered by this class from the given {@link ConversionManager}
+     * @param manager the {@link ConversionManager}
+     */
     public static void unregisterAll(@Nonnull ConversionManager manager) {
         for (Converter converter : CONVERTERS) manager.unregister(converter);
     }
 
+    /**
+     * Convert from RDF4J Statement to commons-rdf Triple
+     */
     @Accepts(Statement.class) @Outputs(Triple.class)
     public static class Statement2Triple extends DetachedBaseConverter {
         public static final Statement2Triple INSTANCE = new Statement2Triple();
@@ -61,6 +86,10 @@ public class CommonsRDF4JConverters {
         }
     }
 
+
+    /**
+     * Convert from commons-rdf objects to an RDF4J Statement
+     */
     @Accepts({Triple.class, Quad.class, TripleLike.class}) @Outputs(Statement.class)
     public static class TripleLike2Statement extends DetachedBaseConverter {
         public static final TripleLike2Statement INSTANCE = new TripleLike2Statement();
@@ -69,6 +98,9 @@ public class CommonsRDF4JConverters {
         }
     }
 
+    /**
+     * Convert from RDF4J Statement to commons-rdf Quad
+     */
     @Accepts(Statement.class) @Outputs(Quad.class)
     public static class Statement2Quad extends DetachedBaseConverter {
         public static final Statement2Quad INSTANCE = new Statement2Quad();

@@ -23,6 +23,9 @@ import com.github.lapesd.rdfit.source.RDFInputStream;
 import javax.annotation.Nonnull;
 import java.io.InputStream;
 
+/**
+ * Wrap {@link InputStream}s into {@link RDFInputStream}s
+ */
 @Accepts(InputStream.class)
 public class InputStreamNormalizer extends BaseSourceNormalizer {
     @Override public @Nonnull Object normalize(@Nonnull Object source) {

@@ -22,6 +22,9 @@ import com.github.lapesd.rdfit.errors.ConversionException;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
+/**
+ * Converts object of one class into another
+ */
 public interface Converter extends Component {
 
     /**

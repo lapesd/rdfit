@@ -31,6 +31,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.NoSuchElementException;
 
+/**
+ * A {@link SourcesIterator} over entries in a {@link SevenZFile}.
+ */
 public class SevenZSourceIterator implements SourcesIterator {
     private static final Logger logger = LoggerFactory.getLogger(SevenZSourceIterator.class);
     private final @Nonnull Object source;
@@ -39,11 +42,21 @@ public class SevenZSourceIterator implements SourcesIterator {
     private boolean exhausted;
     private @Nullable Object current;
 
+    /**
+     * Constructor
+     * @param source the source that yielded the {@link SevenZFile}
+     * @param file the open and readable {@link SevenZFile}
+     */
     public SevenZSourceIterator(@Nonnull Object source, @Nonnull SevenZFile file) {
         this.source = source;
         this.file = file;
     }
 
+    /**
+     * Causes the given file to be deleted when this {@link SourcesIterator} is closed.
+     * @param file {@link File} to delete on {@link #close()}
+     * @return this instance
+     */
     public @Nonnull SevenZSourceIterator deleteOnClose(@Nonnull File file) {
         deleteOnClose = file;
         return this;

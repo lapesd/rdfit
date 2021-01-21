@@ -24,6 +24,9 @@ import com.github.lapesd.rdfit.errors.RDFItException;
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
+/**
+ * Calls the supplier, in order to later normalize the result.
+ */
 @Accepts(Supplier.class)
 public class SupplierNormalizer extends BaseSourceNormalizer {
     @Override public @Nonnull Object normalize(@Nonnull Object source) {

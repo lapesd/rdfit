@@ -26,20 +26,41 @@ import java.util.List;
 
 import static java.util.Collections.singletonList;
 
+/**
+ * Register parsers for RDF serializations backed by RDF4J
+ */
 public class RDF4JParsers {
     private static final @Nonnull List<Parser> PARSERS
             = singletonList(new RDF4JInputStreamParser());
 
+    /**
+     * Add all RDF4J parsers to the given registry
+     * @param registry the {@link ParserRegistry}
+     */
     public static void registerAll(@Nonnull ParserRegistry registry) {
         for (Parser p : PARSERS) registry.register(p);
     }
+
+    /**
+     * Calls {@link #registerAll(ParserRegistry)} with {@link RDFItFactory#getParserRegistry()}
+     * @param factory the {@link RDFItFactory}
+     */
     public static void registerAll(@Nonnull RDFItFactory factory) {
         registerAll(factory.getParserRegistry());
     }
 
+    /**
+     * Remove any parser added by {@link #registerAll(ParserRegistry)}
+     * @param registry a {@link ParserRegistry}
+     */
     public static void unregisterAll(@Nonnull ParserRegistry registry) {
         for (Parser p : PARSERS) registry.unregister(p);
     }
+
+    /**
+     * Call {@link #unregisterAll(ParserRegistry)} with {@link RDFItFactory#getParserRegistry()}
+     * @param factory the {@link RDFItFactory}
+     */
     public static void unregisterAll(@Nonnull RDFItFactory factory) {
         unregisterAll(factory.getParserRegistry());
     }

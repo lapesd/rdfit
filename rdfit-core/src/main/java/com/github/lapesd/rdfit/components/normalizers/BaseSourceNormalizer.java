@@ -27,6 +27,9 @@ import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * Shared implementation for {@link SourceNormalizer}
+ */
 public abstract class BaseSourceNormalizer implements SourceNormalizer {
     private static final Logger logger = LoggerFactory.getLogger(BaseSourceNormalizer.class);
     private final @Nonnull Collection<Class<?>> acceptedClasses;

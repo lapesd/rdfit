@@ -22,6 +22,9 @@ import com.github.lapesd.rdfit.source.RDFInputStream;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
+/**
+ * Convert an RDF source int another, easier to parse/iterate.
+ */
 public interface SourceNormalizer {
     void attachTo(@Nonnull SourceNormalizerRegistry registry);
 

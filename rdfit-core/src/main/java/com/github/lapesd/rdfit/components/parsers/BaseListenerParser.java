@@ -25,6 +25,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 
+/**
+ * Default implementations for some methods in {@link ListenerParser}
+ */
 public abstract class BaseListenerParser extends BaseParser implements ListenerParser {
     protected final @Nullable Class<?> tripleClass;
     protected final @Nullable Class<?> quadClass;

@@ -19,6 +19,9 @@ package com.github.lapesd.rdfit.components.converters;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
+/**
+ * A {@link BaseConverter} that does not enforce the single attached {@link ConversionManager} rule.
+ */
 public abstract class DetachedBaseConverter extends BaseConverter {
     public DetachedBaseConverter(@Nonnull Collection<Class<?>> acceptedClasses, @Nonnull Class<?> outputClass) {
         super(acceptedClasses, outputClass);

@@ -39,6 +39,9 @@ import java.nio.file.Path;
 
 import static com.github.lapesd.rdfit.components.converters.util.ConversionPathSingletonCache.createCache;
 
+/**
+ * Helper class to deliver triples/quads to an {@link RDFListener} instance.
+ */
 public class ListenerFeeder implements AutoCloseable {
     private static final Logger logger = LoggerFactory.getLogger(ListenerFeeder.class);
     private final @Nonnull RDFListener<Object, Object> target;

@@ -18,6 +18,9 @@ package com.github.lapesd.rdfit.iterator;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Whether triples or quads are being iterated
+ */
 public enum IterationElement {
     TRIPLE,
     QUAD;

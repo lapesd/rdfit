@@ -20,6 +20,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Iterator;
 
+/**
+ * A {@link com.github.lapesd.rdfit.components.ListenerParser} over {@link Iterable}s
+ */
 public class IterableListenerParser extends BaseJavaListenerParser {
     public IterableListenerParser(@Nullable Class<?> tripleClass, @Nullable Class<?> quadClass) {
         super(Iterable.class, tripleClass, quadClass);

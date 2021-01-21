@@ -23,7 +23,16 @@ import org.eclipse.rdf4j.rio.RDFFormat;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * Helper for converting between {@link RDFLang} and {@link RDFFormat}.
+ */
 public class RDF4JFormat {
+
+    /**
+     * Convert a {@link RDFLang} into a {@link RDFFormat}
+     * @param lang a {@link RDFLang}
+     * @return a {@link RDFFormat} or null if there is no equivalent
+     */
     public static @Nullable RDFFormat toRDF4J(@Nonnull RDFLang lang) {
         if      (RDFLangs.RDFXML.equals(lang))  return RDFFormat.RDFXML;
         else if (RDFLangs.NT.equals(lang))      return RDFFormat.NTRIPLES;
@@ -39,6 +48,11 @@ public class RDF4JFormat {
         else                                    return null;
     }
 
+    /**
+     * Conver a {@link RDFFormat} into the equivalent {@link RDFLang}
+     * @param format a {@link RDFFormat}
+     * @return a {@link RDFLang} or null if there is no equivalent
+     */
     public static @Nullable RDFLang fromRDF4j(@Nonnull RDFFormat format) {
         if      (format.equals(RDFFormat.RDFXML))     return RDFLangs.RDFXML;
         else if (format.equals(RDFFormat.NTRIPLES))   return RDFLangs.NT;

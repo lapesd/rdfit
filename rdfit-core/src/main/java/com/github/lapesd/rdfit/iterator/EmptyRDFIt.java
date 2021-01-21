@@ -21,6 +21,11 @@ import com.github.lapesd.rdfit.impl.ClosedSourceQueue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+/**
+ * An {@link RDFIt} whose {@link #hasNext()} method returns false
+ *
+ * @param <T> the value class
+ */
 public class EmptyRDFIt<T> extends EagerRDFIt<T> {
     private final @Nonnull Object source;
 

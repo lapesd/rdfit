@@ -28,6 +28,12 @@ import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.function.Function;
 
+/**
+ * An {@link RDFIt} that iterates the {@link RDFIt} instances created from values obtained
+ * from an outer {@link Iterator}
+ *
+ * @param <T> the value type
+ */
 public class FlatMapRDFIt<T> extends EagerRDFIt<T> {
     private static final Logger logger = LoggerFactory.getLogger(FlatMapRDFIt.class);
     private final @Nonnull Iterator<?> inputIt;

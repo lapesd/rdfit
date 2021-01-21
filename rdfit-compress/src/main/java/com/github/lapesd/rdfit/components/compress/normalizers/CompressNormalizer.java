@@ -40,6 +40,10 @@ import java.io.*;
 import java.nio.BufferUnderflowException;
 import java.nio.file.Files;
 
+/**
+ * Converts a compressed {@link File}/{@link InputStream} wrapped inside a {@link RDFInputStream}
+ * into a SourceIterator over archive entries or over an uncompressed {@link RDFInputStream}.
+ */
 @Accepts(RDFInputStream.class)
 public class CompressNormalizer extends BaseSourceNormalizer {
     private static final Logger logger = LoggerFactory.getLogger(CompressNormalizer.class);

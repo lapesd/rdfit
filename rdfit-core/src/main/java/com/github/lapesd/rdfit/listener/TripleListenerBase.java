@@ -22,6 +22,10 @@ import javax.annotation.Nonnull;
 
 import static com.github.lapesd.rdfit.util.Utils.compactClass;
 
+/**
+ * An {@link RDFListener} for triples
+ * @param <T> the triple representation class
+ */
 public abstract class TripleListenerBase<T> extends RDFListenerBase<T, Void> {
     public TripleListenerBase(@Nonnull Class<T> tripleType) {
         super(tripleType);

@@ -45,28 +45,59 @@ import java.util.List;
 
 import static org.apache.jena.sparql.core.Quad.defaultGraphIRI;
 
+
+/**
+ * Converters between jena and RDF4J
+ */
 public class JenaRDF4JConverters {
     private static final List<Converter> INSTANCES = Arrays.asList(
             Triple2RDF4J.INSTANCE, Quad2RDF4J.INSTANCE, Statement2RDF4J.INSTANCE,
             RDF4J2Triple.INSTANCE, RDF4J2Quad.INSTANCE, RDF4J2Statement.INSTANCE
     );
 
+    /**
+     * Register all Jena/RDF4J converters into the {@link ConversionManager}
+     * @param conversionManager the {@link ConversionManager}
+     */
     public static void registerAll(@Nonnull ConversionManager conversionManager) {
         for (Converter c : INSTANCES) conversionManager.register(c);
     }
+
+    /**
+     * Call {@link #registerAll(ConversionManager)} with {@link RDFItFactory#getConversionManager()}
+     * @param factory the {@link RDFItFactory}
+     */
     public static void registerAll(@Nonnull RDFItFactory factory) {
         registerAll(factory.getConversionManager());
     }
 
+    /**
+     * Removes any {@link Converter} that may have been registered by
+     * {@link #registerAll(ConversionManager)}.
+     * @param conversionManager the {@link ConversionManager}
+     */
     public static void unregisterAll(@Nonnull ConversionManager conversionManager) {
         for (Converter c : INSTANCES) conversionManager.unregister(c);
     }
+
+    /**
+     * Calls {@link #unregisterAll(ConversionManager)} with
+     * {@link RDFItFactory#getConversionManager()}
+     *
+     * @param factory the {@link RDFItFactory}
+     */
     public static void unregisterAll(@Nonnull RDFItFactory factory) {
         unregisterAll(factory.getConversionManager());
     }
 
     private static final @Nonnull SimpleValueFactory VF = SimpleValueFactory.getInstance();
 
+    /**
+     * Convert a Jena {@link Node} into an RDF4J {@link Value}
+     * @param node a Jena {@link Node}
+     * @return an RDF4J {@link Value}
+     * @throws ConversionException if the conversion is not possible (e.g., non-concrete nodes)
+     */
     public static Value node2value(@Nullable Node node) throws ConversionException {
         if (node == null) {
             return null;
@@ -92,10 +123,23 @@ public class JenaRDF4JConverters {
         }
     }
 
+    /**
+     * Convert an RDF4J {@link Value} into a Jena {@link Node}
+     * @param value the {@link Value}
+     * @return a Jena {@link Node}
+     * @throws ConversionException if the value class is not supported
+     */
     public static Node value2node(@Nullable Value value) throws ConversionException {
         return value2node(value, null);
     }
 
+    /**
+     * Same as {@link #value2node(Value)} but returns fallback if value is null.
+     * @param value the input {@link Value}
+     * @param fallback what to return if value is null
+     * @return a Jena {@link Node} equivalent to value
+     * @throws ConversionException if the class has no Jena representation
+     */
     public static Node value2node(@Nullable Value value, Node fallback) throws ConversionException {
         if (value == null) {
             return fallback;
@@ -120,6 +164,9 @@ public class JenaRDF4JConverters {
         throw new IllegalArgumentException("Unexpected Value type "+value.getClass());
     }
 
+    /**
+     * Converts Jena triples into RDF4J Statements
+     */
     @Accepts(Triple.class) @Outputs(Statement.class)
     public static class Triple2RDF4J extends DetachedBaseConverter {
         public static final Triple2RDF4J INSTANCE = new Triple2RDF4J();
@@ -137,6 +184,9 @@ public class JenaRDF4JConverters {
         }
     }
 
+    /**
+     * Converts Jena Quads into RDF4J Statements
+     */
     @Accepts(Quad.class) @Outputs(Statement.class)
     public static class Quad2RDF4J extends DetachedBaseConverter {
         public static final Quad2RDF4J INSTANCE = new Quad2RDF4J();
@@ -157,6 +207,9 @@ public class JenaRDF4JConverters {
         }
     }
 
+    /**
+     * Converts Jena {@link Statement}s into RDF4J Statements
+     */
     @Accepts(org.apache.jena.rdf.model.Statement.class) @Outputs(Statement.class)
     public static class Statement2RDF4J extends DetachedBaseConverter {
         public static final Statement2RDF4J INSTANCE = new Statement2RDF4J();
@@ -167,6 +220,9 @@ public class JenaRDF4JConverters {
         }
     }
 
+    /**
+     * Converts RDF4J Statements into Jena Triples
+     */
     @Accepts(Statement.class) @Outputs(Triple.class)
     public static class RDF4J2Triple extends DetachedBaseConverter {
         public static final RDF4J2Triple INSTANCE = new RDF4J2Triple();
@@ -178,6 +234,9 @@ public class JenaRDF4JConverters {
         }
     }
 
+    /**
+     * Converts RDF4J Statements into Jena Quads
+     */
     @Accepts(Statement.class) @Outputs(Quad.class)
     public static class RDF4J2Quad extends DetachedBaseConverter {
         public static final RDF4J2Quad INSTANCE = new RDF4J2Quad();
@@ -189,6 +248,9 @@ public class JenaRDF4JConverters {
         }
     }
 
+    /**
+     * Converts RDF4J Statements into Jena Statements
+     */
     @Accepts(Statement.class) @Outputs(org.apache.jena.rdf.model.Statement.class)
     public static class RDF4J2Statement extends DetachedBaseConverter {
         public static final RDF4J2Statement INSTANCE = new RDF4J2Statement();

@@ -30,6 +30,9 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
+/**
+ * Manages and lookups {@link Parser} implementations
+ */
 public class DefaultParserRegistry implements ParserRegistry {
     private static final DefaultParserRegistry INSTANCE = new DefaultParserRegistry();
     private final @Nonnull TypeDispatcher<ItParser> itParsers = new TypeDispatcher<ItParser>() {

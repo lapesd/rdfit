@@ -18,5 +18,9 @@ package com.github.lapesd.rdfit.components.converters.quad;
 
 import java.util.function.Function;
 
+/**
+ * Splits a quad into a {@link SplitQuad} object
+ * @param <Q> the quad type
+ */
 public interface QuadSplitter<Q> extends Function<Q, SplitQuad> {
 }

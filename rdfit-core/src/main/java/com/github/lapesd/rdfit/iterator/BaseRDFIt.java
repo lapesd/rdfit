@@ -21,6 +21,10 @@ import com.github.lapesd.rdfit.util.Utils;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Default implementations for {@link RDFIt} methods
+ * @param <T> the value class
+ */
 public abstract class BaseRDFIt<T> implements RDFIt<T> {
     protected final @Nonnull Class<?> valueClass;
     protected final @Nonnull IterationElement itElement;

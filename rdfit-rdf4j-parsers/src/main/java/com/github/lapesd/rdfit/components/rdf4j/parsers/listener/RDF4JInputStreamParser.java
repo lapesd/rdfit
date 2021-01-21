@@ -41,6 +41,9 @@ import java.util.Set;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 
+/**
+ * Parse RDF using RDF4J's Rio
+ */
 public class RDF4JInputStreamParser extends BaseListenerParser {
     private static final Logger logger = LoggerFactory.getLogger(RDF4JInputStreamParser.class);
     public static final Set<RioSetting<?>> DEFAULT_NON_FATAL_ERRORS = new HashSet<>(asList(
@@ -61,9 +64,18 @@ public class RDF4JInputStreamParser extends BaseListenerParser {
 
     private final @Nonnull Set<RioSetting<?>> nonFatalErrors;
 
+    /**
+     * Default constructor
+     */
     public RDF4JInputStreamParser() {
         this(DEFAULT_NON_FATAL_ERRORS);
     }
+
+    /**
+     * Construct a parser that tolerates the given non-fatal errors
+     * @param nonFatalErrors the set of non-fatal errors to tolerate (delivering as messages
+     *                       instead of exceptions).
+     */
     public RDF4JInputStreamParser(@Nonnull Collection<RioSetting<?>> nonFatalErrors) {
         super(Collections.singleton(RDFInputStream.class), Statement.class, Statement.class);
         this.nonFatalErrors = nonFatalErrors instanceof Set

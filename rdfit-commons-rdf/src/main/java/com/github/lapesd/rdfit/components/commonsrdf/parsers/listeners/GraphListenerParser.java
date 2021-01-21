@@ -28,7 +28,13 @@ import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.Iterator;
 
+/**
+ * A {@link com.github.lapesd.rdfit.components.ListenerParser} for commons-rdf {@link Graph}s
+ */
 public class GraphListenerParser extends BaseListenerParser {
+    /**
+     * Default constructor
+     */
     public GraphListenerParser() {
         super(Collections.singleton(Graph.class), Triple.class);
     }

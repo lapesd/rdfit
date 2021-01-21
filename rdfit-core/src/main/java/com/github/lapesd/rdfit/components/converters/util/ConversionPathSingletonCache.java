@@ -28,6 +28,9 @@ import javax.annotation.Nullable;
 
 import static java.lang.String.format;
 
+/**
+ * A ConversionCache that keeps a single cached {@link ConversionPath}
+ */
 public class ConversionPathSingletonCache implements ConversionCache {
     private final @Nonnull ConversionManager conversionManager;
     private final @Nonnull Class<?> outputClass;

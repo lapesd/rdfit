@@ -22,6 +22,10 @@ import javax.annotation.Nonnull;
 
 import static com.github.lapesd.rdfit.util.Utils.compactClass;
 
+/**
+ * An {@link RDFListener} for quads
+ * @param <Q> the quad representation class
+ */
 public abstract class QuadListenerBase<Q> extends RDFListenerBase<Void, Q> {
     public QuadListenerBase(@Nonnull Class<Q> quadType) {
         super(null, quadType);

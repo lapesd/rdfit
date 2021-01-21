@@ -22,6 +22,9 @@ import com.github.lapesd.rdfit.iterator.IterationElement;
 import javax.annotation.Nonnull;
 import java.util.Collection;
 
+/**
+ * Default implementations for some methods in {@link BaseItParser}
+ */
 public abstract class BaseItParser extends BaseParser implements ItParser {
     protected final @Nonnull Class<?> valueClass;
     protected final @Nonnull IterationElement iterationElement;

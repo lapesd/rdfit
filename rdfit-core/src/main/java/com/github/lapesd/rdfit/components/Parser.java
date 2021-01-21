@@ -23,6 +23,10 @@ import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Set;
 
+/**
+ * Parses an RDF source either creating an {@link com.github.lapesd.rdfit.iterator.RDFIt} or
+ * calling the callback methods in an {@link com.github.lapesd.rdfit.listener.RDFListener}.
+ */
 public interface Parser extends Component {
     /**
      * Notify that the parser has been registered at the given registry.

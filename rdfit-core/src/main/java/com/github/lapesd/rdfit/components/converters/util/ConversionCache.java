@@ -20,6 +20,10 @@ import com.github.lapesd.rdfit.errors.InconvertibleException;
 
 import javax.annotation.Nonnull;
 
+/**
+ * A finds {@link com.github.lapesd.rdfit.components.converters.ConversionPath}s and caches
+ * them for further conversions
+ */
 public interface ConversionCache {
     @Nonnull Object convert(@Nonnull Object source,
                             @Nonnull Object in) throws InconvertibleException;

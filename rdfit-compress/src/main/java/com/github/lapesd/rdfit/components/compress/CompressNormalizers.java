@@ -22,18 +22,45 @@ import com.github.lapesd.rdfit.components.normalizers.SourceNormalizerRegistry;
 
 import javax.annotation.Nonnull;
 
+/**
+ * Helper for registering/unregistering commons-compress normalizers
+ */
 public class CompressNormalizers {
 
+    /**
+     * Register compress normalizers at the given registry.
+     * @param registry the {@link SourceNormalizerRegistry}
+     */
     public static void registerAll(@Nonnull SourceNormalizerRegistry registry) {
         registry.register(new CompressNormalizer());
     }
+
+    /**
+     * Calls {@link #registerAll(SourceNormalizerRegistry)} with
+     * {@link RDFItFactory#getNormalizerRegistry()}
+     *
+     * @param factory the {@link RDFItFactory}
+     */
     public static void registerAll(@Nonnull RDFItFactory factory) {
         registerAll(factory.getNormalizerRegistry());
     }
 
+    /**
+     * Removes any {@link com.github.lapesd.rdfit.components.SourceNormalizer} registered by
+     * {@link #registerAll(SourceNormalizerRegistry)} from the given
+     * {@link SourceNormalizerRegistry}.
+     * @param registry the {@link SourceNormalizerRegistry}
+     */
     public static void unregisterAll(@Nonnull SourceNormalizerRegistry registry) {
         registry.unregisterIf(CompressNormalizer.class::isInstance);
     }
+
+    /**
+     * Calls {@link #unregisterAll(SourceNormalizerRegistry)} with
+     * {@link RDFItFactory#getNormalizerRegistry()}
+     *
+     * @param factory the {@link RDFItFactory}
+     */
     public static void unregisterAll(@Nonnull RDFItFactory factory) {
         unregisterAll(factory.getNormalizerRegistry());
     }

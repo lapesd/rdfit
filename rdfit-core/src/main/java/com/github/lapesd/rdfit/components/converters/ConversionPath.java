@@ -19,8 +19,6 @@ package com.github.lapesd.rdfit.components.converters;
 import com.github.lapesd.rdfit.components.Converter;
 import com.github.lapesd.rdfit.errors.ConversionException;
 import com.github.lapesd.rdfit.errors.ConversionPathException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -28,8 +26,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * A sequence of {@link Converter}s
+ */
 public class ConversionPath {
-    private static final Logger logger = LoggerFactory.getLogger(ConversionPath.class);
 
     private final @Nonnull List<Converter> path;
     public static final @Nonnull ConversionPath EMPTY

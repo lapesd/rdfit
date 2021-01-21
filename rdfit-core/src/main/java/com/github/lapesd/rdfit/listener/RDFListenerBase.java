@@ -30,6 +30,11 @@ import javax.annotation.Nullable;
 
 import static com.github.lapesd.rdfit.util.Utils.compactClass;
 
+/**
+ * Default implementations for {@link RDFListener} methods
+ * @param <T> the triple type
+ * @param <Q> the quad type
+ */
 public abstract class RDFListenerBase<T, Q> implements RDFListener<T, Q> {
     private static final Logger logger = LoggerFactory.getLogger(RDFListenerBase.class);
     protected @Nullable Class<T> tripleType;

@@ -24,12 +24,24 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Function;
 
+/**
+ * An {@link RDFIt} that applies a function to every iterated value
+ * @param <T> the resulting value type
+ */
 public class TransformingRDFIt<T> extends EagerRDFIt<T> {
     private final @Nonnull Logger logger = LoggerFactory.getLogger(TransformingRDFIt.class);
     private final @Nonnull RDFIt<?> in;
     private final @Nonnull Function<Object, ? extends T> function;
 
-    public <X> TransformingRDFIt(@Nonnull Class<? extends T> valueClass,
+    /**
+     * Constructor
+     *
+     * @param valueClass the value class
+     * @param itElement whether iterating triples or quads
+     * @param in the input iterator
+     * @param function the tranformation function to apply
+     */
+    public TransformingRDFIt(@Nonnull Class<? extends T> valueClass,
                                  @Nonnull IterationElement itElement, @Nonnull RDFIt<?> in,
                                  @Nonnull Function<?, ? extends T> function) {
         super(valueClass, itElement, in.getSourceQueue());

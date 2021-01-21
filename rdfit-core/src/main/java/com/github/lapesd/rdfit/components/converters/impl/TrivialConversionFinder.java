@@ -21,6 +21,9 @@ import com.github.lapesd.rdfit.components.converters.ConversionPath;
 
 import javax.annotation.Nonnull;
 
+/**
+ * A {@link ConversionPath} that returns the input as the conversion result.
+ */
 public class TrivialConversionFinder implements ConversionFinder {
     boolean hasNext = true;
 

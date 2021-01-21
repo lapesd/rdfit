@@ -37,6 +37,11 @@ import java.util.concurrent.BlockingQueue;
 import static com.github.lapesd.rdfit.components.converters.util.ConversionPathSingletonCache.createCache;
 import static com.github.lapesd.rdfit.util.Utils.compactClass;
 
+/**
+ * An {@link RDFIt} backed by an {@link RDFListener} instance
+ *
+ * @param <T> the value type
+ */
 public class ListenerRDFIt<T> extends EagerRDFIt<T> {
     private static final Logger logger = LoggerFactory.getLogger(ListenerRDFIt.class);
     private final @Nonnull Listener listener;
@@ -128,11 +133,20 @@ public class ListenerRDFIt<T> extends EagerRDFIt<T> {
         // parsing is stopped
     }
 
+    /**
+     * An {@link RDFListener} that feeds the {@link ListenerRDFIt}
+     */
     protected class Listener extends RDFListenerBase<Object, Object> {
         private final @Nonnull ConversionCache lifterInputCache, triple2quadCache;
         private final @Nonnull ConversionCache quad2tripleCache, valueCache;
         private final @Nullable QuadLifter quadLifter;
 
+        /**
+         * Constructor
+         *
+         * @param quadLifter the lifter
+         * @param conMgr {@link ConversionManager} to use for conversion
+         */
         public Listener(@Nullable QuadLifter quadLifter, @Nonnull ConversionManager conMgr) {
             super(Object.class, Object.class);
             Class<?> lifterInput = quadLifter != null ? quadLifter.tripleType() : null;

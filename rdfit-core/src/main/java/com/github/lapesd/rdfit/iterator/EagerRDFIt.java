@@ -22,6 +22,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.NoSuchElementException;
 
+/**
+ * An {@link RDFIt} base class that requires implementing a single method
+ *
+ * @param <T> the value class
+ */
 public abstract class EagerRDFIt<T> extends BaseRDFIt<T> {
     protected T value;
 

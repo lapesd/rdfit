@@ -21,6 +21,9 @@ import com.github.lapesd.rdfit.components.Converter;
 import javax.annotation.Nonnull;
 import java.util.function.Predicate;
 
+/**
+ * Registers and lookups {@link Converter} instances
+ */
 public interface ConversionManager {
     /**
      * Register a converter for later usage by {@link #findPath(Object, Class)}.

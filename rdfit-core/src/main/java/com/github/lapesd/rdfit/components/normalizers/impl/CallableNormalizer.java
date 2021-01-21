@@ -24,6 +24,9 @@ import com.github.lapesd.rdfit.errors.RDFItException;
 import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 
+/**
+ * Execute {@link Callable}s to normalize their results.
+ */
 @Accepts(Callable.class)
 public class CallableNormalizer extends BaseSourceNormalizer {
     @Override public @Nonnull Object normalize(@Nonnull Object source) {

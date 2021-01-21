@@ -146,7 +146,7 @@ public interface RDFListener<T, Q> {
     void quad(@Nonnull String graph, @Nonnull T triple);
 
     /**
-     * Notify a prefix definition (e.g., <code>@prefix label: <IRI></code>) from the input document.
+     * Notify a prefix definition (e.g., <code>@prefix label: &lt;IRI&gt;</code>) from the input document.
      *
      * @param prefixLabel the prefix label
      * @param iriPrefix the IRI used as prefix

@@ -20,6 +20,9 @@ import com.github.lapesd.rdfit.components.SourceNormalizer;
 
 import javax.annotation.Nonnull;
 
+/**
+ * A Queue of RDF sources for later processing by a {@link RDFItFactory} implementation.
+ */
 public interface SourceQueue extends AutoCloseable {
     enum When {
         /**

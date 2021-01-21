@@ -25,16 +25,35 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Iterator;
 
+/**
+ * A {@link RDFIt} over a normal {@link Iterator}.
+ * @param <T> the value type
+ */
 public class PlainRDFIt<T> extends EagerRDFIt<T> {
     private static final @Nonnull Logger logger = LoggerFactory.getLogger(PlainRDFIt.class);
     private final @Nonnull Iterator<?> iterator;
     private final @Nonnull Object source;
 
+    /**
+     * Constructor
+     * @param valueClass the value class
+     * @param itElement whether this iterates triples or quads
+     * @param iterator the input iterator
+     * @param source the source
+     */
     public PlainRDFIt(@Nonnull Class<?> valueClass, @Nonnull IterationElement itElement,
                   @Nonnull Iterator<?> iterator, @Nonnull Object source) {
         this(valueClass, itElement, iterator, source, new ClosedSourceQueue());
     }
 
+
+    /**
+     * Constructor
+     * @param valueClass the value class
+     * @param itElement whether this iterates triples or quads
+     * @param iterator the input iterator
+     * @param sourceQueue the source queue, to schedule additional RDF sources
+     */
     public PlainRDFIt(@Nonnull Class<?> valueClass, @Nonnull IterationElement itElement,
                       @Nonnull Iterator<?> iterator, @Nonnull Object source,
                       @Nonnull SourceQueue sourceQueue) {

@@ -37,6 +37,9 @@ import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 
+/**
+ * Converts {@link URL} instances into {@link RDFInputStream} and caches fetched URLs
+ */
 @Accepts(URL.class)
 public class URLNormalizer extends BaseSourceNormalizer {
     public static final @Nonnull Set<RDFLang> FALLBACK_LANGS

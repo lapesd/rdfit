@@ -28,7 +28,13 @@ import org.apache.commons.rdf.api.Triple;
 import javax.annotation.Nonnull;
 import java.util.Collections;
 
+/**
+ * A {@link com.github.lapesd.rdfit.components.ListenerParser} for commons-rdf {@link Dataset}s.
+ */
 public class DatasetListenerParser extends BaseListenerParser {
+    /**
+     * Default constructor
+     */
     public DatasetListenerParser() {
         super(Collections.singleton(Dataset.class), Triple.class, Quad.class);
     }

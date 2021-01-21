@@ -24,6 +24,9 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.nio.file.Path;
 
+/**
+ * Converts {@link Path}s and {@link File}s into {@link RDFFile} instances.
+ */
 @Accepts({File.class, Path.class})
 public class FileNormalizer extends BaseSourceNormalizer {
     @Override public @Nonnull Object normalize(@Nonnull Object source) {

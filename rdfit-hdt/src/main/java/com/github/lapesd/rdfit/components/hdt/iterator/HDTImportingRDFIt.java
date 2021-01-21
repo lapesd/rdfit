@@ -27,6 +27,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.regex.Pattern;
 
+/**
+ * An {@link RDFIt} that processes owl:imports in {@link TripleString}s
+ * @param <T> the triple type
+ */
 public class HDTImportingRDFIt<T> extends BaseImportingRDFIt<T> {
     private static final Pattern URL_RX = Pattern.compile("^([^:/]+://|file:)");
     private static final String imports = "http://www.w3.org/2002/07/owl#imports";
@@ -39,6 +43,12 @@ public class HDTImportingRDFIt<T> extends BaseImportingRDFIt<T> {
         conversion = ConversionPathSingletonCache.createCache(mgr, TripleString.class);
     }
 
+    /**
+     * Return the IRI of an imported ontology or null the the triple is not an owl:imports triple.
+     *
+     * @param triple the input triple to evaluate
+     * @return an IRI or null
+     */
     public static @Nullable String getImportIRI(@Nonnull TripleString triple) {
         if (triple.getPredicate().toString().equals(imports)) {
             String object = triple.getObject().toString();
@@ -48,6 +58,12 @@ public class HDTImportingRDFIt<T> extends BaseImportingRDFIt<T> {
         return null;
     }
 
+    /**
+     * Calls {@link #getImportIRI(TripleString)}, converting tripleOrQuad if necessary.
+     *
+     * @param tripleOrQuad a triple or quad to evaluate
+     * @return an ontology IRI or null
+     */
     @Override protected @Nullable String getImportIRI(@Nonnull Object tripleOrQuad) {
         TripleString ts = (TripleString) conversion.convert(getSource(), tripleOrQuad);
         return getImportIRI(ts);

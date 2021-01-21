@@ -28,6 +28,9 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Predicate;
 
+/**
+ * Default implementation for {@link ConversionManager}
+ */
 public class DefaultConversionManager implements ConversionManager {
     public static final DefaultConversionManager INSTANCE = new DefaultConversionManager();
 
@@ -54,6 +57,9 @@ public class DefaultConversionManager implements ConversionManager {
         dispatcher.removeIf(pred);
     }
 
+    /**
+     * A step in the conversion-finding process.
+     */
     protected static class Step {
         @Nullable Step predecessor;
         @Nonnull Converter converter;

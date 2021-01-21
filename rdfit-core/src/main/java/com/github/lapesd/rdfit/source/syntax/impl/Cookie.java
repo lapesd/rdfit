@@ -26,11 +26,17 @@ import java.util.List;
 
 import static java.lang.Character.isWhitespace;
 
+/**
+ * A byte sequence that identifies a {@link RDFLang} in RDF data.
+ */
 public class Cookie {
     private final @Nonnull byte[] bytes;
     private final boolean strict, ignoreCase, skipBOM, skipWhitespace;
     private final @Nonnull List<Cookie> successors;
 
+    /**
+     * Builder helper
+     */
     public static class Builder {
         private final @Nullable Builder parent;
         private final byte[] bytes;
@@ -40,35 +46,73 @@ public class Cookie {
         private boolean skipBOM = true;
         private @Nonnull List<Cookie> successors = Collections.emptyList();
 
+        /**
+         * Start from a sequence of bytes
+         * @param bytes the byte sequence
+         * @param parent the parent of this builder, optional
+         */
         public Builder(byte[] bytes, @Nullable Builder parent) {
             this.bytes = bytes;
             this.parent = parent;
         }
 
+        /**
+         * Sets {@link #strict(boolean)} to true
+         * @return this builder
+         */
         public @Nonnull Builder strict() {
             return strict(true);
         }
+
+        /**
+         * If strict, the input must start with the byte sequence
+         * @param value  whether to tolerate leading bytes before the cookie
+         * @return this builder
+         */
         public @Nonnull Builder strict(boolean value) {
             this.strict = value;
             return this;
         }
 
+        /**
+         * Calls {@link #skipWhitespace(boolean)} with true
+         * @return this builder
+         */
         public @Nonnull Builder skipWhitespace() {
             return skipWhitespace(true);
         }
+        /**
+         * Skip whitespace before matching the byte sequence, even if non-strict
+         * @param value whether to skip whitespace
+         * @return this builder
+         */
         public @Nonnull Builder skipWhitespace(boolean value) {
             this.skipWhitespace = value;
             return this;
         }
 
+        /**
+         * Sets {@link #ignoreCase(boolean)} to true
+         * @return this builder
+         */
         public @Nonnull Builder ignoreCase() {
             return ignoreCase(true);
         }
+        /**
+         * Ignores upper/lower case distinction for ASCII characters
+         * @param value whether to ignore case
+         * @return this builder
+         */
         public @Nonnull Builder ignoreCase(boolean value) {
             this.ignoreCase = value;
             return this;
         }
 
+        /**
+         * skips the UTF-* BOM bytes, even if in strict mode
+         * @param value whether to skip the BOM
+         * @return this builder
+         */
         public @Nonnull Builder skipBOM(boolean value) {
             skipBOM = value;
             return this;
@@ -77,6 +121,12 @@ public class Cookie {
             return skipBOM(false);
         }
 
+        /**
+         * Adds a cookie that must be matched after this one
+         *
+         * @param cookie the next cookie
+         * @return this builder
+         */
         public @Nonnull Builder then(@Nonnull Cookie cookie) {
             if (successors.isEmpty())
                 successors = new ArrayList<>();
@@ -84,40 +134,95 @@ public class Cookie {
             return this;
         }
 
+        /**
+         * Starts building a cookie that must follow this one, with the UTF-8 bytes of the string
+         * @param string bytes of the next cookie
+         * @return the builder of the new cookie
+         */
         public @Nonnull Builder then(@Nonnull String string) {
             return then(string, StandardCharsets.UTF_8);
         }
+        /**
+         * Starts building a cookie that must follow this one, with the UTF-8 bytes of the string
+         * @param string bytes of the next cookie
+         * @param cs character set that should be used to convert string into bytes
+         * @return the builder of the new cookie
+         */
         public @Nonnull Builder then(@Nonnull String string, @Nonnull Charset cs) {
             return then(string.getBytes(cs));
         }
+        /**
+         * Starts building a cookie that must follow this one, with the UTF-8 bytes of the string
+         * @param bytes byte sequence defining the cookie
+         * @return the builder of the new cookie
+         */
         public @Nonnull Builder then(@Nonnull byte[] bytes) {
             return new Builder(bytes, this);
         }
+
+        /**
+         * Saves this cookie continue configuring the preceding cookie
+         * @return the builder of the parent cookie.
+         */
         public @Nonnull Builder save() {
             if (parent == null)
                 throw new UnsupportedOperationException("Cannot save() root builder");
             return parent.then(doBuild());
         }
+
+        /**
+         * Create the {@link Cookie} instance with the configuration of this Builder
+         * @return the new {@link Cookie}
+         */
         public @Nonnull Cookie build() {
             if (parent != null)
                 throw new UnsupportedOperationException("Cannot build() child builder");
             return doBuild();
         }
-        public @Nonnull Cookie doBuild() {
+
+        private @Nonnull Cookie doBuild() {
             return new Cookie(bytes, strict, ignoreCase, skipBOM, skipWhitespace, successors);
         }
     }
 
+    /**
+     * Start a Buidler with the UTF-8 encoding of the string
+     * @param string the cookie data
+     * @return A Builder configuring the new {@link Cookie}
+     */
     public static @Nonnull Builder builder(@Nonnull String string) {
         return builder(string, StandardCharsets.UTF_8);
     }
+
+    /**
+     * Start configuring a {@link Cookie} with the bytes of the string in the given {@link Charset}
+     * @param string the cookie string
+     * @param cs the {@link Charset} that must be used to convert the string into bytes
+     * @return a {@link Builder} for the new Cookie
+     */
     public static @Nonnull Builder builder(@Nonnull String string, @Nonnull Charset cs) {
         return builder(string.getBytes(cs));
     }
+
+    /**
+     * Start configuring a Cookie that matches the given byte sequence
+     * @param bytes the bytes to match in an input sequence
+     * @return A {@link Builder} for the new Cookie
+     */
     public static @Nonnull Builder builder(@Nonnull byte[] bytes) {
         return new Builder(bytes, null);
     }
 
+    /**
+     * Create a new {@link Cookie}
+     * @param bytes the bytes that identify the input
+     * @param strict if true, the input must start with the given bytes sequence
+     * @param ignoreCase if true, case is ignored for ASCII chars in bytes
+     * @param skipBOM if true, BOM for UTF-* is ignored, even if strict
+     * @param skipWhitespace if true, leading whitespace is ignored, even if strict
+     * @param successors list of Cookies that may succed this one. If non-empty, at least one
+     *                   of the successors must match for this cookie to also match.
+     */
     public Cookie(@Nonnull byte[] bytes, boolean strict, boolean ignoreCase, boolean skipBOM,
                   boolean skipWhitespace, @Nonnull List<Cookie> successors) {
         if (ignoreCase) {
@@ -134,6 +239,9 @@ public class Cookie {
         this.successors = successors;
     }
 
+    /**
+     * Matcher for a single {@link Cookie} instance
+     */
     protected class SingleMatcher {
         private int index = 0;
         private int bomIndex = 0;
@@ -175,6 +283,12 @@ public class Cookie {
             }
         }
 
+        /**
+         * Feed a single byte
+         *
+         * @param value the byte to match
+         * @return true if mathcing not (yet) failed.
+         */
         public boolean feed(byte value) {
             if (feedBOM(value))
                 return true; //value is (likely) part of the BOM
@@ -191,19 +305,34 @@ public class Cookie {
             return index >= 0;
         }
 
+        /**
+         * True if {@link #isMatched()} is conclusive
+         * @return true if {@link #isMatched()} will not change with further {@link #feed(byte)} calls
+         */
         public boolean isConclusive() {
             return index < 0 || index == bytes.length;
         }
 
+        /**
+         * The {@link SingleMatcher} is matched if it has not yet conclusively failed matching
+         * or if it has definitely accepted the input
+         * @return true if matched
+         */
         public boolean isMatched() {
             return index == bytes.length;
         }
     }
 
+    /**
+     * Matches multiple Cookies concurrently (handles successors)
+     */
     public class Matcher {
         private final @Nonnull SingleMatcher myMatcher = new SingleMatcher();
         private final @Nonnull List<Matcher> matchers;
 
+        /**
+         * Constructor
+         */
         public Matcher() {
             if (successors.isEmpty()) {
                 this.matchers = Collections.emptyList();
@@ -235,6 +364,12 @@ public class Cookie {
             }
         }
 
+        /**
+         * The match is conclusive if further {@link #feed(byte)} calls will not change the
+         * result of {@link #isMatched()}
+         *
+         * @return true iff conclusive
+         */
         public boolean isConclusive() {
             if (!myMatcher.isConclusive()) return false;
             if (!myMatcher.isMatched()) return true;
@@ -246,6 +381,11 @@ public class Cookie {
             return matched || conclusive;
         }
 
+        /**
+         * The matcher is matched if the input has not yet failed the Cookie.
+         *
+         * @return true iff matched.
+         */
         public boolean isMatched() {
             if      (!myMatcher.isMatched()) return false;
             else if (  matchers.isEmpty()  ) return true;
@@ -256,14 +396,29 @@ public class Cookie {
         }
     }
 
+    /**
+     * Create a new {@link Matcher} for this Cookie.
+     * @return a new empty {@link Matcher}
+     */
     public @Nonnull Matcher createMatcher() {
         return new Matcher();
     }
 
+    /**
+     * Get the defining bytes of this {@link Cookie}
+     * @return the byte[]
+     */
     public @Nonnull byte[] getBytes() {
         return bytes;
     }
 
+    /**
+     * Write a string representation of this {@link Cookie} to the builder applying the
+     * number of indent spaces
+     *
+     * @param b the destination {@link StringBuilder}
+     * @param indent how many spaces to add to the left margin
+     */
     public void toString(@Nonnull StringBuilder b, int indent) {
         for (int i = 0; i < indent; i++) b.append(' ');
         b.append(new String(bytes, StandardCharsets.UTF_8));

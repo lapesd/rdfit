@@ -24,17 +24,35 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A {@link LangDetector} that concurrently runs multiple other detectors.
+ */
 public class MultiLangDetector implements LangDetector {
     private final @Nonnull List<LangDetector> detectors = new ArrayList<>();
 
+    /**
+     * Add an detector overriding previously registered detectors.
+     *
+     * @param detector the new detector
+     */
     public void addOverride(@Nonnull LangDetector detector) {
         detectors.add(0, detector);
     }
 
+    /**
+     * Add an detector with overridden by all detectors already present
+     * @param detector the new instance
+     */
     public void addFallback(@Nonnull LangDetector detector) {
         detectors.add(detector);
     }
 
+    /**
+     * Removes a previously added {@link LangDetector}
+     *
+     * @param detector the instance to remove
+     * @return true if, and only if, the detector was removed.
+     */
     public boolean remove(@Nonnull LangDetector detector) {
         return detectors.remove(detector);
     }
