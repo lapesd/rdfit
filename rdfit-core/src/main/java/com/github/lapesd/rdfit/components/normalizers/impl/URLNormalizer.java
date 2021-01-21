@@ -18,16 +18,21 @@ package com.github.lapesd.rdfit.components.normalizers.impl;
 
 import com.github.lapesd.rdfit.components.annotations.Accepts;
 import com.github.lapesd.rdfit.components.normalizers.BaseSourceNormalizer;
+import com.github.lapesd.rdfit.source.RDFFile;
 import com.github.lapesd.rdfit.source.RDFInputStream;
 import com.github.lapesd.rdfit.source.RDFInputStreamSupplier;
 import com.github.lapesd.rdfit.source.syntax.RDFLangs;
 import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import com.github.lapesd.rdfit.util.URLCache;
 import com.github.lapesd.rdfit.util.Utils;
+import com.github.lapesd.rdfit.util.impl.RDFBlob;
 import com.github.lapesd.rdfit.util.impl.WeighedURLCache;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
@@ -64,6 +69,7 @@ public class URLNormalizer extends BaseSourceNormalizer {
     private @Nullable Set<RDFLang> acceptStringSource;
     private @Nullable String acceptString;
     private final @Nonnull URLCache cache;
+    private boolean cacheFiles = false;
 
     public URLNormalizer() {
         this(WeighedURLCache.getDefault());
@@ -71,6 +77,10 @@ public class URLNormalizer extends BaseSourceNormalizer {
 
     public URLNormalizer(@Nonnull URLCache cache) {
         this.cache = cache;
+    }
+
+    public void setCacheFiles(boolean cacheFiles) {
+        this.cacheFiles = cacheFiles;
     }
 
     /**
@@ -129,13 +139,28 @@ public class URLNormalizer extends BaseSourceNormalizer {
         if (!(source instanceof URL))
             return source;
         URL url = (URL) source;
+        if (!cacheFiles && url.getProtocol().equals("file")) {
+            File file = new File(url.getFile());
+            if (file.exists())
+                return new RDFFile(file);
+            else
+                return new RDFInputStreamSupplier((Callable<InputStream>) url::openStream);
+        }
         Supplier<RDFInputStream> supplier = cache.get(url);
         if (supplier != null)
             return supplier.get();
         return new RDFInputStreamSupplier((Callable<InputStream>) () -> {
             URLConnection c = url.openConnection();
             c.setRequestProperty("Accept", getAcceptString());
-            return c.getInputStream();
+            try (InputStream in = c.getInputStream()) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                byte[] buf = new byte[128];
+                for (int n = in.read(buf); n >= 0; n = in.read(buf))
+                    out.write(buf, 0, n);
+                byte[] data = out.toByteArray();
+                cache.put(url, new RDFBlob(data, null, Utils.toASCIIString(url)));
+                return new ByteArrayInputStream(data);
+            }
         }, null, Utils.toASCIIString(url));
     }
 }
