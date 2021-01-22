@@ -41,6 +41,8 @@ import static org.apache.jena.sparql.core.Quad.defaultGraphNodeGenerated;
 public class TripleSet {
     private final List<Quad> quads = new ArrayList<>();
 
+    public TripleSet() { }
+
     public TripleSet(@Nonnull Quad... quads) {
         this.quads.addAll(Arrays.asList(quads));
     }

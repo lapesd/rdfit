@@ -31,7 +31,7 @@ import static java.lang.Character.isWhitespace;
  */
 public class Cookie {
     private final @Nonnull byte[] bytes;
-    private final boolean strict, ignoreCase, skipBOM, skipWhitespace;
+    private final boolean strict, ignoreCase, skipBOM, skipWhitespace, matchEnd;
     private final @Nonnull List<Cookie> successors;
 
     /**
@@ -44,6 +44,7 @@ public class Cookie {
         private boolean ignoreCase;
         private boolean skipWhitespace = false;
         private boolean skipBOM = true;
+        private boolean matchEnd = false;
         private @Nonnull List<Cookie> successors = Collections.emptyList();
 
         /**
@@ -122,6 +123,25 @@ public class Cookie {
         }
 
         /**
+         * Calls {@link #matchEnd(boolean)} with true as argument.
+         * @return this builder
+         */
+        public @Nonnull Builder matchEnd() {
+            return matchEnd(true);
+        }
+        /**
+         * A Cokied that matches the end of input will fail to match if it is feed any
+         * non-skipped byte after matching its bytes (that may be zero-length).
+         *
+         * @param value whether the cookie will match the input end
+         * @return this builder
+         */
+        public @Nonnull Builder matchEnd(boolean value) {
+            this.matchEnd = value;
+            return this;
+        }
+
+        /**
          * Adds a cookie that must be matched after this one
          *
          * @param cookie the next cookie
@@ -181,7 +201,8 @@ public class Cookie {
         }
 
         private @Nonnull Cookie doBuild() {
-            return new Cookie(bytes, strict, ignoreCase, skipBOM, skipWhitespace, successors);
+            return new Cookie(bytes, strict, ignoreCase, skipBOM, skipWhitespace,
+                              matchEnd, successors);
         }
     }
 
@@ -224,7 +245,7 @@ public class Cookie {
      *                   of the successors must match for this cookie to also match.
      */
     public Cookie(@Nonnull byte[] bytes, boolean strict, boolean ignoreCase, boolean skipBOM,
-                  boolean skipWhitespace, @Nonnull List<Cookie> successors) {
+                  boolean skipWhitespace, boolean matchEnd, @Nonnull List<Cookie> successors) {
         if (ignoreCase) {
             byte[] copy = new byte[bytes.length];
             for (int i = 0, size = bytes.length; i < size; i++)
@@ -236,6 +257,7 @@ public class Cookie {
         this.ignoreCase = ignoreCase;
         this.skipBOM = skipBOM;
         this.skipWhitespace = skipWhitespace;
+        this.matchEnd = matchEnd;
         this.successors = successors;
     }
 
@@ -297,7 +319,7 @@ public class Cookie {
             if (ignoreCase)
                 value = (byte) Character.toLowerCase((char) value);
             if      (index < 0)             return false;
-            else if (index == bytes.length) return true;
+            else if (index == bytes.length) index = matchEnd ? -1 : index;
             else if (bytes[index] == value) ++index;
             else if (strict)                index = -1;
             else if (bytes[0] == value)     index =  1;
@@ -348,7 +370,10 @@ public class Cookie {
          * @return false iff the input does not have the cookie, true if matched or inconclusive
          */
         public boolean feed(byte value) {
-            if (myMatcher.isConclusive()) {
+            if (matchEnd) {
+                assert matchers.isEmpty();
+                return myMatcher.feed(value);
+            } else if (myMatcher.isConclusive()) {
                 if (!myMatcher.isMatched())
                     return false;
                 if (matchers.isEmpty()) {

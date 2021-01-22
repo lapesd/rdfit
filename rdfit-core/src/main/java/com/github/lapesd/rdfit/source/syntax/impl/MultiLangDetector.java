@@ -76,10 +76,10 @@ public class MultiLangDetector implements LangDetector {
             return ambiguous ? null : (last == null ? RDFLangs.UNKNOWN : last);
         }
 
-        @Override public @Nullable RDFLang end() {
+        @Override public @Nullable RDFLang end(boolean hardEnd) {
             RDFLang last = null;
             for (LangDetector.State state : states) {
-                RDFLang lang = state.end();
+                RDFLang lang = state.end(hardEnd);
                 if      (RDFLangs.isKnown(lang)) return lang;
                 else if (lang != null)           last = lang;
             }

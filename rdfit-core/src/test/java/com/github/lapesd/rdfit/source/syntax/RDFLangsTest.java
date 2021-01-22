@@ -38,12 +38,13 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 public class RDFLangsTest {
     static {
@@ -126,7 +127,13 @@ public class RDFLangsTest {
     public void testGuess(@Nonnull Object input, @Nonnull RDFLang expected) throws IOException {
         byte[] bs = input instanceof byte[] ? (byte[]) input : input.toString().getBytes(UTF_8);
         try (ByteArrayInputStream is = new ByteArrayInputStream(bs)) {
-            assertEquals(RDFLangs.guess(is, Integer.MAX_VALUE), expected);
+            RDFLang lang = RDFLangs.guess(is, Integer.MAX_VALUE);
+            if (expected.equals(RDFLangs.TRIG))
+                assertTrue(asList(RDFLangs.NT, RDFLangs.TTL, RDFLangs.TRIG).contains(lang));
+            else if (expected.equals(RDFLangs.NQ))
+                assertTrue(asList(RDFLangs.NT, RDFLangs.NQ).contains(lang));
+            else
+                assertEquals(lang, expected);
         }
     }
 
@@ -146,6 +153,39 @@ public class RDFLangsTest {
                                               @Nonnull Object input,
                                               @Nonnull RDFLang expected) throws IOException {
         byte[] bytes = input instanceof byte[] ? (byte[]) input : input.toString().getBytes(UTF_8);
+        int allowedRead = bytes.length;
+        if (prepend != null) {
+            allowedRead += prepend.length;
+            byte[] utf8 = bytes;
+            bytes = new byte[prepend.length + utf8.length];
+            System.arraycopy(prepend, 0, bytes, 0, prepend.length);
+            System.arraycopy(utf8, 0, bytes, prepend.length, utf8.length);
+        }
+        bytes = Arrays.copyOf(bytes, allowedRead + 2);
+        for (int i = allowedRead; i < bytes.length; i++)
+            bytes[i] = ' ';
+        try (InputStream is = new ByteArrayInputStream(bytes)) {
+            RDFLang lang = RDFLangs.guess(is, allowedRead);
+            if (expected.equals(RDFLangs.TRIG))
+                assertTrue(asList(RDFLangs.TTL, RDFLangs.TRIG).contains(lang));
+            else if (expected.equals(RDFLangs.NQ))
+                assertTrue(asList(RDFLangs.TTL, RDFLangs.NQ).contains(lang));
+            else
+                assertEquals(lang, expected);
+        }
+    }
+
+    @Test(dataProvider = "testGuessTurtleFamilyDetectorData")
+    public void testGuessTurtleFamilyDetectorHardEnd(@Nullable byte[] prepend,
+                                                     @Nonnull Object input,
+                                                     @Nonnull RDFLang expected) throws IOException {
+        String inputString = input instanceof byte[] ? new String((byte[]) input, UTF_8)
+                : input.toString();
+        boolean isValid = Pattern.compile("\\.\\s*$").matcher(inputString).find();
+        if (!isValid)
+            return;
+
+        byte[] bytes = input instanceof byte[] ? (byte[]) input : input.toString().getBytes(UTF_8);
         if (prepend != null) {
             byte[] utf8 = bytes;
             bytes = new byte[prepend.length + utf8.length];
@@ -153,7 +193,13 @@ public class RDFLangsTest {
             System.arraycopy(utf8, 0, bytes, prepend.length, utf8.length);
         }
         try (InputStream is = new ByteArrayInputStream(bytes)) {
-            assertEquals(RDFLangs.guess(is, Integer.MAX_VALUE), expected);
+            RDFLang lang = RDFLangs.guess(is, Integer.MAX_VALUE);
+            if (expected.equals(RDFLangs.TRIG))
+                assertTrue(asList(RDFLangs.TTL, RDFLangs.TRIG).contains(lang));
+            else if (expected.equals(RDFLangs.NQ))
+                assertTrue(asList(RDFLangs.TTL, RDFLangs.NQ).contains(lang));
+            else
+                assertEquals(lang, expected);
         }
     }
 
@@ -218,4 +264,23 @@ public class RDFLangsTest {
             fail();
         assertEquals(actual, expected);
     }
+
+    @Test
+    public void testDetectEmptyInput() throws IOException {
+        ByteArrayInputStream is = new ByteArrayInputStream(new byte[0]);
+        assertSame(RDFLangs.guess(is, Integer.MAX_VALUE), RDFLangs.NT);
+    }
+
+    @Test
+    public void testDetectOnlySpaces() throws IOException {
+        ByteArrayInputStream is = new ByteArrayInputStream(" \t\n   ".getBytes(UTF_8));
+        assertSame(RDFLangs.guess(is, Integer.MAX_VALUE), RDFLangs.TTL);
+    }
+
+    @Test
+    public void testRegressionEmptyJSONLD() throws Exception {
+        ByteArrayInputStream is = new ByteArrayInputStream("[]\n".getBytes(UTF_8));
+        assertSame(RDFLangs.guess(is, Integer.MAX_VALUE), RDFLangs.JSONLD);
+    }
+
 }

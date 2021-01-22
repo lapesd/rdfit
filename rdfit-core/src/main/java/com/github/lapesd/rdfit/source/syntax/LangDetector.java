@@ -49,11 +49,14 @@ public interface LangDetector {
          * This method informs the detector that feedByte() will not be called anymore and
          * the detector should output its best (and safest) guess, if any.
          *
+         * @param hardEnd if true, the input has been consumed to exhaustion instead of consumed
+         *                until a limit number of bytes.
+         *
          * @return null if detection remains inconclusive, {@link RDFLangs#UNKNOWN} if the
          * input corresponds to no known syntax or any other {@link RDFLang} value if the
          * syntax could be determined or can be safely guessed.
          */
-        @Nullable RDFLang end();
+        @Nullable RDFLang end(boolean hardEnd);
     }
 
     @Nonnull State createState();

@@ -33,11 +33,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.regex.Pattern;
 
 import static com.github.lapesd.rdfit.source.syntax.RDFLangs.*;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class TurtleFamilyDetectorTest {
     private static final @Nonnull String EX = "http://example.org/";
@@ -232,10 +235,33 @@ public class TurtleFamilyDetectorTest {
 
     @Test(dataProvider = "testData")
     public void test(@Nullable byte[] prepend, @Nonnull Object input, @Nonnull RDFLang expected) {
-        doTest(prepend, input, expected);
+        doTest(prepend, input, expected, false);
     }
 
-    private void doTest(@Nullable byte [] prepend, @Nonnull Object input, @Nonnull RDFLang expected) {
+    @Test
+    public void testJSONLDAmbiguity() {
+        doTest(null, "[].", TRIG, true);
+        doTest(null, "[].", TRIG, false);
+        doTest(null, "[]", TRIG, false);
+        doTest(null, "[] a", UNKNOWN, true);
+        doTest(null, "[]", UNKNOWN, true);
+        doTest(null, "[ ]\n", UNKNOWN, true);
+        doTest(null, "\t[ \t]\n", UNKNOWN, true);
+    }
+
+    @Test(dataProvider = "testData")
+    public void testHardEnd(@Nullable byte[] prepend, @Nonnull Object input,
+                            @Nonnull RDFLang expected) {
+        if (!RDFLangs.isKnown(expected))
+            return;
+        String string = input instanceof byte[] ? new String((byte[]) input, UTF_8)
+                                                : input.toString();
+        boolean hardEnd = Pattern.compile("\\.\\s*$").matcher(string).find();
+        doTest(prepend, input, expected, hardEnd);
+    }
+
+    private void doTest(@Nullable byte [] prepend, @Nonnull Object input,
+                        @Nonnull RDFLang expected, boolean hardEnd) {
         byte[] bytes = input instanceof byte[] ? (byte[]) input : input.toString().getBytes(UTF_8);
         if (prepend != null) {
             byte[] utf8 = bytes;
@@ -253,11 +279,22 @@ public class TurtleFamilyDetectorTest {
             if (lang != null)
                 detected = lang;
         }
-        RDFLang lang = state.end();
-        if (detected != null)
-            assertEquals(lang, detected);
+        RDFLang lang = state.end(hardEnd);
+        if (detected != null) {
+            if (hardEnd && detected.equals(TRIG))
+                assertTrue(asList(TTL, TRIG).contains(lang));
+            else if (hardEnd && detected.equals(NQ))
+                assertTrue(asList(TTL, NQ).contains(lang));
+            else
+                assertEquals(lang, detected);
+        }
         detected = lang;
-        assertEquals(detected, expected);
+        if (hardEnd && Objects.equals(expected, TRIG))
+            assertTrue(asList(TTL, TRIG).contains(detected));
+        else if (hardEnd && Objects.equals(expected, NQ))
+            assertTrue(asList(TTL, NQ).contains(detected));
+        else
+            assertEquals(detected, expected);
     }
 
 }

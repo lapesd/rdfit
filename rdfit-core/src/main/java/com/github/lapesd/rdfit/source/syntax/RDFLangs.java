@@ -94,6 +94,11 @@ public class RDFLangs {
         cd.addCookie(Cookie.builder("[").skipWhitespace().strict()
                            .then("{").skipWhitespace().strict().save()
                            .build(), JSONLD);
+        cd.addCookie(Cookie.builder("[").skipWhitespace().strict()
+                           .then("]").skipWhitespace().strict()
+                                     .then("").skipWhitespace().strict().matchEnd().save()
+                           .save()
+                           .build(), JSONLD);
 //        cd.addCookie(Cookie.builder(new byte[]{0x1c, 0x18}).includeBOM().strict().build(), THRIFT);
         cd.addCookie(Cookie.builder("$HDT").includeBOM().strict().build(), HDT);
         cd.addCookie(Cookie.builder("<TriX").ignoreCase().build(), TRIX);
@@ -174,12 +179,15 @@ public class RDFLangs {
 
     public static @Nonnull RDFLang guess(@Nonnull InputStream is, int maxBytes) throws IOException {
         LangDetector.State state = getLangDetector().createState();
-        for (int i = 0, value; i < maxBytes && (value = is.read()) != -1; ++i) {
+        int i = 0, value = 0;
+        for (; i < maxBytes && (value = is.read()) != -1; ++i) {
             RDFLang lang = state.feedByte((byte) value);
             if (isKnown(lang))
                 return lang;
         }
-        RDFLang lang = state.end();
+        if (i == 0)
+            return NT;
+        RDFLang lang = state.end(value == -1);
         return lang != null ? lang : UNKNOWN;
     }
 

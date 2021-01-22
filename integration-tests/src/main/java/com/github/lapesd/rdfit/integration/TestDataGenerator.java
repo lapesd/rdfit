@@ -106,6 +106,7 @@ public class TestDataGenerator {
 
     public static @Nonnull List<TestData> generateTestData(List<SourceGenerator> generators) {
         List<TripleSet> sets = new ArrayList<>();
+        sets.add(new TripleSet());
         for (Node object : objects) {
             sets.add(new TripleSet(new Triple(S, P, object)));
             sets.add(new TripleSet(new Quad(G, S, P, object)));

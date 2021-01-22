@@ -49,7 +49,7 @@ public class TurtleFamilyDetector implements LangDetector {
     public static class State implements LangDetector.State {
         protected abstract static class SubState {
             public abstract @Nullable RDFLang feed(byte value);
-            public abstract @Nullable RDFLang end();
+            public abstract @Nullable RDFLang end(boolean hardEnd);
         }
 
         protected class BOM extends SubState {
@@ -81,7 +81,7 @@ public class TurtleFamilyDetector implements LangDetector {
 
                 if (fail) { //re-feed bytes of would-be BOM
                     subState = new Preamble();
-                    return feedAll(fed, index+1, false);
+                    return feedAll(fed, index+1, false, false);
                 } else if (ex == 0) { // advance state and forget consumed BOM bytes
                     subState = new Preamble();
                     return null;
@@ -91,7 +91,7 @@ public class TurtleFamilyDetector implements LangDetector {
                 }
             }
 
-            @Override public @Nullable RDFLang end() {
+            @Override public @Nullable RDFLang end(boolean hardEnd) {
                 return UNKNOWN; //empty input
             }
         }
@@ -112,7 +112,7 @@ public class TurtleFamilyDetector implements LangDetector {
                             return TRIG;
                         } else if (!str.startsWith("#")) {
                             subState = new Body();
-                            return feedAll(data, data.length, false);
+                            return feedAll(data, data.length, false, false);
                         }
                     }
                 } else if (value == '@') {
@@ -128,14 +128,14 @@ public class TurtleFamilyDetector implements LangDetector {
                 return null;
             }
 
-            @Override public @Nullable RDFLang end() {
+            @Override public @Nullable RDFLang end(boolean hardEnd) {
                 byte[] data = buffer.toByteArray();
                 if (data.length > 0) {
                     String str = new String(data, StandardCharsets.UTF_8);
                     if (str.startsWith("PREFIX ") || str.startsWith("BASE "))
                         return TRIG;
                     // try to parse a body (no preamble)
-                    return feedAll(data, data.length, true);
+                    return feedAll(data, data.length, true, hardEnd);
                 }
                 /* if a comment was read, guess TRIG. If no comment was read and we are still
                  * on this SubState, return UNKNOWN since the input is likely empty.*/
@@ -150,7 +150,7 @@ public class TurtleFamilyDetector implements LangDetector {
             private final StringBuilder buffer = new StringBuilder();
             private final LiteralParser litParser = new LiteralParser();
             private byte begin = 0;
-            boolean needsSpace = false;
+            boolean needsSpace = false, bNodeSubject = false;
             int termIndex = 0, triples = 0;
 
             static {
@@ -171,6 +171,13 @@ public class TurtleFamilyDetector implements LangDetector {
             @Override public @Nullable RDFLang feed(byte value) {
                 if (begin == '\0') {
                     return feedTermBegin(value);
+                } else if (begin == '[') {
+                    if      (value == ']'        ) endTerm(true);
+                    else if (value == '{'        ) return UNKNOWN;
+                    else if (!isWhitespace(value)) {
+                        bNodeSubject = false;
+                        return TRIG;
+                    }
                 } else if (begin == '<') {
                     if      (value == ' ') return UNKNOWN;
                     else if (value == '>') endTerm(true);
@@ -238,12 +245,19 @@ public class TurtleFamilyDetector implements LangDetector {
                     needsSpace = false;
                     return null; // ignore
                 } else if (value == '[') {
-                    return termIndex == 0 || termIndex == 2 ? TRIG : UNKNOWN;
+                    if (termIndex != 0 && termIndex != 2)
+                        return UNKNOWN;
+                    bNodeSubject = termIndex == 0;
+                    //likely TRIG, but we should continue to catch the '[]' JSON-LD input ambiguity
                 } else if (value == ',' || value == ';') {
                     return termIndex == 3 ? TRIG : UNKNOWN;
                 } else if (value == '.') {
-                    if (termIndex < 3) return UNKNOWN;
-                    else if (termIndex == 4) return NQ;
+                    if (termIndex < 3  && ( !bNodeSubject || (termIndex > 0 && begin != 0) ))
+                        return UNKNOWN; // incomplete triple or [] subject with something after it
+                    else if (termIndex == 4)
+                        return NQ;
+                    else if (bNodeSubject)
+                        return TRIG;
                     assert termIndex == 3;
                     termIndex = 0;
                     ++triples;
@@ -293,19 +307,34 @@ public class TurtleFamilyDetector implements LangDetector {
                     return LIT_CHARS.contains(value) ? null : UNKNOWN;
             }
 
-            @Override public @Nullable RDFLang end() {
+            @Override public @Nullable RDFLang end(boolean hardEnd) {
                 if (termIndex > 4) {
                     return UNKNOWN; //triple too large for NQ
                 } else if (termIndex == 4) {
                     return NQ; // already parsed the graph term, waiting for .
                 } else if (termIndex == 3 && (begin != 0)) {
                     return NQ; // stopped while parsing the graph term
-                } else if (triples > 1) {
-                    // Got more than one triple without TRIG features. Could be a TRIG, NT or NQ.
+                } else if (triples >= 1) {
+                    // Got more at least one complete triple and nonde had TRIG/NQ features.
+                    if (hardEnd) {
+                        // since we know the input ended, this is safe. There is the possibility
+                        // that  an incomplete triple follows the fully parsed ones (termIndex
+                        // != 0 || begin != 0). Nevertheless report the input as TTL and let
+                        // the actual parsers spew out an error message over invalid input
+                        return TTL;
+                    }
+                    // Else, could be a TRIG, NT or NQ.
                     // However, if it were a TRIG file the most likely scenario is that it
                     // would've been detected (prefixes, ',', ';' or '[') by now. Guess NQ since
                     // any NT file is also an NQ file
-                    return NQ;
+                    return triples > 1 ? NQ : TRIG;
+                } else if (hardEnd && termIndex == 0 && begin == 0) {
+                    return TTL; //empty input
+                } else if (hardEnd && termIndex < 2) {
+                    // input has ended and we found only two terms or less. This likely is not a
+                    // NQ/NT/TTL/TRIG file. Typical scenario for this is "[]" which is an empty
+                    // JSON-LD and counts as a single-term incomplete turtle/trig file.
+                    return UNKNOWN;
                 } else {
                     // took too long to reach first triple (which is not yet finished or had only
                     // 3 terms. This large preambles are a characteristic of Turtle/TriG and
@@ -318,14 +347,14 @@ public class TurtleFamilyDetector implements LangDetector {
         private @Nonnull SubState subState = new BOM();
         private @Nullable RDFLang detected = null;
 
-        private @Nullable RDFLang feedAll(byte[] data, int size, boolean callEnd) {
+        private @Nullable RDFLang feedAll(byte[] data, int size, boolean callEnd, boolean hardEnd) {
             for (int i = 0; i < size; i++) {
                 RDFLang lang = feedByte(data[i]);
                 if (lang != null)
                     return lang;
             }
             if (callEnd)
-                return end();
+                return end(hardEnd);
             return null;
         }
 
@@ -335,9 +364,9 @@ public class TurtleFamilyDetector implements LangDetector {
             return detected;
         }
 
-        @Override public @Nullable RDFLang end() {
+        @Override public @Nullable RDFLang end(boolean hardEnd) {
             if (detected == null)
-                detected = subState.end();
+                detected = subState.end(hardEnd);
             /* Invalid input would have had detected set to UNKNOWN in a previous feedByte() call
              * Since the input is valid until this point, assume it is TriG. */
             return detected == null ? TRIG : detected;

@@ -60,7 +60,7 @@ public class CookiesLangDetector implements LangDetector {
             return firstMatch >= 0 ? syntaxes.get(firstMatch) : null;
         }
 
-        @Override public @Nullable RDFLang end() {
+        @Override public @Nullable RDFLang end(boolean hardEnd) {
             for (int i = 0, size = matchers.size(); i < size; i++) {
                 Cookie.Matcher m = matchers.get(i);
                 if (m.isMatched() && m.isConclusive())

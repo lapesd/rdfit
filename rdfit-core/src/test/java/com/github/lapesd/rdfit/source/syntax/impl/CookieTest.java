@@ -35,24 +35,30 @@ import static org.testng.Assert.*;
 public class CookieTest {
     @DataProvider public @Nonnull Object[][] singleCookieData() {
         return Stream.of(
-                asList("ABC", true, "ABC", true),
-                asList("ABC", true, "ABCDE", true),
-                asList("ABC", true, "XABC", false),
-                asList("ABC", true, "AB ABC", false),
-                asList("X", false, "X", true),
-                asList("X", false, "XABC", true),
-                asList("X", false, "ABCX", true),
-                asList("XY", false, "XXYAB", true),
-                asList("XY", false, "AXXYAB", true),
-                asList("XY", false, "X Y", false),
-                asList("XY", false, "YXXAYX", false)
+                asList("ABC", true, false, "ABC", true),
+                asList("ABC", true, false, "ABCDE", true),
+                asList("ABC", true, false, "XABC", false),
+                asList("ABC", true, false, "AB ABC", false),
+                asList("X", false, false, "X", true),
+                asList("X", false, false, "XABC", true),
+                asList("X", false, false, "ABCX", true),
+                asList("XY", false, false, "XXYAB", true),
+                asList("XY", false, false, "AXXYAB", true),
+                asList("XY", false, false, "X Y", false),
+                asList("XY", false, false, "YXXAYX", false),
+                asList("XY", true, true, "XY", true),
+                asList("XY", true, true, "XYZ", false),
+                asList("", true, true, "", true),
+                asList("", true, true, "X", false),
+                asList("", true, true, " ", false)
         ).map(List::toArray).toArray(Object[][]::new);
 
     }
 
     @Test(dataProvider = "singleCookieData")
-    public void testSingleCookie(String cookie, boolean strict, String input, boolean expected) {
-        Cookie obj = Cookie.builder(cookie).strict(strict).build();
+    public void testSingleCookie(String cookie, boolean strict, boolean matchEnd,
+                                 String input, boolean expected) {
+        Cookie obj = Cookie.builder(cookie).strict(strict).matchEnd(matchEnd).build();
         Cookie.Matcher matcher = obj.createMatcher();
         doTest(matcher, input.getBytes(UTF_8), expected);
     }
