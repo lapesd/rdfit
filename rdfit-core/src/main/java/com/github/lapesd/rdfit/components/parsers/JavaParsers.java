@@ -110,16 +110,12 @@ public class JavaParsers {
                                                @Nonnull Class<?> memberClass) {
         registry.register(new IterableItParser(memberClass, IterationElement.TRIPLE));
         registry.register(new ArrayItParser(memberClass, IterationElement.TRIPLE));
-        registry.register(new IterableListenerParser(memberClass, null));
-        registry.register(new TripleArrayListenerParser(memberClass));
     }
 
     public static void registerWithQuadClass(@Nonnull ParserRegistry registry,
                                              @Nonnull Class<?> memberClass) {
         registry.register(new IterableItParser(memberClass, IterationElement.QUAD));
         registry.register(new ArrayItParser(memberClass, IterationElement.QUAD));
-        registry.register(new IterableListenerParser(null, memberClass));
-        registry.register(new TripleArrayListenerParser(memberClass));
     }
 
     public static void unregister(@Nonnull ParserRegistry registry,

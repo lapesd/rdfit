@@ -16,6 +16,7 @@
 
 package com.github.lapesd.rdfit.integration;
 
+import com.github.lapesd.rdfit.integration.generators.ListGenerator;
 import com.github.lapesd.rdfit.integration.generators.SourceGenerator;
 import com.github.lapesd.rdfit.util.Utils;
 import org.apache.commons.io.FileUtils;
@@ -25,6 +26,7 @@ import org.apache.jena.sparql.core.Quad;
 import org.apache.jena.sparql.graph.PrefixMappingMem;
 import org.apache.jena.vocabulary.RDF;
 import org.apache.jena.vocabulary.XSD;
+import org.eclipse.rdf4j.model.Statement;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,10 +34,16 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TestData {
+    private static final List<Class<?>> QUAD_ABLE_CLASSES = Arrays.asList(
+            Quad.class, org.apache.commons.rdf.api.Quad.class, Statement.class
+    );
+
     public final @Nonnull TripleSet set;
     public final @Nonnull SourceGenerator generator;
     public final @Nullable Class<?> tripleClass, quadClass;
@@ -59,6 +67,10 @@ public class TestData {
     }
     public boolean hasBoth() {
         return tripleClass != null && quadClass != null;
+    }
+
+    private boolean canQuad(@Nonnull Class<?> cls) {
+        return QUAD_ABLE_CLASSES.stream().anyMatch(c -> c.isAssignableFrom(cls));
     }
 
     public @Nonnull List<?> generateInputs() {

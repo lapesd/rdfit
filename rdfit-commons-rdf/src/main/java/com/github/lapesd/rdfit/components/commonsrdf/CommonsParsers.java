@@ -20,16 +20,15 @@ import com.github.lapesd.rdfit.RDFItFactory;
 import com.github.lapesd.rdfit.components.Parser;
 import com.github.lapesd.rdfit.components.commonsrdf.parsers.iterator.DatasetItParser;
 import com.github.lapesd.rdfit.components.commonsrdf.parsers.iterator.GraphItParser;
+import com.github.lapesd.rdfit.components.commonsrdf.parsers.listeners.CommonsArrayListenerParser;
+import com.github.lapesd.rdfit.components.commonsrdf.parsers.listeners.CommonsIterableListenerParser;
 import com.github.lapesd.rdfit.components.commonsrdf.parsers.listeners.DatasetListenerParser;
 import com.github.lapesd.rdfit.components.commonsrdf.parsers.listeners.GraphListenerParser;
 import com.github.lapesd.rdfit.components.parsers.JavaParsers;
 import com.github.lapesd.rdfit.components.parsers.ParserRegistry;
-import com.github.lapesd.rdfit.components.parsers.impl.listener.IterableListenerParser;
-import com.github.lapesd.rdfit.components.parsers.impl.listener.TripleArrayListenerParser;
 import com.github.lapesd.rdfit.iterator.IterationElement;
 import org.apache.commons.rdf.api.Quad;
 import org.apache.commons.rdf.api.Triple;
-import org.apache.commons.rdf.api.TripleLike;
 
 import javax.annotation.Nonnull;
 import java.util.HashSet;
@@ -72,8 +71,8 @@ public class CommonsParsers {
     public static void registerAll(@Nonnull ParserRegistry registry) {
         JavaParsers.registerWithQuadClass(Quad.class);
         JavaParsers.registerWithTripleClass(Triple.class);
-        registry.register(new IterableListenerParser(Triple.class, Quad.class));
-        registry.register(new TripleArrayListenerParser(TripleLike.class, Triple.class, Quad.class));
+        registry.register(new CommonsIterableListenerParser());
+        registry.register(new CommonsArrayListenerParser());
         for (Supplier<? extends Parser> supplier : SUPPLIERS)
             registry.register(supplier.get());
     }

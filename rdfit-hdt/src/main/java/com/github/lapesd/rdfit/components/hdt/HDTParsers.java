@@ -20,6 +20,8 @@ import com.github.lapesd.rdfit.RDFItFactory;
 import com.github.lapesd.rdfit.components.hdt.parsers.iterator.HDTItParser;
 import com.github.lapesd.rdfit.components.parsers.JavaParsers;
 import com.github.lapesd.rdfit.components.parsers.ParserRegistry;
+import com.github.lapesd.rdfit.components.parsers.impl.listener.IterableListenerParser;
+import com.github.lapesd.rdfit.components.parsers.impl.listener.TripleArrayListenerParser;
 import org.rdfhdt.hdt.triples.TripleString;
 
 import javax.annotation.Nonnull;
@@ -41,8 +43,10 @@ public class HDTParsers {
      * @param registry the {@link ParserRegistry}
      */
     public static void registerAll(@Nonnull ParserRegistry registry) {
-        registry.register(new HDTItParser());
         JavaParsers.registerWithTripleClass(registry, TripleString.class);
+        registry.register(new IterableListenerParser(TripleString.class, null));
+        registry.register(new TripleArrayListenerParser(TripleString.class));
+        registry.register(new HDTItParser());
     }
 
     /**

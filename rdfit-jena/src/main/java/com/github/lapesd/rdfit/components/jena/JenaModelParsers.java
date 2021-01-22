@@ -22,10 +22,7 @@ import com.github.lapesd.rdfit.components.ListenerParser;
 import com.github.lapesd.rdfit.components.jena.parsers.iterator.DatasetItParser;
 import com.github.lapesd.rdfit.components.jena.parsers.iterator.GraphItParser;
 import com.github.lapesd.rdfit.components.jena.parsers.iterator.ModelItParser;
-import com.github.lapesd.rdfit.components.jena.parsers.listener.DatasetListenerParser;
-import com.github.lapesd.rdfit.components.jena.parsers.listener.GraphListenerParser;
-import com.github.lapesd.rdfit.components.jena.parsers.listener.ModelListenerParser;
-import com.github.lapesd.rdfit.components.jena.parsers.listener.QueryExecutionListenerParser;
+import com.github.lapesd.rdfit.components.jena.parsers.listener.*;
 import com.github.lapesd.rdfit.components.parsers.JavaParsers;
 import com.github.lapesd.rdfit.components.parsers.ParserRegistry;
 import org.apache.jena.graph.Triple;
@@ -77,9 +74,10 @@ public class JenaModelParsers {
     public static void registerListenerParsers(@Nonnull ParserRegistry registry) {
         for (Supplier<ListenerParser> supplier : LISTENER_SUPPLIERS)
             registry.register(supplier.get());
-        JavaParsers.unregister(registry, Statement.class);
-        JavaParsers.unregister(registry, Triple.class);
-        JavaParsers.unregister(registry, Quad.class);
+        registry.register(new JenaIterableListenerParser(Triple.class, Quad.class));
+        registry.register(new JenaIterableListenerParser(Statement.class, Quad.class));
+        registry.register(new JenaArrayListenerParser(Triple.class, Quad.class));
+        registry.register(new JenaArrayListenerParser(Statement.class, Quad.class));
     }
     public static void registerListenerParsers(@Nonnull RDFItFactory factory) {
         registerListenerParsers(factory.getParserRegistry());

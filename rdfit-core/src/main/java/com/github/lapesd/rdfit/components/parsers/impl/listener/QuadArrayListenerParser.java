@@ -26,6 +26,11 @@ import java.util.Iterator;
  * An {@link com.github.lapesd.rdfit.components.ListenerParser} over arrays that contains quads.
  */
 public class QuadArrayListenerParser extends BaseJavaListenerParser {
+    public QuadArrayListenerParser(@Nullable Class<?> memberClass,
+                                   @Nonnull Class<?> tripleClass, @Nonnull Class<?> quadClass) {
+        super(Array.newInstance(memberClass, 0).getClass(), tripleClass, quadClass);
+    }
+
     public QuadArrayListenerParser(@Nullable Class<?> quadClass) {
         super(Array.newInstance(quadClass, 0).getClass(), null, quadClass);
     }

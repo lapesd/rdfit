@@ -40,15 +40,15 @@ public class TestDataGenerator {
     private static final Node S = NodeFactory.createURI(EX+"S");
     private static final Node P = NodeFactory.createURI(EX+"P");
     private static final Node G = NodeFactory.createURI(EX+"G");
-    private static final Object nil = new Object();
-    private static final List<Object> tripleClasses = asList(
+    public static final Object nil = new Object();
+    public static final List<Object> tripleClasses = asList(
             Triple.class,
             Statement.class,
             Quad.class,
             org.eclipse.rdf4j.model.Statement.class,
             org.apache.commons.rdf.api.Triple.class,
             nil);
-    private static final List<Object> quadClasses = asList(
+    public static final List<Object> quadClasses = asList(
             Quad.class,
             org.eclipse.rdf4j.model.Statement.class,
             org.apache.commons.rdf.api.Quad.class,
@@ -104,15 +104,20 @@ public class TestDataGenerator {
             return generateTestData(asList(generators));
     }
 
-    public static @Nonnull List<TestData> generateTestData(List<SourceGenerator> generators) {
+    public static @Nonnull List<TripleSet> createTripleSets() {
         List<TripleSet> sets = new ArrayList<>();
         sets.add(new TripleSet());
         for (Node object : objects) {
             sets.add(new TripleSet(new Triple(S, P, object)));
             sets.add(new TripleSet(new Quad(G, S, P, object)));
             sets.add(new TripleSet(new Quad(Quad.defaultGraphIRI, S, P, object),
-                                   new Quad(G,                    S, P, object)));
+                    new Quad(G,                    S, P, object)));
         }
+        return sets;
+    }
+
+    public static @Nonnull List<TestData> generateTestData(List<SourceGenerator> generators) {
+        List<TripleSet> sets = createTripleSets();
 
         List<TestData> dataList = new ArrayList<>();
         List<List<?>> lists = asList(sets, generators, tripleClasses, quadClasses);
