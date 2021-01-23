@@ -20,6 +20,7 @@ import com.github.lapesd.rdfit.RIt;
 import com.github.lapesd.rdfit.components.hdt.listeners.HDTBufferFeeder;
 import com.github.lapesd.rdfit.components.hdt.listeners.HDTFileFeeder;
 import com.github.lapesd.rdfit.errors.RDFItException;
+import com.github.lapesd.rdfit.iterator.ConvertingRDFIt;
 import com.github.lapesd.rdfit.iterator.RDFIt;
 import com.github.lapesd.rdfit.util.NoSource;
 import com.github.lapesd.rdfit.util.Utils;
@@ -63,8 +64,10 @@ public class HDTHelpers {
         return file;
     }
     public static @Nonnull File toHDTFile(@Nonnull File file,
-                                          @Nonnull Object... sources) throws RDFItException {
-        return toHDTFile(file, RIt.iterateTriples(TripleString.class, sources));
+                                          @Nonnull Object... srcs) throws RDFItException {
+        if (srcs.length == 1 && srcs[0] instanceof RDFIt)
+            return toHDTFile(file, ConvertingRDFIt.createIf(TripleString.class, (RDFIt<?>)srcs[0]));
+        return toHDTFile(file, RIt.iterateTriples(TripleString.class, srcs));
     }
 
     public static @Nonnull HDT
@@ -80,6 +83,8 @@ public class HDTHelpers {
         }
     }
     public static @Nonnull HDT toHDT(@Nonnull Object... sources) throws RDFItException {
+        if (sources.length == 1 && sources[0] instanceof RDFIt)
+            return toHDT(ConvertingRDFIt.createIf(TripleString.class, (RDFIt<?>) sources[0]));
         return toHDT(RIt.iterateTriples(TripleString.class, sources));
     }
 

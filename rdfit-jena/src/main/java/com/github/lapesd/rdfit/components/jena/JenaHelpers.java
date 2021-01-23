@@ -84,12 +84,16 @@ public class JenaHelpers {
         return toModel(model, it, true);
     }
     public static @Nonnull Model toModelImporting(@Nonnull Model model, @Nonnull Object... sources) {
+        if (sources.length == 1 && sources[0] instanceof RDFIt)
+            return toModelImporting(model, (RDFIt<?>) sources[0]);
         return toModel(model, RIt.iterateTriples(Statement.class, sources), true);
     }
     public static @Nonnull Model toModel(@Nonnull Model model, @Nonnull RDFIt<?> it) {
         return toModel(model, it, false);
     }
     public static @Nonnull Model toModel(@Nonnull Model model, @Nonnull Object... sources) {
+        if (sources.length == 1 && sources[0] instanceof RDFIt)
+            return toModel(model, (RDFIt<?>) sources[0]);
         return toModel(model, RIt.iterateTriples(Statement.class, sources), false);
     }
     public static @Nonnull Model toModel(@Nonnull RDFIt<?> it, boolean fetchImports) {
@@ -99,12 +103,16 @@ public class JenaHelpers {
         return toModel(it, true);
     }
     public static @Nonnull Model toModelImporting(@Nonnull Object... sources) {
+        if (sources.length == 1 && sources[0] instanceof RDFIt)
+            return toModelImporting((RDFIt<?>) sources[0]);
         return toModel(RIt.iterateTriples(Statement.class, sources), true);
     }
     public static @Nonnull Model toModel(@Nonnull RDFIt<?> it) {
         return toModel(it, false);
     }
     public static @Nonnull Model toModel(@Nonnull Object... sources) {
+        if (sources.length == 1 && sources[0] instanceof RDFIt)
+            return toModel((RDFIt<?>) sources[0]);
         return toModel(RIt.iterateTriples(Statement.class, sources), false);
     }
 
@@ -124,12 +132,16 @@ public class JenaHelpers {
         return toGraph(graph, it, true);
     }
     public static @Nonnull Graph toGraphImporting(@Nonnull Graph graph, @Nonnull Object... sources) {
+        if (sources.length == 1 && sources[0] instanceof RDFIt)
+            return toGraphImporting(graph, (RDFIt<?>) sources[0]);
         return toGraph(graph, RIt.iterateTriples(Triple.class, sources), true);
     }
     public static @Nonnull Graph toGraph(@Nonnull Graph graph, @Nonnull RDFIt<?> it) {
         return toGraph(graph, it, false);
     }
     public static @Nonnull Graph toGraph(@Nonnull Graph graph, @Nonnull Object... sources) {
+        if (sources.length == 1 && sources[0] instanceof RDFIt)
+            return toGraph(graph, (RDFIt<?>) sources[0]);
         return toGraph(graph, RIt.iterateTriples(Triple.class, sources), false);
     }
     public static @Nonnull Graph toGraph(@Nonnull RDFIt<?> it, boolean fetchImports) {
@@ -139,25 +151,29 @@ public class JenaHelpers {
         return toGraph(it, true);
     }
     public static @Nonnull Graph toGraphImporting(@Nonnull Object... sources) {
+        if (sources.length == 1 && sources[0] instanceof RDFIt)
+            return toGraphImporting((RDFIt<?>) sources[0]);
         return toGraph(RIt.iterateTriples(Triple.class, sources), true);
     }
     public static @Nonnull Graph toGraph(@Nonnull RDFIt<?> it) {
         return toGraph(it, false);
     }
     public static @Nonnull Graph toGraph(@Nonnull Object... sources) {
+        if (sources.length == 1 && sources[0] instanceof RDFIt)
+            return toGraph((RDFIt<?>) sources[0]);
         return toGraph(RIt.iterateTriples(Triple.class, sources), false);
     }
 
-    public static @Nonnull GraphFeeder createFeeder(@Nonnull Graph graph) {
+    public static @Nonnull GraphFeeder graphFeeder(@Nonnull Graph graph) {
         return new GraphFeeder(graph);
     }
-    public static @Nonnull ModelFeeder creteFeeder(@Nonnull Model model) {
+    public static @Nonnull ModelFeeder modelFeeder(@Nonnull Model model) {
         return new ModelFeeder(model);
     }
-    public static @Nonnull DatasetFeeder creteFeeder(@Nonnull Dataset ds) {
+    public static @Nonnull DatasetFeeder modelFeeder(@Nonnull Dataset ds) {
         return new DatasetFeeder(ds);
     }
-    public static @Nonnull DatasetGraphFeeder createFeeder(@Nonnull DatasetGraph dsg) {
+    public static @Nonnull DatasetGraphFeeder graphFeeder(@Nonnull DatasetGraph dsg) {
         return new DatasetGraphFeeder(dsg);
     }
 

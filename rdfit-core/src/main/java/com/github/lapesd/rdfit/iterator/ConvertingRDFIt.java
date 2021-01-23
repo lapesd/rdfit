@@ -18,6 +18,7 @@ package com.github.lapesd.rdfit.iterator;
 
 import com.github.lapesd.rdfit.SourceQueue;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
+import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
 import com.github.lapesd.rdfit.components.converters.util.ConversionCache;
 import com.github.lapesd.rdfit.components.converters.util.ConversionPathSingletonCache;
 import org.slf4j.Logger;
@@ -38,6 +39,26 @@ public class ConvertingRDFIt<T> extends EagerRDFIt<T> {
         super(valueClass, itElement, source.getSourceQueue());
         this.source = source;
         this.conversionCache = new ConversionPathSingletonCache(conversionManager, valueClass);
+    }
+
+    public static @Nonnull <T> RDFIt<T> createIf(@Nonnull Class<T> valueClass,
+                                                 @Nonnull RDFIt<?> source) {
+        return createIf(valueClass, source, source.itElement());
+    }
+    public static @Nonnull <T> RDFIt<T> createIf(@Nonnull Class<T> valueClass,
+                                                 @Nonnull RDFIt<?> source,
+                                                 @Nonnull IterationElement itElem) {
+        return createIf(valueClass, source, itElem, DefaultConversionManager.get());
+    }
+    public static @Nonnull <T> RDFIt<T> createIf(@Nonnull Class<T> valueClass,
+                                                 @Nonnull RDFIt<?> source,
+                                                 @Nonnull IterationElement itElem,
+                                                 @Nonnull ConversionManager conversionManager) {
+        if (valueClass.isAssignableFrom(source.valueClass()) && itElem.equals(source.itElement())) {
+            //noinspection unchecked
+            return (RDFIt<T>) source;
+        }
+        return new ConvertingRDFIt<>(valueClass, itElem, source, conversionManager);
     }
 
     @Override public @Nonnull SourceQueue getSourceQueue() {
