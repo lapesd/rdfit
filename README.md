@@ -392,11 +392,14 @@ in RDFCallback to stop logging.
 
 ### Release workflow
 
-Integration tests take ~2min thus are disabled by default. Unfortunately, due 
+Integration tests take >2min thus are disabled by default. Unfortunately, due 
 to [NEXUS-9138](https://issues.sonatype.org/browse/NEXUS-9138), they cannot be 
-part of the release profile. Thus, the solution is to release following 
-these steps: 
+part of the release profile. Also, to prevent IDE-related havoc with frequent 
+adding/removing the module through profiles, integration-tests is an 
+independent maven project, like the examples directory. The recommended 
+workflow for a release is:
 
-1. `mvn -Pintegration clean verify` to run integration-tests
+1. `mvn -Prelease clean install` to install locally
+2. `cd integration-tests && mvn verify ; cd ..` to run integration tests 
 2. `mvn -Prelease release:prepare` to set version
 3. `mvn -Prelease release:perform` to stage & release to maven central
