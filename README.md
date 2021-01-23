@@ -57,7 +57,7 @@ On Maven: add this to your pom.xml:
 <dependency>
   <groupId>com.github.lapesd.rdfit</groupId>
   <artifactId>rdfit-all-libs</artifactId> <!-- "all" could be jena or df4j -->
-  <version>1.0.3</version>
+  <version>1.0.4</version>
   <type>pom</type>                    <!-- don't forget, this is not a jar -->
 </dependency>
 ```
