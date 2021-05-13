@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
  * A {@link RDFListener} that forwards triples and statements to an {@link RDFHandler}.
  */
 public class RDFHandlerListener extends RDFListenerBase<Statement, Statement> {
+    private boolean started = false;
     private final @Nonnull RDFHandler handler;
 
     public RDFHandlerListener(@Nonnull RDFHandler handler) {
@@ -44,12 +45,19 @@ public class RDFHandlerListener extends RDFListenerBase<Statement, Statement> {
 
     @Override public void start(@Nonnull Object source) {
         super.start(source);
-        handler.startRDF();
+        if (!started) {
+            started = true;
+            handler.startRDF();
+        }
     }
 
     @Override public void finish(@Nonnull Object source) {
-        handler.endRDF();
         super.finish(source);
+    }
+
+    @Override public void finish() {
+        handler.endRDF();
+        super.finish();
     }
 
     @Override public @Nonnull String toString() {
