@@ -16,11 +16,13 @@
 
 package com.github.lapesd.rdfit.components.rdf4j;
 
+import com.github.lapesd.rdfit.RDFItFactory;
 import com.github.lapesd.rdfit.RIt;
 import com.github.lapesd.rdfit.components.rdf4j.iterators.RDF4JImportingRDFIt;
 import com.github.lapesd.rdfit.components.rdf4j.listener.ModelFeeder;
 import com.github.lapesd.rdfit.components.rdf4j.listener.RepositoryConnectionFeeder;
 import com.github.lapesd.rdfit.components.rdf4j.listener.RepositoryFeeder;
+import com.github.lapesd.rdfit.impl.DefaultRDFItFactory;
 import com.github.lapesd.rdfit.iterator.ConvertingRDFIt;
 import com.github.lapesd.rdfit.iterator.RDFIt;
 import org.eclipse.rdf4j.model.Model;
@@ -44,19 +46,27 @@ public class RDF4JHelper {
         return toModel(m, it, true);
     }
     public static @Nonnull Model toModelImporting(@Nonnull Model m, @Nonnull Object... sources) {
+        return toModelImporting(DefaultRDFItFactory.get(), m, sources);
+    }
+    public static @Nonnull Model toModelImporting(@Nonnull RDFItFactory factory,
+                                                  @Nonnull Model m, @Nonnull Object... sources) {
         if (sources.length == 1 && sources[0] instanceof RDFIt) {
             RDFIt<Statement> it = ConvertingRDFIt.createIf(Statement.class, (RDFIt<?>) sources[0]);
             return toModelImporting(m, it);
         }
-        return toModel(m, RIt.iterateQuads(Statement.class, sources), true);
+        return toModel(m, factory.iterateQuads(Statement.class, sources), true);
     }
     public static @Nonnull Model toModel(@Nonnull Model model, @Nonnull RDFIt<Statement> it) {
         return toModel(model, it, false);
     }
     public static @Nonnull Model toModel(@Nonnull Model model, @Nonnull Object... sources) {
+        return toModel(DefaultRDFItFactory.get(), model, sources);
+    }
+    public static @Nonnull Model toModel(@Nonnull RDFItFactory factory,
+                                         @Nonnull Model model, @Nonnull Object... sources) {
         if (sources.length == 1 && sources[0] instanceof RDFIt)
             return toModel(model, ConvertingRDFIt.createIf(Statement.class, (RDFIt<?>) sources[0]));
-        return toModel(model, RIt.iterateQuads(Statement.class, sources), false);
+        return toModel(model, factory.iterateQuads(Statement.class, sources), false);
     }
 
     public static @Nonnull Model toModel(@Nonnull RDFIt<Statement> it, boolean fetchImports) {
@@ -67,17 +77,25 @@ public class RDF4JHelper {
         return toModel(it, true);
     }
     public static @Nonnull Model toModelImporting(@Nonnull Object... srcs) {
+        return toModelImporting(DefaultRDFItFactory.get(), srcs);
+    }
+    public static @Nonnull Model toModelImporting(@Nonnull RDFItFactory factory,
+                                                  @Nonnull Object... srcs) {
         if (srcs.length == 1 && srcs[0] instanceof RDFIt)
             return toModelImporting(ConvertingRDFIt.createIf(Statement.class, (RDFIt<?>) srcs[0]));
-        return toModel(RIt.iterateQuads(Statement.class, srcs), true);
+        return toModel(factory.iterateQuads(Statement.class, srcs), true);
     }
     public static @Nonnull Model toModel(@Nonnull RDFIt<Statement> it) {
         return toModel(it, false);
     }
     public static @Nonnull Model toModel(@Nonnull Object... sources) {
+        return toModel(DefaultRDFItFactory.get(), sources);
+    }
+    public static @Nonnull Model toModel(@Nonnull RDFItFactory factory,
+                                         @Nonnull Object... sources) {
         if (sources.length == 1 && sources[0] instanceof RDFIt)
             return toModel(ConvertingRDFIt.createIf(Statement.class, (RDFIt<?>) sources[0]));
-        return toModel(RIt.iterateQuads(Statement.class, sources), false);
+        return toModel(factory.iterateQuads(Statement.class, sources), false);
     }
 
     public static @Nonnull ModelFeeder feeder(@Nonnull Model model) {

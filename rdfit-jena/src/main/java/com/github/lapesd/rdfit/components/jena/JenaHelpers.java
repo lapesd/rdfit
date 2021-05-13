@@ -24,6 +24,7 @@ import com.github.lapesd.rdfit.components.converters.util.ConversionCache;
 import com.github.lapesd.rdfit.components.converters.util.ConversionPathSingletonCache;
 import com.github.lapesd.rdfit.components.jena.converters.JenaConverters;
 import com.github.lapesd.rdfit.components.jena.iterators.JenaImportingRDFIt;
+import com.github.lapesd.rdfit.impl.DefaultRDFItFactory;
 import com.github.lapesd.rdfit.iterator.RDFIt;
 import com.github.lapesd.rdfit.source.syntax.RDFLangs;
 import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
@@ -84,17 +85,25 @@ public class JenaHelpers {
         return toModel(model, it, true);
     }
     public static @Nonnull Model toModelImporting(@Nonnull Model model, @Nonnull Object... sources) {
+        return toModelImporting(DefaultRDFItFactory.get(), model, sources);
+    }
+    public static @Nonnull Model toModelImporting(@Nonnull RDFItFactory factory,
+                                                  @Nonnull Model model, @Nonnull Object... sources) {
         if (sources.length == 1 && sources[0] instanceof RDFIt)
             return toModelImporting(model, (RDFIt<?>) sources[0]);
-        return toModel(model, RIt.iterateTriples(Statement.class, sources), true);
+        return toModel(model, factory.iterateTriples(Statement.class, sources), true);
     }
     public static @Nonnull Model toModel(@Nonnull Model model, @Nonnull RDFIt<?> it) {
         return toModel(model, it, false);
     }
     public static @Nonnull Model toModel(@Nonnull Model model, @Nonnull Object... sources) {
+        return toModel(DefaultRDFItFactory.get(), model, sources);
+    }
+    public static @Nonnull Model toModel(@Nonnull RDFItFactory factory, @Nonnull Model model,
+                                         @Nonnull Object... sources) {
         if (sources.length == 1 && sources[0] instanceof RDFIt)
             return toModel(model, (RDFIt<?>) sources[0]);
-        return toModel(model, RIt.iterateTriples(Statement.class, sources), false);
+        return toModel(model, factory.iterateTriples(Statement.class, sources), false);
     }
     public static @Nonnull Model toModel(@Nonnull RDFIt<?> it, boolean fetchImports) {
         return toModel(ModelFactory.createDefaultModel(), it, fetchImports);
@@ -103,17 +112,24 @@ public class JenaHelpers {
         return toModel(it, true);
     }
     public static @Nonnull Model toModelImporting(@Nonnull Object... sources) {
+        return toModelImporting(DefaultRDFItFactory.get(), sources);
+    }
+    public static @Nonnull Model toModelImporting(@Nonnull RDFItFactory factory,
+                                                  @Nonnull Object... sources) {
         if (sources.length == 1 && sources[0] instanceof RDFIt)
             return toModelImporting((RDFIt<?>) sources[0]);
-        return toModel(RIt.iterateTriples(Statement.class, sources), true);
+        return toModel(factory.iterateTriples(Statement.class, sources), true);
     }
     public static @Nonnull Model toModel(@Nonnull RDFIt<?> it) {
         return toModel(it, false);
     }
     public static @Nonnull Model toModel(@Nonnull Object... sources) {
+        return toModel(DefaultRDFItFactory.get(), sources);
+    }
+    public static @Nonnull Model toModel(@Nonnull RDFItFactory factory, @Nonnull Object... sources) {
         if (sources.length == 1 && sources[0] instanceof RDFIt)
             return toModel((RDFIt<?>) sources[0]);
-        return toModel(RIt.iterateTriples(Statement.class, sources), false);
+        return toModel(factory.iterateTriples(Statement.class, sources), false);
     }
 
     public static @Nonnull Graph toGraph(@Nonnull Graph graph, @Nonnull RDFIt<?> inIt,
@@ -132,17 +148,25 @@ public class JenaHelpers {
         return toGraph(graph, it, true);
     }
     public static @Nonnull Graph toGraphImporting(@Nonnull Graph graph, @Nonnull Object... sources) {
+        return toGraphImporting(DefaultRDFItFactory.get(), graph, sources);
+    }
+    public static @Nonnull Graph toGraphImporting(@Nonnull RDFItFactory factory,
+                                                  @Nonnull Graph graph, @Nonnull Object... sources) {
         if (sources.length == 1 && sources[0] instanceof RDFIt)
             return toGraphImporting(graph, (RDFIt<?>) sources[0]);
-        return toGraph(graph, RIt.iterateTriples(Triple.class, sources), true);
+        return toGraph(graph, factory.iterateTriples(Triple.class, sources), true);
     }
     public static @Nonnull Graph toGraph(@Nonnull Graph graph, @Nonnull RDFIt<?> it) {
         return toGraph(graph, it, false);
     }
     public static @Nonnull Graph toGraph(@Nonnull Graph graph, @Nonnull Object... sources) {
+        return toGraph(DefaultRDFItFactory.get(), graph, sources);
+    }
+    public static @Nonnull Graph toGraph(@Nonnull RDFItFactory factory,
+                                         @Nonnull Graph graph, @Nonnull Object... sources) {
         if (sources.length == 1 && sources[0] instanceof RDFIt)
             return toGraph(graph, (RDFIt<?>) sources[0]);
-        return toGraph(graph, RIt.iterateTriples(Triple.class, sources), false);
+        return toGraph(graph, factory.iterateTriples(Triple.class, sources), false);
     }
     public static @Nonnull Graph toGraph(@Nonnull RDFIt<?> it, boolean fetchImports) {
         return toGraph(GraphFactory.createDefaultGraph(), it, fetchImports);
@@ -151,17 +175,24 @@ public class JenaHelpers {
         return toGraph(it, true);
     }
     public static @Nonnull Graph toGraphImporting(@Nonnull Object... sources) {
+        return toGraphImporting(DefaultRDFItFactory.get(), sources);
+    }
+    public static @Nonnull Graph toGraphImporting(@Nonnull RDFItFactory factory,
+                                                  @Nonnull Object... sources) {
         if (sources.length == 1 && sources[0] instanceof RDFIt)
             return toGraphImporting((RDFIt<?>) sources[0]);
-        return toGraph(RIt.iterateTriples(Triple.class, sources), true);
+        return toGraph(factory.iterateTriples(Triple.class, sources), true);
     }
     public static @Nonnull Graph toGraph(@Nonnull RDFIt<?> it) {
         return toGraph(it, false);
     }
     public static @Nonnull Graph toGraph(@Nonnull Object... sources) {
+        return toGraph(DefaultRDFItFactory.get(), sources);
+    }
+    public static @Nonnull Graph toGraph(@Nonnull RDFItFactory factory, @Nonnull Object... sources) {
         if (sources.length == 1 && sources[0] instanceof RDFIt)
             return toGraph((RDFIt<?>) sources[0]);
-        return toGraph(RIt.iterateTriples(Triple.class, sources), false);
+        return toGraph(factory.iterateTriples(Triple.class, sources), false);
     }
 
     public static @Nonnull GraphFeeder graphFeeder(@Nonnull Graph graph) {

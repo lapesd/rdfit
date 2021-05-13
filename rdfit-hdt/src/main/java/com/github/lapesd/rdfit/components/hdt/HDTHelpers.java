@@ -16,10 +16,12 @@
 
 package com.github.lapesd.rdfit.components.hdt;
 
+import com.github.lapesd.rdfit.RDFItFactory;
 import com.github.lapesd.rdfit.RIt;
 import com.github.lapesd.rdfit.components.hdt.listeners.HDTBufferFeeder;
 import com.github.lapesd.rdfit.components.hdt.listeners.HDTFileFeeder;
 import com.github.lapesd.rdfit.errors.RDFItException;
+import com.github.lapesd.rdfit.impl.DefaultRDFItFactory;
 import com.github.lapesd.rdfit.iterator.ConvertingRDFIt;
 import com.github.lapesd.rdfit.iterator.RDFIt;
 import com.github.lapesd.rdfit.util.NoSource;
@@ -47,7 +49,7 @@ public class HDTHelpers {
     private static final Pattern INDEX_SUFFIX = Pattern.compile("\\.index(\\.v\\d+-\\d+)?$");
 
     public static @Nonnull File toHDTFile(@Nonnull File file,
-                                          @Nonnull RDFIt<TripleString> rdfIt) throws RDFItException {
+                                   @Nonnull RDFIt<TripleString> rdfIt) throws RDFItException {
         String baseURI = Utils.toASCIIString(file.toURI());
         try (RDFIt<TripleString> it = rdfIt;
              TripleWriter w = HDTManager.getHDTWriter(file.getAbsolutePath(), baseURI, SPEC)) {
@@ -65,14 +67,18 @@ public class HDTHelpers {
     }
     public static @Nonnull File toHDTFile(@Nonnull File file,
                                           @Nonnull Object... srcs) throws RDFItException {
+        return toHDTFile(DefaultRDFItFactory.get(), file, srcs);
+    }
+    public static @Nonnull File toHDTFile(@Nonnull RDFItFactory factory, @Nonnull File file,
+                                          @Nonnull Object... srcs) throws RDFItException {
         if (srcs.length == 1 && srcs[0] instanceof RDFIt)
             return toHDTFile(file, ConvertingRDFIt.createIf(TripleString.class, (RDFIt<?>)srcs[0]));
-        return toHDTFile(file, RIt.iterateTriples(TripleString.class, srcs));
+        return toHDTFile(file, factory.iterateTriples(TripleString.class, srcs));
     }
 
     public static @Nonnull HDT
     toHDT(@Nonnull RDFIt<TripleString> it) throws RDFItException {
-        String baseURI = "file:hdt-in-memory-"+UUID.randomUUID().toString();
+        String baseURI = "file:hdt-in-memory-"+ UUID.randomUUID();
         try {
             return HDTManager.generateHDT(it, baseURI, SPEC,
                                           (l, m) -> logger.debug("{}: {}: {}", baseURI, l, m));
@@ -83,9 +89,13 @@ public class HDTHelpers {
         }
     }
     public static @Nonnull HDT toHDT(@Nonnull Object... sources) throws RDFItException {
+        return toHDT(DefaultRDFItFactory.get(), sources);
+    }
+    public static @Nonnull HDT toHDT(@Nonnull RDFItFactory factory,
+                                     @Nonnull Object... sources) throws RDFItException {
         if (sources.length == 1 && sources[0] instanceof RDFIt)
             return toHDT(ConvertingRDFIt.createIf(TripleString.class, (RDFIt<?>) sources[0]));
-        return toHDT(RIt.iterateTriples(TripleString.class, sources));
+        return toHDT(factory.iterateTriples(TripleString.class, sources));
     }
 
     public static @Nonnull HDTFileFeeder fileFeeder(@Nonnull File file) throws IOException {
