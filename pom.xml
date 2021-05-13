@@ -21,7 +21,7 @@
 
   <groupId>com.github.lapesd.rdfit</groupId>
   <artifactId>rdfit-parent</artifactId>
-  <version>1.0.5-SNAPSHOT</version>
+  <version>1.0.5</version>
   <packaging>pom</packaging>
 
   <name>rdfit-parent</name>
@@ -64,7 +64,7 @@
     <connection>scm:git:git://github.com/lapesd/rdfit.git</connection>
     <developerConnection>scm:git:git@github.com:lapesd/rdfit.git</developerConnection>
     <url>https://github.com/lapesd/rdfit</url>
-    <tag>HEAD</tag>
+    <tag>v1.0.5</tag>
   </scm>
 
   <properties>
