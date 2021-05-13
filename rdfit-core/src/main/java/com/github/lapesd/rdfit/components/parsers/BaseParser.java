@@ -50,7 +50,7 @@ public abstract class BaseParser implements Parser {
 
     @Override public void attachTo(@Nonnull ParserRegistry registry) {
         if (this.parserRegistry != null && !this.parserRegistry.equals(registry)) {
-            logger.info("Swapping old parserRegistry from {} to {} in {}",
+            logger.debug("Swapping old parserRegistry from {} to {} in {}",
                         this.parserRegistry, registry, this);
         }
         this.parserRegistry = registry;
