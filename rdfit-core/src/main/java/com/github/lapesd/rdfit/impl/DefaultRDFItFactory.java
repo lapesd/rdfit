@@ -43,15 +43,13 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import static com.github.lapesd.rdfit.iterator.IterationElement.QUAD;
 import static com.github.lapesd.rdfit.iterator.IterationElement.TRIPLE;
+import static java.lang.Thread.currentThread;
 
 public class DefaultRDFItFactory implements RDFItFactory {
     private static final Logger logger = LoggerFactory.getLogger(DefaultRDFItFactory.class);
@@ -82,17 +80,16 @@ public class DefaultRDFItFactory implements RDFItFactory {
         this.parserRegistry = parserRegistry;
         this.conversionMgr = conversionManager;
         this.normalizerRegistry = normalizerRegistry;
-        int availableProcessors = Runtime.getRuntime().availableProcessors();
         SecurityManager secMgr = System.getSecurityManager();
-        executor = new ThreadPoolExecutor(0, availableProcessors * 8,
+        executor = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
                 5, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(), new ThreadFactory() {
+                new SynchronousQueue<>(), new ThreadFactory() {
             private final AtomicInteger threads = new AtomicInteger(0);
             final ThreadGroup group = secMgr != null ? secMgr.getThreadGroup()
-                                                     : Thread.currentThread().getThreadGroup();
+                                                     : currentThread().getThreadGroup();
 
             @Override public Thread newThread(@Nonnull Runnable r) {
-                String name = "DefaultRDFItFactory" + threads.incrementAndGet();
+                String name = "DefaultRDFItFactory-" + threads.incrementAndGet();
                 Thread thread = new Thread(group, r, name, 0);
                 thread.setDaemon(true);
                 return thread;
@@ -340,7 +337,7 @@ public class DefaultRDFItFactory implements RDFItFactory {
                 logger.warn("{}.close() will not wait non-terminating executor", this);
             }
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt(); //restore interrupt flag
+            currentThread().interrupt(); //restore interrupt flag
         }
     }
 

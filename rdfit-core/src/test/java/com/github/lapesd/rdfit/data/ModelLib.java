@@ -22,8 +22,10 @@ import com.github.lapesd.rdfit.components.Parser;
 import com.github.lapesd.rdfit.components.parsers.impl.iterator.ArrayItParser;
 import com.github.lapesd.rdfit.components.parsers.impl.iterator.BaseJavaItParser;
 import com.github.lapesd.rdfit.components.parsers.impl.iterator.IterableItParser;
+import com.github.lapesd.rdfit.components.parsers.impl.iterator.RDFItItParser;
 import com.github.lapesd.rdfit.components.parsers.impl.listener.BaseJavaListenerParser;
 import com.github.lapesd.rdfit.components.parsers.impl.listener.IterableListenerParser;
+import com.github.lapesd.rdfit.components.parsers.impl.listener.RDFItListenerParser;
 import com.github.lapesd.rdfit.components.parsers.impl.listener.TripleArrayListenerParser;
 import com.github.lapesd.rdfit.iterator.IterationElement;
 import com.github.lapesd.rdfit.util.Utils;
@@ -42,6 +44,7 @@ public class ModelLib {
     public static List<ItParser> TRIPLE_1_IT_PARSERS = asList(
             TRIPLE_1_ARRAY_IT_PARSER,
             TRIPLE_1_ITERABLE_IT_PARSER,
+            new RDFItItParser(TripleMock1.class, IterationElement.TRIPLE),
             TripleModelMock1.IT_PARSER
     );
 
@@ -50,6 +53,7 @@ public class ModelLib {
     public static List<ItParser> TRIPLE_2_IT_PARSERS = asList(
             TRIPLE_2_ARRAY_IT_PARSER,
             TRIPLE_2_ITERABLE_IT_PARSER,
+            new RDFItItParser(TripleMock2.class, IterationElement.TRIPLE),
             TripleModelMock2.IT_PARSER
     );
 
@@ -58,6 +62,7 @@ public class ModelLib {
     public static List<ItParser> TRIPLE_3_IT_PARSERS = asList(
             TRIPLE_3_ARRAY_IT_PARSER,
             TRIPLE_3_ITERABLE_IT_PARSER,
+            new RDFItItParser(TripleMock3.class, IterationElement.TRIPLE),
             TripleModelMock3.IT_PARSER
     );
 
@@ -66,6 +71,7 @@ public class ModelLib {
     public static List<ItParser> QUAD_1_IT_PARSERS = asList(
             QUAD_1_ARRAY_IT_PARSER,
             QUAD_1_ITERABLE_IT_PARSER,
+            new RDFItItParser(QuadMock1.class, IterationElement.QUAD),
             QuadModelMock1.IT_PARSER
     );
 
@@ -74,6 +80,7 @@ public class ModelLib {
     public static List<ItParser> QUAD_2_IT_PARSERS = asList(
             QUAD_2_ARRAY_IT_PARSER,
             QUAD_2_ITERABLE_IT_PARSER,
+            new RDFItItParser(QuadMock2.class, IterationElement.QUAD),
             QuadModelMock2.IT_PARSER
     );
 
@@ -82,6 +89,7 @@ public class ModelLib {
     public static List<ItParser> QUAD_3_IT_PARSERS = asList(
             QUAD_3_ARRAY_IT_PARSER,
             QUAD_3_ITERABLE_IT_PARSER,
+            new RDFItItParser(QuadMock3.class, IterationElement.QUAD),
             QuadModelMock3.IT_PARSER
     );
 
@@ -90,6 +98,7 @@ public class ModelLib {
     public static List<ListenerParser> TRIPLE_1_CB_PARSERS = asList(
             TRIPLE_1_ARRAY_CB_PARSER,
             TRIPLE_1_ITERABLE_CB_PARSER,
+            new RDFItListenerParser(TripleMock1.class, null),
             TripleModelMock1.CB_PARSER
     );
 
@@ -98,6 +107,7 @@ public class ModelLib {
     public static List<ListenerParser> TRIPLE_2_CB_PARSERS = asList(
             TRIPLE_2_ARRAY_CB_PARSER,
             TRIPLE_2_ITERABLE_CB_PARSER,
+            new RDFItListenerParser(TripleMock2.class, null),
             TripleModelMock2.CB_PARSER
     );
 
@@ -107,6 +117,7 @@ public class ModelLib {
     public static List<ListenerParser> TRIPLE_3_CB_PARSERS = asList(
             TRIPLE_3_ARRAY_CB_PARSER,
             TRIPLE_3_ITERABLE_CB_PARSER,
+            new RDFItListenerParser(TripleMock3.class, null),
             TripleModelMock3.CB_PARSER
     );
 
@@ -117,6 +128,7 @@ public class ModelLib {
             QUAD_1_ARRAY_CB_PARSER,
             QUAD_1_ITERABLE_CB_PARSER,
             TRIPLEQUAD_1_ITERABLE_CB_PARSER,
+            new RDFItListenerParser(TripleMock1.class, QuadMock1.class),
             QuadModelMock1.CB_PARSER
     );
 
@@ -125,6 +137,7 @@ public class ModelLib {
     public static List<ListenerParser> QUAD_2_CB_PARSERS = asList(
             QUAD_2_ARRAY_CB_PARSER,
             QUAD_2_ITERABLE_CB_PARSER,
+            new RDFItListenerParser(null, QuadMock2.class),
             QuadModelMock2.CB_PARSER
     );
 
@@ -133,6 +146,7 @@ public class ModelLib {
     public static List<ListenerParser> QUAD_3_CB_PARSERS = asList(
             QUAD_3_ARRAY_CB_PARSER,
             QUAD_3_ITERABLE_CB_PARSER,
+            new RDFItListenerParser(null, QuadMock3.class),
             QuadModelMock3.CB_PARSER
     );
 

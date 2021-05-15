@@ -34,6 +34,8 @@ import org.testng.annotations.Test;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static com.github.lapesd.rdfit.data.MockFactory.*;
 import static com.github.lapesd.rdfit.data.MockHelpers.quadLifter;
@@ -79,6 +81,36 @@ public abstract class RDFItFactoryTestBase {
     @Test(dataProvider = "elementClassPairs")
     public void testIterateTriplesCbParsersNoConversion(@Nonnull Class<?> tripleClass, @Nonnull Class<?> ignored) {
         runTestIterateTriplesNoConversion(createFactoryOnlyCbParsers(), tripleClass);
+    }
+
+    private void runTestIterateIterator(@Nonnull RDFItFactory factory,
+                                        @Nonnull Class<?> tripleClass) {
+        Object t1 = createTriple(tripleClass, Ex.S1, Ex.P1, Ex.O1);
+        Object t2 = createTriple(tripleClass, Ex.S2, Ex.P2, Ex.O2);
+        List<Object> expected = asList(t1, t2);
+        ModelLib.Model source = ModelLib.getModel(expected);
+
+        ArrayList<Object> actual = new ArrayList<>();
+        try (RDFIt<?> it1 = factory.iterateTriples(tripleClass, source);
+             RDFIt<?> it2 = factory.iterateTriples(tripleClass, it1)) {
+            while (it2.hasNext())
+                actual.add(it2.next());
+            assertFalse(it1.hasNext());
+        }
+        assertEquals(actual, expected);
+    }
+
+    @Test(dataProvider = "elementClassPairs")
+    public void testIterateIteratorAllParsersNoConversion(@Nonnull Class<?> tripleClass, @Nonnull Class<?> ignored) {
+        runTestIterateIterator(createFactoryAllParsers(), tripleClass);
+    }
+    @Test(dataProvider = "elementClassPairs")
+    public void testIterateIteratorItParsersParsersNoConversion(@Nonnull Class<?> tripleClass, @Nonnull Class<?> ignored) {
+        runTestIterateIterator(createFactoryOnlyItParsers(), tripleClass);
+    }
+    @Test(dataProvider = "elementClassPairs")
+    public void testIterateIteratorCbParsersParsersNoConversion(@Nonnull Class<?> tripleClass, @Nonnull Class<?> ignored) {
+        runTestIterateIterator(createFactoryOnlyCbParsers(), tripleClass);
     }
 
     private void runTestIterateTriplesDowngrading(@Nonnull RDFItFactory factory,

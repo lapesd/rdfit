@@ -22,8 +22,10 @@ import com.github.lapesd.rdfit.components.ItParser;
 import com.github.lapesd.rdfit.components.ListenerParser;
 import com.github.lapesd.rdfit.components.parsers.impl.iterator.ArrayItParser;
 import com.github.lapesd.rdfit.components.parsers.impl.iterator.IterableItParser;
+import com.github.lapesd.rdfit.components.parsers.impl.iterator.RDFItItParser;
 import com.github.lapesd.rdfit.components.parsers.impl.listener.IterableListenerParser;
 import com.github.lapesd.rdfit.components.parsers.impl.listener.QuadArrayListenerParser;
+import com.github.lapesd.rdfit.components.parsers.impl.listener.RDFItListenerParser;
 import com.github.lapesd.rdfit.components.parsers.impl.listener.TripleArrayListenerParser;
 import com.github.lapesd.rdfit.impl.DefaultRDFItFactory;
 import com.github.lapesd.rdfit.iterator.IterationElement;
@@ -108,12 +110,18 @@ public class JavaParsers {
 
     public static void registerWithTripleClass(@Nonnull ParserRegistry registry,
                                                @Nonnull Class<?> memberClass) {
+        registry.register(new RDFItItParser(memberClass, IterationElement.TRIPLE));
+        registry.register(new RDFItListenerParser(memberClass, memberClass));
+        //ListenerParsers other than for RDFIt are not registered here, as it is more efficient
+        //for downstream modules to register a single *ListenerParse handling both triples and quads
         registry.register(new IterableItParser(memberClass, IterationElement.TRIPLE));
         registry.register(new ArrayItParser(memberClass, IterationElement.TRIPLE));
     }
 
     public static void registerWithQuadClass(@Nonnull ParserRegistry registry,
                                              @Nonnull Class<?> memberClass) {
+        registry.register(new RDFItItParser(memberClass, IterationElement.QUAD));
+        registry.register(new RDFItListenerParser(memberClass, memberClass));
         registry.register(new IterableItParser(memberClass, IterationElement.QUAD));
         registry.register(new ArrayItParser(memberClass, IterationElement.QUAD));
     }
