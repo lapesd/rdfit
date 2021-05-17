@@ -144,6 +144,7 @@ public class TurtleFamilyDetector implements LangDetector {
         }
 
         protected static class Body extends SubState {
+            private static final String XML_TAG = " xmlns:";
             private static final Set<Byte> LIT_CHARS;
             private static final Set<Byte> LIT_BEGIN;
             private static final Set<Byte> BNODE_CHARS;
@@ -152,6 +153,7 @@ public class TurtleFamilyDetector implements LangDetector {
             private byte begin = 0;
             boolean needsSpace = false, bNodeSubject = false;
             int termIndex = 0, triples = 0;
+            int xmlTagIdx = 0;
 
             static {
                 LIT_CHARS = "falsetrue-+eE.0123456789".chars().boxed().map(Integer::byteValue)
@@ -179,8 +181,13 @@ public class TurtleFamilyDetector implements LangDetector {
                         return TRIG;
                     }
                 } else if (begin == '<') {
-                    if      (value == ' ') return UNKNOWN;
-                    else if (value == '>') endTerm(true);
+                    if (value == XML_TAG.charAt(xmlTagIdx)) {
+                        if (++xmlTagIdx == XML_TAG.length())
+                            return UNKNOWN;
+                    } else {
+                        xmlTagIdx = value == XML_TAG.charAt(0) ? 1 : 0;
+                    }
+                    if (value == '>') endTerm(true);
                 } else if (begin == '_') {
                     if (buffer.length() == 1) {
                         assert buffer.toString().equals("_");
@@ -275,6 +282,7 @@ public class TurtleFamilyDetector implements LangDetector {
                     buffer.setLength(0);
                     buffer.append((char) value);
                 } else if (value == '<') {
+                    xmlTagIdx = 0;
                     if (termIndex == 3)
                         return NQ;
                 } else {
