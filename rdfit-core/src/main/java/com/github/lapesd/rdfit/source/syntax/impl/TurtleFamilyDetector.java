@@ -135,7 +135,7 @@ public class TurtleFamilyDetector implements LangDetector {
                     if (str.startsWith("PREFIX ") || str.startsWith("BASE "))
                         return TRIG;
                     // try to parse a body (no preamble)
-                    return feedAll(data, data.length, true, hardEnd);
+                    return UNKNOWN;
                 }
                 /* if a comment was read, guess TRIG. If no comment was read and we are still
                  * on this SubState, return UNKNOWN since the input is likely empty.*/
