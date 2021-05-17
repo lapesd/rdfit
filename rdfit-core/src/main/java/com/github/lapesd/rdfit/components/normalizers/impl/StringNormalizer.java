@@ -38,7 +38,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @Accepts({String.class, CharSequence.class})
 public class StringNormalizer extends BaseSourceNormalizer {
     private static final Logger logger = LoggerFactory.getLogger(StringNormalizer.class);
-    private static final Pattern URI_RX = Pattern.compile("(?i)^\\w+:");
+    private static final Pattern URI_RX = Pattern.compile("(?i)^[a-z0-9]\\w+:");
 
      @Override public @Nonnull Object normalize(@Nonnull Object source) {
          if (!(source instanceof CharSequence))
