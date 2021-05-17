@@ -18,6 +18,7 @@ package com.github.lapesd.rdfit.components.compress.normalizers.impl;
 
 import com.github.lapesd.rdfit.errors.RDFItException;
 import com.github.lapesd.rdfit.source.RDFInputStream;
+import com.github.lapesd.rdfit.source.RDFInputStreamDecorator;
 import com.github.lapesd.rdfit.source.SourcesIterator;
 import com.github.lapesd.rdfit.source.impl.CloseShield;
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -38,6 +39,7 @@ public class ArchiveEntrySourceIterator implements SourcesIterator {
 
     private final @Nonnull Object source;
     private final @Nonnull ArchiveInputStream archive;
+    private final @Nullable RDFInputStreamDecorator decorator;
     private @Nullable Object current = null;
     private boolean exhausted = false;
 
@@ -50,6 +52,8 @@ public class ArchiveEntrySourceIterator implements SourcesIterator {
     public ArchiveEntrySourceIterator(@Nonnull Object source,
                                       @Nonnull ArchiveInputStream archive) {
         this.source = source;
+        this.decorator = source instanceof RDFInputStream
+                       ? ((RDFInputStream)source).getDecorator() : null;
         this.archive = archive;
     }
 
@@ -66,7 +70,8 @@ public class ArchiveEntrySourceIterator implements SourcesIterator {
                 exhausted = true;
                 close();
             } else if (!e.isDirectory()) {
-                current = new RDFInputStream(new CloseShield(archive));
+                current = RDFInputStream.builder(new CloseShield(archive))
+                                        .decorator(decorator).build();
             }
         } catch (Throwable e1) {
             exhausted = true;

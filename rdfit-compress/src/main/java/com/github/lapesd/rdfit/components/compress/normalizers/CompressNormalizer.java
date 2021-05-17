@@ -23,6 +23,7 @@ import com.github.lapesd.rdfit.components.normalizers.BaseSourceNormalizer;
 import com.github.lapesd.rdfit.errors.RDFItException;
 import com.github.lapesd.rdfit.source.RDFFile;
 import com.github.lapesd.rdfit.source.RDFInputStream;
+import com.github.lapesd.rdfit.source.RDFInputStreamDecorator;
 import com.github.lapesd.rdfit.source.impl.EmptySourcesIterator;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.ArchiveInputStream;
@@ -129,7 +130,9 @@ public class CompressNormalizer extends BaseSourceNormalizer {
             compressedFactory = new CompressorStreamFactory();
         try {
             CompressorInputStream is = compressedFactory.createCompressorInputStream(format, bis);
-            return new RDFInputStream(is);
+            RDFInputStreamDecorator decorator = source instanceof RDFInputStream
+                                              ? ((RDFInputStream) source).getDecorator() : null;
+            return RDFInputStream.builder(is).decorator(decorator).build();
         } catch (CompressorException e) {
             return new RDFItException(source, e);
         }

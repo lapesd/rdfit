@@ -35,17 +35,69 @@ import static java.lang.String.format;
 public class RDFBytesInputStream extends RDFInputStream {
     private final @Nonnull byte[] data;
 
+    public static class Builder {
+        private final @Nonnull byte[] data;
+        private @Nullable RDFLang lang;
+        private @Nullable String baseIRI;
+        private @Nullable String name;
+        private @Nullable RDFInputStreamDecorator decorator;
+
+        public Builder(@Nonnull byte[] data) {
+            this.data = data;
+        }
+
+        public @Nonnull Builder lang(@Nullable RDFLang lang) {
+            this.lang = lang;
+            return this;
+        }
+
+        public @Nonnull Builder baseIRI(@Nullable String baseIRI) {
+            this.baseIRI = baseIRI;
+            return this;
+        }
+
+        public @Nonnull Builder name(@Nullable String name) {
+            this.name = name;
+            return this;
+        }
+
+        public @Nonnull Builder decorator(@Nullable RDFInputStreamDecorator decorator) {
+            this.decorator = decorator;
+            return this;
+        }
+
+        public @Nonnull RDFBytesInputStream build() {
+            return new RDFBytesInputStream(data, lang, baseIRI, name, decorator);
+        }
+    }
+
+    public static @Nonnull Builder builder(@Nonnull byte[] data) {
+        return new Builder(data);
+    }
+
     public RDFBytesInputStream(@Nonnull byte[] data) {
-        this(data, null);
+        this(data, null, null, null, null);
     }
 
     public RDFBytesInputStream(@Nonnull byte[] data, @Nullable RDFLang lang) {
-        this(data, lang, null);
+        this(data, lang, null, null, null);
     }
 
     public RDFBytesInputStream(@Nonnull byte[] data, @Nullable RDFLang lang,
                                @Nullable String baseIRI) {
         super(new ByteArrayInputStream(data), lang, baseIRI);
+        this.data = data;
+    }
+
+    public RDFBytesInputStream(@Nonnull byte[] data, @Nullable RDFLang lang,
+                           @Nullable String baseIRI, @Nullable String name) {
+        this(data, lang, baseIRI, name, null);
+    }
+
+    public RDFBytesInputStream(@Nonnull byte[] data, @Nullable RDFLang lang,
+                               @Nullable String baseIRI, @Nullable String name,
+                               @Nullable RDFInputStreamDecorator decorator) {
+        super(new ByteArrayInputStream(data), lang, baseIRI, name, decorator);
         this.data = data;
     }
 

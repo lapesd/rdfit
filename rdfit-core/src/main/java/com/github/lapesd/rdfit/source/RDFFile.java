@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.function.Supplier;
 
 public class RDFFile extends RDFInputStream {
@@ -39,6 +40,54 @@ public class RDFFile extends RDFInputStream {
         if (offeredBaseIRI != null && !offeredBaseIRI.isEmpty())
             return offeredBaseIRI;
         return Utils.toASCIIString(file.toURI());
+    }
+
+    public static class Builder {
+        private final @Nonnull File file;
+        private @Nullable RDFLang lang;
+        private @Nullable String baseIRI;
+        private boolean deleteOnClose;
+        private @Nullable RDFInputStreamDecorator decorator;
+
+        public Builder(@Nonnull File file) {
+            this.file = file;
+        }
+
+        public @Nonnull Builder lang(@Nullable RDFLang lang) {
+            this.lang = lang;
+            return this;
+        }
+
+        public @Nonnull Builder baseIRI(@Nullable String baseIRI) {
+            this.baseIRI = baseIRI;
+            return this;
+        }
+
+        public @Nonnull Builder deleteOnClose() { return deleteOnClose(true); }
+
+        public @Nonnull Builder deleteOnClose(boolean deleteOnClose) {
+            this.deleteOnClose = deleteOnClose;
+            return this;
+        }
+
+        public @Nonnull Builder decorator(@Nullable RDFInputStreamDecorator decorator) {
+            this.decorator = decorator;
+            return this;
+        }
+
+        public @Nonnull RDFFile build() {
+            return new RDFFile(file, lang, baseIRI, decorator, deleteOnClose);
+        }
+    }
+
+    public static @Nonnull Builder builder(@Nonnull File file) {
+        return new Builder(file);
+    }
+    public static @Nonnull Builder builder(@Nonnull Path file) {
+        return new Builder(file.toFile());
+    }
+    public static @Nonnull Builder builder(@Nonnull String path) {
+        return new Builder(new File(path));
     }
 
     public RDFFile(@Nonnull File file) {
@@ -56,10 +105,18 @@ public class RDFFile extends RDFInputStream {
     public RDFFile(@Nonnull File file, @Nullable RDFLang lang, @Nullable String baseIRI) {
         this(file, lang, baseIRI, false);
     }
+    public RDFFile(@Nonnull File file, @Nullable RDFLang lang, @Nullable String baseIRI,
+                   @Nullable RDFInputStreamDecorator decorator) {
+        this(file, lang, baseIRI, decorator, false);
+    }
 
     public RDFFile(@Nonnull File file, @Nullable RDFLang lang, @Nullable String baseIRI,
                    boolean deleteOnClose) {
-        super(null, lang, computeBaseIRI(baseIRI, file), true);
+        this(file, lang, baseIRI, null, deleteOnClose);
+    }
+    public RDFFile(@Nonnull File file, @Nullable RDFLang lang, @Nullable String baseIRI,
+                   @Nullable RDFInputStreamDecorator decorator, boolean deleteOnClose) {
+        super(null, lang, computeBaseIRI(baseIRI, file), file.getPath(), decorator, true);
         this.file = file;
         this.deleteOnClose = deleteOnClose;
     }
@@ -114,7 +171,7 @@ public class RDFFile extends RDFInputStream {
         return file;
     }
 
-    @Override public @Nonnull InputStream getInputStream() {
+    @Override public @Nonnull InputStream getRawInputStream() {
         if (inputStream == null) {
             try {
                 inputStream = new FileInputStream(file);

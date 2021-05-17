@@ -19,8 +19,11 @@ package com.github.lapesd.rdfit.components.normalizers;
 import com.github.lapesd.rdfit.components.SourceNormalizer;
 import com.github.lapesd.rdfit.components.converters.ConversionManager;
 import com.github.lapesd.rdfit.components.parsers.ParserRegistry;
+import com.github.lapesd.rdfit.source.RDFInputStream;
+import com.github.lapesd.rdfit.source.RDFInputStreamDecorator;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
 /**
@@ -83,5 +86,21 @@ public interface SourceNormalizerRegistry {
      * @param source RDF source to normalize
      * @return normalized RDF source.
      */
-    @Nonnull Object normalize(@Nonnull Object source);
+    default @Nonnull Object normalize(@Nonnull Object source) {
+        return normalize(source, null);
+    }
+
+    /**
+     * Repeatedly applies the first applicable {@link SourceNormalizer} instance to the given
+     * input (or objects resulting from normalization in previous iterations) until no
+     * {@link SourceNormalizer} is applicable.
+     *
+     * @param source RDF source to normalize
+     * @param decorator A decorator to be applied if source is a {@link RDFInputStream} or
+     *                  if at any point the source is normalized to a {@link RDFInputStream}.
+     *                  Will have no effect if null
+     * @return normalized RDF source.
+     */
+    @Nonnull Object normalize(@Nonnull Object source, @Nullable RDFInputStreamDecorator decorator);
+
 }

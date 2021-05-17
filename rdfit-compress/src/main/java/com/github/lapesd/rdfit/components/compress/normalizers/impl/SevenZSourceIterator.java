@@ -18,6 +18,7 @@ package com.github.lapesd.rdfit.components.compress.normalizers.impl;
 
 import com.github.lapesd.rdfit.errors.RDFItException;
 import com.github.lapesd.rdfit.source.RDFInputStream;
+import com.github.lapesd.rdfit.source.RDFInputStreamDecorator;
 import com.github.lapesd.rdfit.source.SourcesIterator;
 import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZFile;
@@ -37,6 +38,7 @@ import java.util.NoSuchElementException;
 public class SevenZSourceIterator implements SourcesIterator {
     private static final Logger logger = LoggerFactory.getLogger(SevenZSourceIterator.class);
     private final @Nonnull Object source;
+    private final @Nullable RDFInputStreamDecorator decorator;
     private final @Nonnull SevenZFile file;
     private @Nullable File deleteOnClose;
     private boolean exhausted;
@@ -49,6 +51,8 @@ public class SevenZSourceIterator implements SourcesIterator {
      */
     public SevenZSourceIterator(@Nonnull Object source, @Nonnull SevenZFile file) {
         this.source = source;
+        this.decorator = source instanceof RDFInputStream
+                       ? ((RDFInputStream)source).getDecorator() : null;
         this.file = file;
     }
 
@@ -96,7 +100,8 @@ public class SevenZSourceIterator implements SourcesIterator {
                 exhausted = true;
                 close();
             } else if (!e.isDirectory() && !e.isAntiItem()) {
-                current = new RDFInputStream(new SZInputStream(file));
+                current = RDFInputStream.builder(new SZInputStream(file))
+                                        .decorator(decorator).build();
             }
         } catch (IOException e) {
             current = new RDFItException(source, "Problem reading 7z contents from "+source, e);

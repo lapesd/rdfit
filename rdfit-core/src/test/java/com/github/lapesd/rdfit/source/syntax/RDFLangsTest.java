@@ -92,7 +92,6 @@ public class RDFLangsTest {
             for (int i = 0, size = JENA_LANGS.size(); i < size; i++) {
                 try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
                     RDFDataMgr.write(out, m, JENA_LANGS.get(i));
-                    //noinspection StringOperationCanBeSimplified
                     String input = new String(out.toByteArray(), UTF_8);
                     rows.add(asList(input, RDFIT_LANGS.get(i)));
                 } catch (IOException e) {
@@ -274,6 +273,12 @@ public class RDFLangsTest {
     @Test
     public void testDetectOnlySpaces() throws IOException {
         ByteArrayInputStream is = new ByteArrayInputStream(" \t\n   ".getBytes(UTF_8));
+        assertSame(RDFLangs.guess(is, Integer.MAX_VALUE), RDFLangs.NT);
+    }
+
+    @Test
+    public void testDetectOnlyComments() throws IOException {
+        ByteArrayInputStream is = new ByteArrayInputStream("#...\n\n".getBytes(UTF_8));
         assertSame(RDFLangs.guess(is, Integer.MAX_VALUE), RDFLangs.TTL);
     }
 

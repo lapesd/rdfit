@@ -18,9 +18,7 @@ package com.github.lapesd.rdfit.util;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -30,6 +28,25 @@ import java.util.regex.Pattern;
 public class Utils {
     private static final @Nonnull Pattern ANY_UP_STEP_RX = Pattern.compile("(^|/)\\.\\.(/|$)");
     private static final @Nonnull Pattern UP_STEP_RX = Pattern.compile("\\.\\./");
+    private static final byte[] ASCII_WS = new byte[] {'\t', '\n', '\r', ' '};
+
+    public static boolean isInSmall(int value, byte[] a) {
+        int m = a.length >> 1, firstDiff = value - a[m], diff = Math.abs(firstDiff);
+        for (int i = firstDiff < 0 ? 0 : m, len = a.length; diff > 0 && i < len; i++)
+            diff = value - a[i];
+        return diff == 0;
+    }
+
+    public static boolean isAsciiSpace(int value) {
+        return isInSmall(value, ASCII_WS);
+    }
+
+    public static boolean isInSmall(int value, int[] a) {
+        int m = a.length >> 1, firstDiff = value - a[m], diff = Math.abs(firstDiff);
+        for (int i = firstDiff < 0 ? 0 : m, len = a.length; diff >= 0 && i < len; i++)
+            diff = value - a[i];
+        return diff == 0;
+    }
 
     public static @Nonnull String compactClass(@Nullable Class<?> cls) {
         return cls == null ? "null" : cls.getName().replaceAll("(\\w)[^.]+\\.", "$1.");
@@ -270,5 +287,21 @@ public class Utils {
             fullPath = fullPathBuilder.toString();
         }
         return fullPath;
+    }
+
+    public static void extractResource(@Nonnull File file, @Nonnull Class<?> refClass,
+                                       @Nonnull String path) throws IOException {
+        byte[] buf = new byte[8192];
+        try (InputStream in = openResource(refClass, path);
+             FileOutputStream out = new FileOutputStream(file)) {
+            for (int n = in.read(buf); n >= 0; n = in.read(buf))
+                out.write(buf, 0, n);
+        }
+    }
+
+    public static boolean isHexDigit(int c) {
+        if ((c & ~0x7F) != 0)
+            return false;
+        return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
     }
 }

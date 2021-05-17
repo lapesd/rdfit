@@ -27,6 +27,7 @@ import com.github.lapesd.rdfit.listener.RDFListener;
 import com.github.lapesd.rdfit.listener.TripleListenerBase;
 import com.github.lapesd.rdfit.source.RDFInputStream;
 import com.github.lapesd.rdfit.source.RDFInputStreamSupplier;
+import com.github.lapesd.rdfit.source.fixer.TurtleFamilyFixerDecorator;
 import com.github.lapesd.rdfit.source.syntax.RDFLangs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,8 @@ import java.lang.reflect.Modifier;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import static com.github.lapesd.rdfit.source.fixer.TolerantDecorator.TOLERANT;
 
 /**
  * Helper class with shortcuts to the {@link DefaultRDFItFactory} and other general helpers
@@ -178,6 +181,29 @@ public class RIt {
 
     public static @Nonnull RDFInputStreamSupplier wrap(@Nonnull Supplier<InputStream> supplier) {
         return new RDFInputStreamSupplier(supplier);
+    }
+
+    /**
+     * Wrap the given source such that parsers tolerate bad triples in turtle-like languages.
+     *
+     * Examples of such bad triples are IRIs with reserved chars (i.e., the regex
+     * <code>[#x00-#x20><"}{|\^`]</code>) and lang tags with _'s (e.g., @pt_BR or @fr_2374). Such
+     * triples tend to appear in older RDF dumps from older systems. One example are the
+     * LargeRDFBench dumps.
+     *
+     * If the source Object normalizes to a {@link RDFInputStream} (this includes, File, Path,
+     * String, InputStream, etc.) instance, it will be wrapped into another {@link RDFInputStream}
+     * decorated with {@link TurtleFamilyFixerDecorator}. If source does not normalize to
+     * a {@link RDFInputStream}, then the result of normalization will be returned, but it will
+     * not have the "tolerance" functionality.
+     *
+     * @param source a source (anything is valid). In order to tolerate bad triples, it should
+     *               normalize directly or indirectly to an {@link RDFInputStream}.
+     * @return the result of normalizing source or an {@link RDFInputStream} that tolerates
+     *         bad triples during parsing.
+     */
+    public static @Nonnull Object tolerant(@Nonnull Object source) {
+        return DefaultRDFItFactory.get().getNormalizerRegistry().normalize(source, TOLERANT);
     }
 
     /**

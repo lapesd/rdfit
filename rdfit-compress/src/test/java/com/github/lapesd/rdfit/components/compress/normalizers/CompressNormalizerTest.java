@@ -35,6 +35,7 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static com.github.lapesd.rdfit.source.fixer.TurtleFamilyFixerDecorator.TURTLE_FIXER;
 import static java.util.Arrays.asList;
 import static org.testng.Assert.*;
 
@@ -59,6 +60,10 @@ public class CompressNormalizerTest {
 
     @DataProvider public static Object[][] testData() {
         List<String> contents = asList("", "file_a\n", "file_b\n", "file_c\n");
+        List<String> decoratedContents = asList(
+                "<http://example.org/A%201> <http://example.org/p> \"lang{}\"@fr.",
+                "@prefix ex: <http://example.org>.\n[] ex:p <http://example.org/A%20%7B1%7D>, \"lang\"@pt."
+        );
         return Stream.of(
                 asList("test_1.tar.gz", contents),
                 asList("test_1.tar.xz", contents),
@@ -69,7 +74,13 @@ public class CompressNormalizerTest {
                 asList("test_empty.zip", Collections.emptyList()),
                 asList("no_files.7z", Collections.emptyList()),
                 asList("single_a.bz2", Collections.singletonList("single_a\n")),
-                asList("single_b.xz", Collections.singletonList("single_b\n"))
+                asList("single_b.xz", Collections.singletonList("single_b\n")),
+                asList("test_decorator.tar.gz",  decoratedContents),
+                asList("test_decorator.tar.zst", decoratedContents),
+                asList("test_decorator.zip", decoratedContents),
+                asList("test_decorator.7z",  decoratedContents),
+                asList("test_decorator_file.nt.zst", decoratedContents.subList(0, 1)),
+                asList("test_decorator_file.nt.gz",  decoratedContents.subList(0, 1))
         ).map(List::toArray).toArray(Object[][]::new);
     }
 
@@ -78,7 +89,7 @@ public class CompressNormalizerTest {
                                    @Nonnull List<String> expectedContents) throws IOException {
         InputStream is = getClass().getResourceAsStream(resourcePath);
         assertNotNull(is);
-        RDFInputStream ris = new RDFInputStream(is);
+        RDFInputStream ris = RDFInputStream.builder(is).decorator(TURTLE_FIXER).build();
         doTestRDFInputStream(expectedContents, ris);
     }
 
@@ -87,7 +98,8 @@ public class CompressNormalizerTest {
                                    @Nonnull List<String> expectedContents) throws IOException {
         InputStream is = getClass().getResourceAsStream(resourcePath);
         assertNotNull(is);
-        doTestRDFInputStream(expectedContents, new RDFFile(extract(is), true));
+        RDFFile file = RDFFile.builder(extract(is)).deleteOnClose().decorator(TURTLE_FIXER).build();
+        doTestRDFInputStream(expectedContents, file);
     }
 
     private void doTestRDFInputStream(@Nonnull List<String> expectedContents, RDFInputStream ris) throws IOException {

@@ -21,11 +21,14 @@ import com.github.lapesd.rdfit.components.converters.ConversionManager;
 import com.github.lapesd.rdfit.components.converters.impl.DefaultConversionManager;
 import com.github.lapesd.rdfit.components.parsers.DefaultParserRegistry;
 import com.github.lapesd.rdfit.components.parsers.ParserRegistry;
+import com.github.lapesd.rdfit.source.RDFInputStream;
+import com.github.lapesd.rdfit.source.RDFInputStreamDecorator;
 import com.github.lapesd.rdfit.util.TypeDispatcher;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 public class DefaultSourceNormalizerRegistry implements SourceNormalizerRegistry {
@@ -66,15 +69,29 @@ public class DefaultSourceNormalizerRegistry implements SourceNormalizerRegistry
         this.conversionManager = conversionManager;
     }
 
-    @Override public @Nonnull Object normalize(@Nonnull Object source) {
+    private @Nonnull Object apply(@Nonnull Object source,
+                                  @Nullable RDFInputStreamDecorator decorator) {
+        if (source instanceof RDFInputStream) {
+            RDFInputStream ris = (RDFInputStream) source;
+            if (!Objects.equals(ris.getDecorator(), decorator))
+                return RDFInputStream.builder(ris).decorator(decorator).build();
+        }
+        return source;
+    }
+
+    @Override public @Nonnull Object normalize(@Nonnull Object source,
+                                               @Nullable RDFInputStreamDecorator decorator) {
+        source = apply(source, decorator);
         for (boolean changed = true; changed; ) {
             changed = false;
             Iterator<SourceNormalizer> it = dispatcher.get(source);
             while (it.hasNext()) {
                 Object old = source;
                 source = it.next().normalize(source);
-                if ((changed = source != old))
+                if ((changed = source != old)) {
+                    source = apply(source, decorator);
                     break;
+                }
             }
         }
         return source;

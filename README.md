@@ -1,5 +1,6 @@
 
 
+
 rdfit - Agnostic and decoupled iteration over RDF data. 
 =====
 
@@ -311,6 +312,62 @@ Writing Converters
 
 FAQ - Frequently Asked Questions
 ================================
+
+### Can it handle invalid RDF 1.1
+
+Yes, some types of invalid NT/Turtle/TriG data as well as RDF/XML and OWL/XML 
+files with invalid IRIs can be made valid wrapping the source object 
+(be it a File, InputStream etc.) with `RIt.tolerant()`. This will:
+
+1. Percent-encode characters not allowed at their current position in the IRI 
+   by RFC 3987.
+   - If percent-encoding is not allowed at that position by RFC 3987 
+     (e.g., `iport` rule), the character will be erased 
+2. Erase invalid character encodings (when the binary representation is 
+   so messed up it does not appear as the wrong character but is straight up 
+   invalid UTF-8)
+3. For NT/Turtle/TriG, erase language tag suffixes starting with _ or - 
+   (e.g., fr_1234 or pt_BR). 
+4. For NT/Turtle/TriG, `\`-escape occurrences of `\r` (0x0D) and `\n` (0x0A)
+   inside single-quoted lexical forms.
+5. Replace `\` with `\\` in any `\x`-escape where x is not in `tbnrf"'` (see
+   [ECHAR](https://www.w3.org/TR/turtle/#grammar-production-ECHAR)).
+
+The percent-encoding is context sensitive and assumes the input IRIs are 
+(mostly) correct IRIs. Some delimiters (e.g., /), if wrongly placed will be
+interpreted as delimiters instead of being percent-encoded. Examples of IRI 
+fixes:
+
+| Bad IRI                                                               | Fixed IRI                             |
+|:----------------------------------------------------------------------|:--------------------------------------|
+| `relative space`                                                      | `relative%20space`                    |
+| `http://example.org/a<b`                                              | `http://example.org/a%3Cb`            |
+| `http://example.org:80x/`                                             | `http://example.org:80/`              |
+| `http://example.org:/cão` (encoded as ISO-8859-1 but parsed as UTF-8) | `http://example.org:80/co`            |
+| `http://example.org/p?q=?`                                            | `http://example.org/p?q=%3F`          |
+| `http://bob:?secret@:example.org`                                     | `http://bob:secret%3F@%3Aexample.org` |
+
+For RDF/XML and OWL/XML, the namespace prefixes (typically `rdf:` and `owl:`) 
+are detected from the XML input itself. If no `xmlns=` or `xmlns:.+=` is found
+for these namespaces, then the default will be assumed. When fixing XML, 
+only IRIs inside one of these attributes are "fixed" using the same rules 
+outlined above:
+
+- `rdf:about`
+- `rdf:resource`
+- `rdf:datatype`
+- `owl:IRI`
+
+Note that setting RDF4J to make parsing errors non-fatal (the default 
+behavior with rdfit), will not always cause the triple to be silently dropped. 
+For example, bad object IRIs may be parsed as null and cause a NPE to be 
+thrown instead. Using `RIt.tolerant()` avoids that. 
+
+Also note that the effect of `RIt.tolerant()` only applies to sources that are 
+known or detected to be NT/Turtle/TriG or RDF/XML or OWL/XML. The fixing 
+procedure blindly believes the input has no other issues, and using it over 
+data with more serious syntax violations may add to the confusion of parsing 
+errors down the line.
 
 ### Does it support federation?
 Although you can use a SPARQL CONSTRUCT/SELECT and TPF queries as sources,

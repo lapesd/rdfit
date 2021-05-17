@@ -30,6 +30,7 @@ import java.util.function.Supplier;
 
 import static java.lang.String.format;
 
+@SuppressWarnings("UnusedReturnValue")
 public class RDFInputStreamSupplier extends RDFInputStream {
     private static final Logger logger = LoggerFactory.getLogger(RDFInputStreamSupplier.class);
 
@@ -37,6 +38,65 @@ public class RDFInputStreamSupplier extends RDFInputStream {
     private @Nullable Callable<?> closeCallable;
     private @Nullable Runnable closeRunnable;
     private @Nullable String name;
+
+    public static class Builder {
+        private final @Nonnull Callable<InputStream> supplier;
+        private @Nullable RDFLang lang;
+        private @Nullable String baseIRI;
+        private @Nullable Callable<?> closeCallable;
+        private @Nullable Runnable closeRunnable;
+        private @Nullable String name;
+        private @Nullable RDFInputStreamDecorator decorator;
+
+        public Builder(@Nonnull Callable<InputStream> supplier) {
+            this.supplier = supplier;
+        }
+
+        public @Nonnull Builder lang(@Nullable RDFLang lang) {
+            this.lang = lang;
+            return this;
+        }
+
+        public @Nonnull Builder baseIRI(@Nullable String baseIRI) {
+            this.baseIRI = baseIRI;
+            return this;
+        }
+
+        public @Nonnull Builder onClose(@Nullable Callable<?> closeCallable) {
+            this.closeRunnable = null;
+            this.closeCallable = closeCallable;
+            return this;
+        }
+
+        public @Nonnull Builder onClose(@Nullable Runnable closeRunnable) {
+            this.closeCallable = null;
+            this.closeRunnable = closeRunnable;
+            return this;
+        }
+
+        public @Nonnull Builder name(@Nullable String name) {
+            this.name = name;
+            return this;
+        }
+
+        public @Nonnull Builder decorator(@Nullable RDFInputStreamDecorator decorator) {
+            this.decorator = decorator;
+            return this;
+        }
+
+        public @Nonnull RDFInputStreamSupplier build() {
+            RDFInputStreamSupplier ris = new RDFInputStreamSupplier(supplier, lang, baseIRI, name, decorator);
+            if (closeCallable != null)
+                ris.onClose(closeCallable);
+            if (closeRunnable != null)
+                ris.onClose(closeRunnable);
+            return ris;
+        }
+    }
+
+    public static @Nonnull Builder builder(@Nonnull Callable<InputStream> supplier) {
+        return new Builder(supplier);
+    }
 
     public RDFInputStreamSupplier(@Nonnull Supplier<InputStream> supplier) {
         this(supplier, null);
@@ -51,25 +111,39 @@ public class RDFInputStreamSupplier extends RDFInputStream {
                                   @Nullable RDFLang lang, @Nullable String baseIRI) {
         this((Callable<InputStream>) supplier::get, lang, baseIRI);
     }
+    public RDFInputStreamSupplier(@Nonnull Supplier<InputStream> supplier,
+                                  @Nullable RDFLang lang, @Nullable String baseIRI,
+                                  @Nullable String name,
+                                  @Nullable RDFInputStreamDecorator decorator) {
+        this((Callable<InputStream>) supplier::get, lang, baseIRI, name, decorator);
+    }
 
     public RDFInputStreamSupplier(@Nonnull Callable<InputStream> supplier) {
-        this(supplier, null);
+        this(supplier, null, null, null, null);
     }
 
     public RDFInputStreamSupplier(@Nonnull Callable<InputStream> supplier,
                                   @Nullable RDFLang lang) {
-        this(supplier, lang, null);
+        this(supplier, lang, null, null, null);
     }
 
     public RDFInputStreamSupplier(@Nonnull Callable<InputStream> supplier,
                                   @Nullable RDFLang lang, @Nullable String baseIRI) {
-        super(null, lang, baseIRI, true);
-        this.supplier = supplier;
+        this(supplier, lang, baseIRI, null, null);
     }
 
-    public @Nonnull RDFInputStreamSupplier setName(@Nonnull String name) {
-        this.name = name;
-        return this;
+    public RDFInputStreamSupplier(@Nonnull Callable<InputStream> supplier,
+                              @Nullable RDFLang lang, @Nullable String baseIRI,
+                              @Nullable String name) {
+        this(supplier, lang, baseIRI, name, null);
+    }
+
+    public RDFInputStreamSupplier(@Nonnull Callable<InputStream> supplier,
+                                  @Nullable RDFLang lang, @Nullable String baseIRI,
+                                  @Nullable String name,
+                                  @Nullable RDFInputStreamDecorator decorator) {
+        super(null, lang, baseIRI, name, decorator, true);
+        this.supplier = supplier;
     }
 
     public @Nonnull RDFInputStreamSupplier onClose(@Nonnull Callable<?> callable) {
@@ -78,13 +152,13 @@ public class RDFInputStreamSupplier extends RDFInputStream {
         return this;
     }
 
-    public @Nonnull RDFInputStreamSupplier onCLose(@Nonnull Runnable runnable) {
+    public @Nonnull RDFInputStreamSupplier onClose(@Nonnull Runnable runnable) {
         this.closeRunnable = runnable;
         this.closeCallable = null;
         return this;
     }
 
-    @Override public @Nonnull InputStream getInputStream() {
+    @Override public @Nonnull InputStream getRawInputStream() {
         if (inputStream == null) {
             try {
                 inputStream = supplier.call();

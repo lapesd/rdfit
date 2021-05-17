@@ -23,6 +23,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.InputStream;
 
+import static com.github.lapesd.rdfit.util.Utils.openResource;
+
 /**
  * An {@link RDFInputStream} over java resources in the classpath.
  */
@@ -38,33 +40,103 @@ public class RDFResource extends RDFInputStream {
         return "file:"+Utils.toFullResourcePath(resourcePath, null);
     }
 
+    public static class Builder {
+        private final @Nonnull InputStream inputStream;
+        private final @Nonnull String fallbackBaseIRI;
+        private @Nullable RDFLang lang;
+        private @Nullable String baseIRI;
+        private @Nullable RDFInputStreamDecorator decorator;
+
+        public Builder(@Nonnull InputStream inputStream, @Nonnull String fallbackBaseIRI) {
+            this.inputStream = inputStream;
+            this.fallbackBaseIRI = fallbackBaseIRI;
+        }
+
+        public @Nonnull Builder lang(@Nullable RDFLang lang) {
+            this.lang = lang;
+            return this;
+        }
+
+        public @Nonnull Builder baseIRI(@Nullable String baseIRI) {
+            this.baseIRI = baseIRI;
+            return this;
+        }
+
+        public @Nonnull Builder decorator(@Nullable RDFInputStreamDecorator decorator) {
+            this.decorator = decorator;
+            return this;
+        }
+
+        public @Nonnull RDFResource build() {
+            return new RDFResource(inputStream, fallbackBaseIRI, lang, baseIRI, decorator);
+        }
+    }
+
+    public static @Nonnull Builder builder(@Nonnull Class<?> refClass, @Nonnull String resourcePath) {
+        return new Builder(openResource(refClass, resourcePath),
+                          computeFallbackBaseIRI(refClass, resourcePath));
+    }
+    public static @Nonnull Builder builder(@Nonnull String resourcePath) {
+        return new Builder(openResource(resourcePath), computeFallbackBaseIRI(resourcePath));
+    }
+
     public RDFResource(@Nonnull Class<?> refClass, @Nonnull String resourcePath) {
-        this(refClass, resourcePath, null);
+        this(refClass, resourcePath, (RDFInputStreamDecorator) null);
+    }
+    public RDFResource(@Nonnull Class<?> refClass, @Nonnull String resourcePath,
+                       @Nullable RDFInputStreamDecorator decorator) {
+        this(refClass, resourcePath, null, null, decorator);
     }
     public RDFResource(@Nonnull Class<?> refClass, @Nonnull String resourcePath,
                        @Nullable RDFLang lang) {
-        this(refClass, resourcePath, lang, null);
+        this(refClass, resourcePath, lang, (RDFInputStreamDecorator)null);
+    }
+    public RDFResource(@Nonnull Class<?> refClass, @Nonnull String resourcePath,
+                       @Nullable RDFLang lang, @Nullable RDFInputStreamDecorator decorator) {
+        this(refClass, resourcePath, lang, null, decorator);
     }
     public RDFResource(@Nonnull Class<?> refClass, @Nonnull String resourcePath,
                        @Nullable RDFLang lang, @Nullable String baseIRI) {
-        this(Utils.openResource(refClass, resourcePath),
-             computeFallbackBaseIRI(refClass, resourcePath), lang, baseIRI);
+        this(refClass, resourcePath, lang, baseIRI, null);
+    }
+    public RDFResource(@Nonnull Class<?> refClass, @Nonnull String resourcePath,
+                       @Nullable RDFLang lang, @Nullable String baseIRI,
+                       @Nullable RDFInputStreamDecorator decorator) {
+        this(openResource(refClass, resourcePath),
+             computeFallbackBaseIRI(refClass, resourcePath), lang, baseIRI, decorator);
     }
 
     public RDFResource(@Nonnull String resourcePath) {
-        this(resourcePath, null);
+        this(resourcePath, null, null, null);
+    }
+    public RDFResource(@Nonnull String resourcePath, @Nullable RDFInputStreamDecorator decorator) {
+        this(resourcePath, null, null, decorator);
     }
     public RDFResource(@Nonnull String resourcePath, @Nullable RDFLang lang) {
-        this(resourcePath, lang, null);
+        this(resourcePath, lang, null, null);
+    }
+    public RDFResource(@Nonnull String resourcePath, @Nullable RDFLang lang,
+                       @Nullable RDFInputStreamDecorator decorator) {
+        this(resourcePath, lang, null, decorator);
     }
     public RDFResource(@Nonnull String resourcePath,
                        @Nullable RDFLang lang, @Nullable String baseIRI) {
-        this(Utils.openResource(resourcePath),
-             computeFallbackBaseIRI(resourcePath), lang, baseIRI);
+        this(resourcePath, lang, baseIRI, null);
+    }
+    public RDFResource(@Nonnull String resourcePath,
+                       @Nullable RDFLang lang, @Nullable String baseIRI,
+                       @Nullable RDFInputStreamDecorator decorator) {
+        this(openResource(resourcePath),
+             computeFallbackBaseIRI(resourcePath), lang, baseIRI, decorator);
     }
     public RDFResource(@Nonnull InputStream inputStream, @Nonnull String fallbackBaseIRI,
                        @Nullable RDFLang lang, @Nullable String baseIRI) {
-        super(inputStream, lang, baseIRI);
+        this(inputStream, fallbackBaseIRI, lang, baseIRI, null);
+    }
+    public RDFResource(@Nonnull InputStream inputStream, @Nonnull String fallbackBaseIRI,
+                       @Nullable RDFLang lang, @Nullable String baseIRI,
+                       @Nullable RDFInputStreamDecorator decorator) {
+        super(inputStream, lang, baseIRI,  fallbackBaseIRI, decorator);
         this.fallbackBaseIRI = fallbackBaseIRI;
     }
 
