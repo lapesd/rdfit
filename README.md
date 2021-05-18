@@ -283,9 +283,9 @@ Modules
   and commons-rdf `Triple`/`Quad`.
 
 > Too many modules? Consider one of these bundles: 
-> - **rdf-jena-libs**: core, jena, jena-parsers and hdt
-> - **rdf-rdf4j-libs**: core, rdf4j, rdf4j-parsers and hdt
-> - **rdf-all-libs**: rdf-jena-libs and rdf-rdf4j-libs
+> - **rdfit-jena-libs**: core, compress-libs, hdt, jena, commons-rdf-jena and jena-parsers
+> - **rdfit-rdf4j-libs**: core, compress-libs, hdt, rdf4j, commons-rdf-rdf4j and rdf4j-parsers
+> - **rdfit-all-libs**: rdf-jena-libs and rdf-rdf4j-libs
 
 Component availability is automatic. On first use, the core module will 
 try to load all classes from other modules that are effectively visible in 
