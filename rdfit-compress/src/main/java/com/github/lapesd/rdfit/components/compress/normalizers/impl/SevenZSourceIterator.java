@@ -100,7 +100,13 @@ public class SevenZSourceIterator implements SourcesIterator {
                 exhausted = true;
                 close();
             } else if (!e.isDirectory() && !e.isAntiItem()) {
+                String name = null;
+                if (source instanceof RDFInputStream)
+                    name = ((RDFInputStream)source).getName();
+                if (name == null || name.isEmpty())
+                    name = source.toString();
                 current = RDFInputStream.builder(new SZInputStream(file))
+                                        .name(name+"["+e.getName()+"]")
                                         .decorator(decorator).build();
             }
         } catch (IOException e) {

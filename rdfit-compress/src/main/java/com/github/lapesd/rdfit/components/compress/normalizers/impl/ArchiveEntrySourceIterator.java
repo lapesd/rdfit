@@ -70,7 +70,13 @@ public class ArchiveEntrySourceIterator implements SourcesIterator {
                 exhausted = true;
                 close();
             } else if (!e.isDirectory()) {
+                String name = null;
+                if (source instanceof RDFInputStream)
+                    name = ((RDFInputStream) source).getName();
+                if (name == null || name.isEmpty())
+                    name = source.toString();
                 current = RDFInputStream.builder(new CloseShield(archive))
+                                        .name(name+"["+e.getName()+"]")
                                         .decorator(decorator).build();
             }
         } catch (Throwable e1) {
