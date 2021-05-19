@@ -84,11 +84,22 @@ public class RDFLangs {
         }
 
         CookiesLangDetector cd = new CookiesLangDetector();
-        cd.addCookie(Cookie.builder("<?xml").strict()
+        cd.addCookie(Cookie.builder("<?xml").strict().skipWhitespace()
                            .then("<rdf:").ignoreCase().save().build(), RDFXML);
-        cd.addCookie(Cookie.builder("<?xml").strict()
+        cd.addCookie(Cookie.builder("<?xml").strict().skipWhitespace()
                            .then("<Ontology").ignoreCase().save().build(), OWL);
-        cd.addCookie(Cookie.builder("<rdf:").strict().ignoreCase().build(), RDFXML);
+        cd.addCookie(Cookie.builder("<rdf:").strict().skipWhitespace().ignoreCase().build(),
+                     RDFXML);
+        cd.addCookie(Cookie.builder("<!--").strict().skipWhitespace()
+                           .then("<?xml").ignoreCase()
+                           .then("<rdf:").ignoreCase().save().save().build(), RDFXML);
+        cd.addCookie(Cookie.builder("<!--").strict().skipWhitespace()
+                           .then("<?xml").ignoreCase()
+                           .then("<Ontology").ignoreCase().save().save().build(), OWL);
+        cd.addCookie(Cookie.builder("<!--").strict().skipWhitespace()
+                           .then("<rdf:").ignoreCase().save().build(), RDFXML);
+        cd.addCookie(Cookie.builder("<!--").strict().skipWhitespace()
+                           .then("<Ontology").ignoreCase().save().build(), OWL);
         cd.addCookie(Cookie.builder("<Ontology").strict().ignoreCase().build(), OWL);
         cd.addCookie(Cookie.builder("{").skipWhitespace().strict().build(), JSONLD);
         cd.addCookie(Cookie.builder("[").skipWhitespace().strict()
