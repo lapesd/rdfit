@@ -18,6 +18,7 @@ package com.github.lapesd.rdfit.source.syntax;
 
 import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import com.github.lapesd.rdfit.source.syntax.impl.TurtleFamilyDetector;
+import com.github.lapesd.rdfit.util.Utils;
 import com.google.common.collect.Lists;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
@@ -31,6 +32,7 @@ import javax.annotation.Nullable;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -236,6 +238,20 @@ public class TurtleFamilyDetectorTest {
     @Test(dataProvider = "testData")
     public void test(@Nullable byte[] prepend, @Nonnull Object input, @Nonnull RDFLang expected) {
         doTest(prepend, input, expected, false);
+    }
+
+    @Test
+    public void testDoctype() throws IOException {
+        LangDetector.State state = new TurtleFamilyDetector().createState();
+        String path = "../fixer/eswc-2009-complete+DOCTYPE.rdf";
+        try (InputStream in = Utils.openResource(getClass(), path)) {
+            for (int b = in.read(); b >= 0; b = in.read()) {
+                RDFLang lang = state.feedByte((byte)b);
+                if (lang != null)
+                    assertEquals(lang, UNKNOWN);
+            }
+            assertEquals(state.end(true), UNKNOWN);
+        }
     }
 
     @Test

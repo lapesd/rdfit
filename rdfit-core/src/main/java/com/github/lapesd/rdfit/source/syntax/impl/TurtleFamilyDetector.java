@@ -19,6 +19,7 @@ package com.github.lapesd.rdfit.source.syntax.impl;
 import com.github.lapesd.rdfit.source.syntax.LangDetector;
 import com.github.lapesd.rdfit.util.Literal;
 import com.github.lapesd.rdfit.util.LiteralParser;
+import com.github.lapesd.rdfit.util.Utils;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -121,7 +122,7 @@ public class TurtleFamilyDetector implements LangDetector {
                     buffer.write(value);
                     active = true;
                     hadComment |= value == '#';
-                } else if (!isSpaceChar(value)) { //body has started
+                } else if (!Utils.isAsciiSpace(value)) { //body has started
                     subState = new Body();
                     return feedByte(value);
                 }
@@ -129,17 +130,9 @@ public class TurtleFamilyDetector implements LangDetector {
             }
 
             @Override public @Nullable RDFLang end(boolean hardEnd) {
-                byte[] data = buffer.toByteArray();
-                if (data.length > 0) {
-                    String str = new String(data, StandardCharsets.UTF_8);
-                    if (str.startsWith("PREFIX ") || str.startsWith("BASE "))
-                        return TRIG;
-                    // try to parse a body (no preamble)
-                    return UNKNOWN;
-                }
-                /* if a comment was read, guess TRIG. If no comment was read and we are still
-                 * on this SubState, return UNKNOWN since the input is likely empty.*/
-                return hadComment ? TRIG : UNKNOWN;
+                if (hadComment)
+                    return hardEnd ? TTL : TRIG;
+                return hardEnd ? (buffer.size() > 0 ? TTL : NT) : null;
             }
         }
 
@@ -151,7 +144,7 @@ public class TurtleFamilyDetector implements LangDetector {
             private final StringBuilder buffer = new StringBuilder();
             private final LiteralParser litParser = new LiteralParser();
             private byte begin = 0;
-            boolean needsSpace = false, bNodeSubject = false;
+            boolean needsSpace = false, bNodeSubject = false, xmlFirst = false;
             int termIndex = 0, triples = 0;
             int xmlTagIdx = 0;
 
@@ -181,6 +174,11 @@ public class TurtleFamilyDetector implements LangDetector {
                         return TRIG;
                     }
                 } else if (begin == '<') {
+                    if (xmlFirst) {
+                        xmlFirst = false;
+                        if (value == '!')
+                            return UNKNOWN; // "<!" implies XML
+                    }
                     if (value == XML_TAG.charAt(xmlTagIdx)) {
                         if (++xmlTagIdx == XML_TAG.length())
                             return UNKNOWN;
@@ -283,6 +281,7 @@ public class TurtleFamilyDetector implements LangDetector {
                     buffer.append((char) value);
                 } else if (value == '<') {
                     xmlTagIdx = 0;
+                    xmlFirst = true;
                     if (termIndex == 3)
                         return NQ;
                 } else {
