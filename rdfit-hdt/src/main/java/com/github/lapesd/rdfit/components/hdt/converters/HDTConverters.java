@@ -162,44 +162,68 @@ public class HDTConverters {
     @Accepts(Triple.class) @Outputs(TripleString.class)
     public static class Triple2TripleString extends DetachedBaseConverter {
         public static final @Nonnull Triple2TripleString INSTANCE = new Triple2TripleString();
+        private static final @Nonnull ThreadLocal<StringBuilder> BUILDER
+                = ThreadLocal.withInitial(StringBuilder::new);
 
         /**
          * Convert a single jena {@link Node} into a String for use in a {@link TripleString}
+         *
+         * @param builder buffer to use when building bnodes and literals (not used for IRIs)
          * @param node the input node
          * @param in the triple that contains the node
-         * @return the HDT string to be used in a {@link TripleString}
+         * @return a {@link CharSequence} with the HDT representation of the node
          * @throws ConversionException if something goes wrong.
          */
-        private @Nonnull String toHDTString(@Nonnull Node node,
-                                            @Nonnull Triple in) throws ConversionException {
+        private @Nonnull CharSequence toHDTString(@Nonnull StringBuilder builder, @Nonnull Node node,
+                                                  @Nonnull Triple in) throws ConversionException {
             if (node.isBlank()) {
-                return "_:"+node.toString();
+                builder.setLength(0);
+                String string = node.toString();
+                builder.ensureCapacity(string.length()+2);
+                builder.append('_').append(':').append(string);
+                return builder;
             } else if (node.isURI()) {
                 return node.getURI();
             } else if (node.isLiteral()) {
-                String lang = node.getLiteralLanguage();
-                String lex = node.getLiteralLexicalForm().replace("\"", "\\\"")
-                                 .replace("\n", "\\n").replaceAll("\r", "\\r");
+                String lang = node.getLiteralLanguage(), lex = node.getLiteralLexicalForm();
+                builder.setLength(0);
+                writeLexical(builder.append('"'), lex);
                 if (lang != null && !lang.isEmpty()) {
-                    return String.format("\"%s\"@%s", lex, lang);
+                    return builder.append('"').append('@').append(lang);
                 } else {
                     String uri = node.getLiteralDatatypeURI();
                     if (uri == null || uri.isEmpty())
                         uri = XSDDatatype.XSDstring.getURI();
-                    return String.format("\"%s\"^^<%s>", lex, uri);
+                    return builder.append("\"^^<").append(uri).append('>');
                 }
             } else {
                 throw new ConversionException(in, this, "non-concrete node "+node);
             }
         }
 
+        private void writeLexical(@Nonnull StringBuilder builder, @Nonnull String lexicalForm) {
+            for (int i = 0, len = lexicalForm.length(); i < len; i++) {
+                char c = lexicalForm.charAt(i);
+                if (c == '\n') {
+                    builder.append('\\').append('n');
+                } else if (c == '\r') {
+                    builder.append('\\').append('r');
+                } else if (c == '\"') {
+                    builder.append('\\').append('"');
+                } else {
+                    builder.append(c);
+                }
+            }
+        }
+
         @Override public @Nonnull TripleString convert(@Nonnull Object input)
                 throws ConversionException {
             Triple t = (Triple) input;
+            StringBuilder builder = BUILDER.get();
             return new TripleString(
-                    toHDTString(t.getSubject(), t),
-                    toHDTString(t.getPredicate(), t),
-                    toHDTString(t.getObject(), t)
+                    toHDTString(builder, t.getSubject(),   t),
+                    toHDTString(builder, t.getPredicate(), t),
+                    toHDTString(builder, t.getObject(),    t)
             );
         }
     }
