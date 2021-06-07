@@ -39,6 +39,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 import static com.github.lapesd.rdfit.source.syntax.RDFLangs.*;
+import static com.github.lapesd.rdfit.util.Utils.openResource;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.testng.Assert.assertEquals;
@@ -244,7 +245,7 @@ public class TurtleFamilyDetectorTest {
     public void testDoctype() throws IOException {
         LangDetector.State state = new TurtleFamilyDetector().createState();
         String path = "../fixer/eswc-2009-complete+DOCTYPE.rdf";
-        try (InputStream in = Utils.openResource(getClass(), path)) {
+        try (InputStream in = openResource(getClass(), path)) {
             for (int b = in.read(); b >= 0; b = in.read()) {
                 RDFLang lang = state.feedByte((byte)b);
                 if (lang != null)
@@ -263,6 +264,31 @@ public class TurtleFamilyDetectorTest {
         doTest(null, "[]", UNKNOWN, true);
         doTest(null, "[ ]\n", UNKNOWN, true);
         doTest(null, "\t[ \t]\n", UNKNOWN, true);
+    }
+
+    @Test
+    public void testLMDBRegression() throws IOException {
+        String path = "com/github/lapesd/rdfit/source/fixer/lmdb-subset.nt";
+        for (Integer bytes : asList(140, 141, 301, 180, 302, 400, 463, 8192)) {
+            RDFLang expected = bytes == 8192 ? NT : bytes < 302 ? TRIG : NQ;
+            try (InputStream in = openResource(path)) {
+                LangDetector.State s = new TurtleFamilyDetector().createState();
+                RDFLang detected = null;
+                for (int i = 0; i < bytes; i++) {
+                    int value = in.read();
+                    if (value < 0)
+                        break;
+                    RDFLang lang = s.feedByte((byte) value);
+                    if (detected != null)
+                        assertEquals(lang, detected);
+                    if (lang != null) {
+                        detected = lang;
+                        assertEquals(lang, NT);
+                    }
+                }
+                assertEquals(s.end(bytes  == 8192), expected, "bytes="+bytes);
+            }
+        }
     }
 
     @Test(dataProvider = "testData")
@@ -298,7 +324,7 @@ public class TurtleFamilyDetectorTest {
         RDFLang lang = state.end(hardEnd);
         if (detected != null) {
             if (hardEnd && detected.equals(TRIG))
-                assertTrue(asList(TTL, TRIG).contains(lang));
+                assertTrue(asList(NT, TTL, TRIG).contains(lang));
             else if (hardEnd && detected.equals(NQ))
                 assertTrue(asList(TTL, NQ).contains(lang));
             else
@@ -306,9 +332,9 @@ public class TurtleFamilyDetectorTest {
         }
         detected = lang;
         if (hardEnd && Objects.equals(expected, TRIG))
-            assertTrue(asList(TTL, TRIG).contains(detected));
+            assertTrue(asList(NT, TTL, TRIG).contains(detected));
         else if (hardEnd && Objects.equals(expected, NQ))
-            assertTrue(asList(TTL, NQ).contains(detected));
+            assertTrue(asList(NT, TTL, NQ).contains(detected));
         else
             assertEquals(detected, expected);
     }

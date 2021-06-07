@@ -1,0 +1,31 @@
+<http://data.linkedmdb.org/resource/personal_film_appearance/1> <http://data.linkedmdb.org/resource/movie/personal_film_appearance_name> "" .
+<http://data.linkedmdb.org/resource/interlink/85494> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/338> .
+<http://data.linkedmdb.org/resource/interlink/85495> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/643> .
+<http://data.linkedmdb.org/resource/interlink/85496> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/693> .
+<http://data.linkedmdb.org/resource/interlink/85497> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/947> .
+<http://data.linkedmdb.org/resource/interlink/85498> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/1001> .
+<http://data.linkedmdb.org/resource/interlink/85499> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/1035> .
+<http://data.linkedmdb.org/resource/interlink/85500> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/1079> .
+<http://data.linkedmdb.org/resource/interlink/85501> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/1115> .
+<http://data.linkedmdb.org/resource/interlink/85502> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/1139> .
+<http://data.linkedmdb.org/resource/interlink/85503> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/1212> .
+<http://data.linkedmdb.org/resource/interlink/85504> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/1220> .
+<http://data.linkedmdb.org/resource/interlink/85505> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/1336> .
+<http://data.linkedmdb.org/resource/interlink/85506> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/1410> .
+<http://data.linkedmdb.org/resource/interlink/85507> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/1633> .
+<http://data.linkedmdb.org/resource/interlink/85508> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/1783> .
+<http://data.linkedmdb.org/resource/interlink/85509> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/2136> .
+<http://data.linkedmdb.org/resource/interlink/85510> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/2420> .
+<http://data.linkedmdb.org/resource/interlink/85511> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/2706> .
+<http://data.linkedmdb.org/resource/interlink/85512> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/2777> .
+<http://data.linkedmdb.org/resource/interlink/85513> <http://data.linkedmdb.org/resource/oddlinker/link_source> <http://data.linkedmdb.org/resource/actor/2825> .
+<http://data.linkedmdb.org/resource/country/iso%20alpha2> <http://data.linkedmdb.org/resource/movie/country_currency> "currency" .
+<http://data.linkedmdb.org/resource/country/iso%20alpha2> <http://data.linkedmdb.org/resource/movie/country_name> "name" .
+<http://data.linkedmdb.org/resource/country/iso%20alpha2> <http://data.linkedmdb.org/resource/movie/country_fips_code> "fips code" .
+<http://data.linkedmdb.org/resource/country/iso%20alpha2> <http://data.linkedmdb.org/resource/movie/country_capital> "capital" .
+<http://data.linkedmdb.org/resource/country/iso%20alpha2> <http://data.linkedmdb.org/resource/movie/country_iso_numeric> "iso numeri" .
+<http://data.linkedmdb.org/resource/country/iso%20alpha2> <http://data.linkedmdb.org/resource/movie/country_languages> "languages" .
+<http://data.linkedmdb.org/resource/country/iso%20alpha2> <http://data.linkedmdb.org/resource/movie/country_continent> "conti" .
+<http://data.linkedmdb.org/resource/country/iso%20alpha2> <http://data.linkedmdb.org/resource/movie/country_population> "population" .
+<http://data.linkedmdb.org/resource/country/iso%20alpha2> <http://data.linkedmdb.org/resource/movie/country_areaInSqKm> "0"^^<http://www.w3.org/2001/XMLSchema#double> .
+<http://data.linkedmdb.org/resource/country/iso%20alpha2> <http://data.linkedmdb.org/resource/movie/country_iso_alpha2> "iso alpha2" .

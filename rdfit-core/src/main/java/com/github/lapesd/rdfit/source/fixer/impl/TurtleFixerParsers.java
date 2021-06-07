@@ -80,7 +80,7 @@ public class TurtleFixerParsers {
         private int openSymbol = '"', openCount = 0, closeCount = 0;
         private int consumedHex = 0, expectedHex = 0;
         private final byte[] hexDigits = new byte[8];
-        private final @Nonnull State postString;
+        private final @Nonnull PostString postString;
         private final @Nullable String context;
 
         public StringLiteral(@Nonnull Start start, @Nullable String context) {
@@ -102,9 +102,15 @@ public class TurtleFixerParsers {
             if (!opened) {
                 if (value == openSymbol) {
                     ++openCount;
+                    if (openCount == 3)
+                        opened = true;
                     return this;
                 } else {
-                    opened = true; //fall throught the other if's to process value
+                    opened = true;
+                    if (openCount == 2 || openCount == 3) {
+                        output.removeLast();
+                        return postString.reset().feedByte(value);
+                    }// else: fall through the other if's to process value
                 }
             }
             if (openCount == 1 &&  (value == '\n' || value == '\r')) {
@@ -177,7 +183,7 @@ public class TurtleFixerParsers {
             return (PostString) super.reset();
         }
 
-        @Override public @Nonnull FixerParser feedByte(int value) {
+        @Override public @Nonnull State feedByte(int value) {
             output.add(value);
             if (value == '@') {
                 return langTagState.reset();

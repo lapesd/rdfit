@@ -18,6 +18,7 @@ package com.github.lapesd.rdfit.source.fixer;
 
 import com.github.lapesd.rdfit.RIt;
 import com.github.lapesd.rdfit.source.RDFInputStream;
+import com.github.lapesd.rdfit.source.RDFResource;
 import com.github.lapesd.rdfit.source.syntax.RDFLangs;
 import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import org.apache.commons.io.IOUtils;
@@ -32,6 +33,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -57,6 +59,10 @@ public class TurtleFamilyFixerStreamTest {
                 "\"plain\"",
                 "\"lang\"@en",
                 "\"typed\"^^<http://www.w3.org/2001/XMLSchema#string>",
+                "\"\"",
+                "\"\"\"\"\"\"",
+                "''",
+                "''''''",
                 "2",
                 "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>",
                 "false",
@@ -156,6 +162,26 @@ public class TurtleFamilyFixerStreamTest {
         }
         assertEquals(new String(actual.toByteArray(), UTF_8), string);
         assertEquals(actual.toByteArray(), bytes);
+    }
+
+    @DataProvider public @Nonnull Object[][] resourceFilesData() {
+        return Stream.of(
+                asList("lmdb-subset.bad-space.nt", "lmdb-subset.nt")
+        ).map(List::toArray).toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "resourceFilesData")
+    public void testResourceFiles(@Nonnull String badFile,
+                                  @Nonnull String expectedFile) throws IOException {
+        ByteArrayOutputStream ac = new ByteArrayOutputStream(), ex = new ByteArrayOutputStream();
+        try (InputStream in = new TurtleFamilyFixerStream(openResource(getClass(), badFile))) {
+            IOUtils.copy(in, ac);
+        }
+        try (InputStream in = openResource(getClass(), expectedFile)) {
+            IOUtils.copy(in, ex);
+        }
+        assertEquals(new String(ac.toByteArray(), UTF_8), new String(ex.toByteArray(), UTF_8));
+        assertEquals(ac.toByteArray(), ex.toByteArray());
     }
 
     @DataProvider public @Nonnull Object[][] validFilesData() {

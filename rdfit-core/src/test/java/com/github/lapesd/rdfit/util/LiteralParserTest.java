@@ -30,6 +30,7 @@ import static org.testng.Assert.assertEquals;
 
 public class LiteralParserTest {
     @DataProvider public static Object[][] testData() {
+        //noinspection JavacQuirks
         return Stream.of(
                 //unquoted literals
                 asList("1", Literal.unquoted("1")),
@@ -95,7 +96,25 @@ public class LiteralParserTest {
                 asList(" \n \"\"\"a \\\"' ^^ @ \"\"\"@en-US\t  ", Literal.lang(MULTI_DOUBLE, "a \\\"' ^^ @ ", "en-US")),
 
                 // escape badly escaped inner quotes
-                asList("\"a\"\"@en", Literal.lang(SINGLE_DOUBLE, "a\\\"", "en"))
+                asList("\"a\"\"@en", Literal.lang(SINGLE_DOUBLE, "a\\\"", "en")),
+
+                //empty quoted lexical forms
+                asList("\"\"", Literal.plain(SINGLE_DOUBLE, "")),
+                asList("''", Literal.plain(SINGLE_SINGLE, "")),
+                asList("\"\"\"\"\"\"", Literal.plain(MULTI_DOUBLE, "")),
+                asList("''''''", Literal.plain(MULTI_SINGLE, "")),
+
+                //empty quoted lexical forms + string typed
+                asList("\"\"^^<http://www.w3.org/2001/XMLSchema#string>", Literal.iriTyped(SINGLE_DOUBLE, "", "http://www.w3.org/2001/XMLSchema#string")),
+                asList("''^^<http://www.w3.org/2001/XMLSchema#string>", Literal.iriTyped(SINGLE_SINGLE, "", "http://www.w3.org/2001/XMLSchema#string")),
+                asList("\"\"\"\"\"\"^^<http://www.w3.org/2001/XMLSchema#string>", Literal.iriTyped(MULTI_DOUBLE, "", "http://www.w3.org/2001/XMLSchema#string")),
+                asList("''''''^^<http://www.w3.org/2001/XMLSchema#string>", Literal.iriTyped(MULTI_SINGLE, "", "http://www.w3.org/2001/XMLSchema#string")),
+
+                //empty quoted lexical forms + langtag
+                asList("\"\"@en", Literal.lang(SINGLE_DOUBLE, "", "en")),
+                asList("''@en", Literal.lang(SINGLE_SINGLE, "", "en")),
+                asList("\"\"\"\"\"\"@en", Literal.lang(MULTI_DOUBLE, "", "en")),
+                asList("''''''@en", Literal.lang(MULTI_SINGLE, "", "en"))
         ).map(List::toArray).toArray(Object[][]::new);
     }
 

@@ -16,26 +16,27 @@
 
 package com.github.lapesd.rdfit.components.compress.normalizers;
 
+import com.github.lapesd.rdfit.RIt;
 import com.github.lapesd.rdfit.source.RDFFile;
 import com.github.lapesd.rdfit.source.RDFInputStream;
+import com.github.lapesd.rdfit.source.RDFResource;
 import com.github.lapesd.rdfit.source.SourcesIterator;
 import com.github.lapesd.rdfit.source.impl.SingletonSourcesIterator;
+import com.github.lapesd.rdfit.util.Utils;
 import org.apache.commons.compress.utils.IOUtils;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import javax.annotation.Nonnull;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Stream;
 
 import static com.github.lapesd.rdfit.source.fixer.TurtleFamilyFixerDecorator.TURTLE_FIXER;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.testng.Assert.*;
 
@@ -102,6 +103,41 @@ public class CompressNormalizerTest {
         doTestRDFInputStream(expectedContents, file);
     }
 
+    @DataProvider public @Nonnull Object[][] tolerantData() {
+        return Stream.of(
+                asList("lmdb-subset.bad-space.zip", "lmdb-subset.nt"),
+                asList("lmdb-subset.bad-space.nt.zst", "lmdb-subset.nt"),
+                asList("lmdb-subset.bad-space.tar.gz", "lmdb-subset.nt")
+        ).map(List::toArray).toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "tolerantData")
+    public void testTolerant(@Nonnull String badFile,
+                             @Nonnull String fixedFile) throws IOException {
+        ByteArrayOutputStream ac = new ByteArrayOutputStream(), ex = new ByteArrayOutputStream();
+        try (InputStream in = Utils.openResource(getClass(), fixedFile)) {
+            IOUtils.copy(in, ex);
+        }
+        try (RDFResource rdfRes = new RDFResource(getClass(), badFile)) {
+            Object tolerant = RIt.tolerant(rdfRes);
+            if (tolerant instanceof RDFInputStream) {
+                try (InputStream in = ((RDFInputStream) tolerant).getInputStream()) {
+                    IOUtils.copy(in, ac);
+                }
+            } else {
+                SourcesIterator it = (SourcesIterator) tolerant;
+                assertTrue(it.hasNext());
+                try (InputStream in = ((RDFInputStream) it.next()).getInputStream()) {
+                    IOUtils.copy(in, ac);
+                }
+                assertFalse(it.hasNext());
+            }
+        }
+
+        assertEquals(new String(ac.toByteArray(), UTF_8), new String(ex.toByteArray(), UTF_8));
+        assertEquals(ac.toByteArray(), ex.toByteArray());
+    }
+
     private void doTestRDFInputStream(@Nonnull List<String> expectedContents, RDFInputStream ris) throws IOException {
         CompressNormalizer normalizer = new CompressNormalizer();
         Object source = ris;
@@ -120,7 +156,7 @@ public class CompressNormalizerTest {
             try (RDFInputStream member = (RDFInputStream) it.next()) {
                 byte[] buf = new byte[8192];
                 buf = Arrays.copyOf(buf, IOUtils.readFully(member.getInputStream(), buf));
-                actual.add(new String(buf, StandardCharsets.UTF_8));
+                actual.add(new String(buf, UTF_8));
             }
         }
         assertEquals(new HashSet<>(actual), new HashSet<>(expectedContents));

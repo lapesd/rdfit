@@ -17,6 +17,7 @@
 package com.github.lapesd.rdfit.source.syntax;
 
 import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
+import com.github.lapesd.rdfit.source.syntax.impl.TurtleFamilyDetector;
 import com.google.common.collect.Lists;
 import org.apache.jena.graph.Node;
 import org.apache.jena.rdf.model.*;
@@ -42,6 +43,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.github.lapesd.rdfit.source.syntax.RDFLangs.*;
+import static com.github.lapesd.rdfit.util.Utils.openResource;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static org.testng.Assert.*;
@@ -71,8 +74,8 @@ public class RDFLangsTest {
             RDFFormat.RDFXML, RDFFormat.TRIX
     );
     private static final List<RDFLang> RDFIT_LANGS = asList(
-            RDFLangs.TRIG, RDFLangs.TRIG, RDFLangs.TRIG,
-            RDFLangs.TRIG, RDFLangs.TRIG,
+            TRIG, TRIG, TRIG,
+            TRIG, TRIG,
             RDFLangs.JSONLD, RDFLangs.JSONLD, RDFLangs.JSONLD,
             RDFLangs.RDFXML, RDFLangs.TRIX
     );
@@ -127,8 +130,8 @@ public class RDFLangsTest {
         byte[] bs = input instanceof byte[] ? (byte[]) input : input.toString().getBytes(UTF_8);
         try (ByteArrayInputStream is = new ByteArrayInputStream(bs)) {
             RDFLang lang = RDFLangs.guess(is, Integer.MAX_VALUE);
-            if (expected.equals(RDFLangs.TRIG))
-                assertTrue(asList(RDFLangs.NT, RDFLangs.TTL, RDFLangs.TRIG).contains(lang));
+            if (expected.equals(TRIG))
+                assertTrue(asList(RDFLangs.NT, TTL, TRIG).contains(lang));
             else if (expected.equals(RDFLangs.NQ))
                 assertTrue(asList(RDFLangs.NT, RDFLangs.NQ).contains(lang));
             else
@@ -165,10 +168,10 @@ public class RDFLangsTest {
             bytes[i] = ' ';
         try (InputStream is = new ByteArrayInputStream(bytes)) {
             RDFLang lang = RDFLangs.guess(is, allowedRead);
-            if (expected.equals(RDFLangs.TRIG))
-                assertTrue(asList(RDFLangs.TTL, RDFLangs.TRIG).contains(lang));
+            if (expected.equals(TRIG))
+                assertTrue(asList(TTL, TRIG).contains(lang));
             else if (expected.equals(RDFLangs.NQ))
-                assertTrue(asList(RDFLangs.TTL, RDFLangs.NQ).contains(lang));
+                assertTrue(asList(TTL, RDFLangs.NQ).contains(lang));
             else
                 assertEquals(lang, expected);
         }
@@ -193,10 +196,10 @@ public class RDFLangsTest {
         }
         try (InputStream is = new ByteArrayInputStream(bytes)) {
             RDFLang lang = RDFLangs.guess(is, Integer.MAX_VALUE);
-            if (expected.equals(RDFLangs.TRIG))
-                assertTrue(asList(RDFLangs.TTL, RDFLangs.TRIG).contains(lang));
+            if (expected.equals(TRIG))
+                assertTrue(asList(NT, TTL, TRIG).contains(lang));
             else if (expected.equals(RDFLangs.NQ))
-                assertTrue(asList(RDFLangs.TTL, RDFLangs.NQ).contains(lang));
+                assertTrue(asList(NT, TTL, RDFLangs.NQ).contains(lang));
             else
                 assertEquals(lang, expected);
         }
@@ -204,33 +207,33 @@ public class RDFLangsTest {
 
     @DataProvider public @Nonnull Object[][] fromExtensionData() throws Exception {
         List<List<Object>> rows = asList(
-                asList(".ttl", RDFLangs.TTL),
-                asList("file.ttl", RDFLangs.TTL),
+                asList(".ttl", TTL),
+                asList("file.ttl", TTL),
                 asList("file.nq", RDFLangs.NQ),
                 asList("file.nquads", RDFLangs.NQ),
                 asList("file.nt", RDFLangs.NT),
                 asList("file.ntriples", RDFLangs.NT),
                 asList("file.jsonld", RDFLangs.JSONLD),
                 asList("file.rj", RDFLangs.RDFJSON),
-                asList("file.trig", RDFLangs.TRIG),
+                asList("file.trig", TRIG),
                 asList("file.rdf", RDFLangs.RDFXML),
                 asList("file.xml", RDFLangs.RDFXML), //RDFXML takes precedence over OWL
-                asList("file.ttl", RDFLangs.TTL),
-                asList("/tmp/file.ttl", RDFLangs.TTL),
-                asList("../file.ttl", RDFLangs.TTL),
+                asList("file.ttl", TTL),
+                asList("/tmp/file.ttl", TTL),
+                asList("../file.ttl", TTL),
                 asList("../file.ttl.gz", RDFLangs.UNKNOWN),
                 asList("../ttl.ttl.gz", RDFLangs.UNKNOWN),
                 asList("../ttl.ttl.gz-ttl", RDFLangs.UNKNOWN),
                 asList("../ttl.ttl.gz ttl", RDFLangs.UNKNOWN),
-                asList("http://example.org/data.ttl", RDFLangs.TTL),
-                asList("http://example.org/data.ttl?param=1", RDFLangs.TTL),
-                asList("http://example.org/data.ttl?param=1&other=2", RDFLangs.TTL),
-                asList("http://example.org/data.ttl?param=1&other=2#title", RDFLangs.TTL),
-                asList("http://example.org/data.ttl?param=1&other=2#nt", RDFLangs.TTL),
-                asList("http://example.org/data.ttl?ttl=1&other=2#nt", RDFLangs.TTL),
-                asList("data.ttl?ttl=1&other=2#nt", RDFLangs.TTL),
-                asList("/path/to/data.ttl?ttl=1&other=2#nt", RDFLangs.TTL),
-                asList("..//path/to/data.ttl?ttl=1&other=2#nt", RDFLangs.TTL)
+                asList("http://example.org/data.ttl", TTL),
+                asList("http://example.org/data.ttl?param=1", TTL),
+                asList("http://example.org/data.ttl?param=1&other=2", TTL),
+                asList("http://example.org/data.ttl?param=1&other=2#title", TTL),
+                asList("http://example.org/data.ttl?param=1&other=2#nt", TTL),
+                asList("http://example.org/data.ttl?ttl=1&other=2#nt", TTL),
+                asList("data.ttl?ttl=1&other=2#nt", TTL),
+                asList("/path/to/data.ttl?ttl=1&other=2#nt", TTL),
+                asList("..//path/to/data.ttl?ttl=1&other=2#nt", TTL)
         );
         List<List<Object>> expanded = new ArrayList<>(rows);
         for (List<Object> row : rows) {
@@ -279,13 +282,25 @@ public class RDFLangsTest {
     @Test
     public void testDetectOnlyComments() throws IOException {
         ByteArrayInputStream is = new ByteArrayInputStream("#...\n\n".getBytes(UTF_8));
-        assertSame(RDFLangs.guess(is, Integer.MAX_VALUE), RDFLangs.TTL);
+        assertSame(RDFLangs.guess(is, Integer.MAX_VALUE), TTL);
     }
 
     @Test
     public void testRegressionEmptyJSONLD() throws Exception {
         ByteArrayInputStream is = new ByteArrayInputStream("[]\n".getBytes(UTF_8));
         assertSame(RDFLangs.guess(is, Integer.MAX_VALUE), RDFLangs.JSONLD);
+    }
+
+    @Test
+    public void testLMDBRegression() throws IOException {
+        String path = "com/github/lapesd/rdfit/source/fixer/lmdb-subset.nt";
+        for (Integer bytes : asList(160, 161, 180, 321, 8192)) {
+            RDFLang expected = bytes == 8192 ? NT : bytes < 321 ? TRIG : NQ;
+            try (InputStream in = openResource(path)) {
+                RDFLang guess = RDFLangs.guess(in, bytes);
+                assertEquals(guess, expected);
+            }
+        }
     }
 
 }

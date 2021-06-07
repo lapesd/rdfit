@@ -25,8 +25,8 @@ public class LiteralParser {
     private final @Nonnull StringBuilder lexicalForm = new StringBuilder();
     private final @Nonnull StringBuilder lang        = new StringBuilder();
     private final @Nonnull StringBuilder typeIRI     = new StringBuilder();
-    private byte[] utf8buf = new byte[4];
-    private char[] utf8decoded = new char[2];
+    private final byte[] utf8buf = new byte[4];
+    private final char[] utf8decoded = new char[2];
     private int utf8total = 0, utf8next = 0;
     private char quoteChar = '\0', iriBegin = '\0';
     private int openQuotes, closedQuotes, hats;
@@ -200,10 +200,21 @@ public class LiteralParser {
                 return feed(Symbol.LEX, c);
             }
         } else if (c == quoteChar) {
-            ++openQuotes;
-            if (openQuotes > 3) {
-                lexicalForm.append('\\').append(c);
-                symbol = Symbol.LEX;
+            if (openQuotes == 3)
+                feed(Symbol.LEX, c);
+            else
+                ++openQuotes;
+        } else if (openQuotes == 2) {
+            if ("^@ \t\n\r".indexOf(c) >= 0) {
+                openQuotes = closedQuotes = 1;
+                return feed(Symbol.SEP, c);
+            } else if (",.;".indexOf(c) >= 0) {
+                openQuotes = closedQuotes = 1;
+                return true; // end of literal
+            } else {
+                openQuotes = 1;
+                lexicalForm.append('\\').append(quoteChar);
+                return feed(Symbol.LEX, c);
             }
         } else {
             return feed(Symbol.LEX, c);
@@ -243,6 +254,14 @@ public class LiteralParser {
     public @Nonnull Literal end() {
         if (endsInDot())
             typeIRI.setLength(typeIRI.length()-1);
+        if (openQuotes == 2) {
+            if (lexicalForm.length() > 0) {
+                if (closedQuotes == 2)
+                    lexicalForm.append('\\').append(quoteChar);
+                lexicalForm.insert(0, '\\').insert(1, quoteChar);
+            }
+            openQuotes = closedQuotes = 1;
+        }
         Literal.QuotationStyle q = Literal.QuotationStyle.fromChar(quoteChar, openQuotes);
         if (q == Literal.QuotationStyle.NONE)
             return Literal.unquoted(lexicalForm.toString());

@@ -322,13 +322,13 @@ public class TurtleFamilyDetector implements LangDetector {
                 } else if (termIndex == 3 && (begin != 0)) {
                     return NQ; // stopped while parsing the graph term
                 } else if (triples >= 1) {
-                    // Got more at least one complete triple and nonde had TRIG/NQ features.
+                    // Got more at least one complete triple and none had TRIG/NQ/TTL features.
                     if (hardEnd) {
                         // since we know the input ended, this is safe. There is the possibility
                         // that  an incomplete triple follows the fully parsed ones (termIndex
-                        // != 0 || begin != 0). Nevertheless report the input as TTL and let
+                        // != 0 || begin != 0). Nevertheless report the input as NT and let
                         // the actual parsers spew out an error message over invalid input
-                        return TTL;
+                        return NT;
                     }
                     // Else, could be a TRIG, NT or NQ.
                     // However, if it were a TRIG file the most likely scenario is that it
