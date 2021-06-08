@@ -41,6 +41,10 @@ public class Utils {
         return isInSmall(value, ASCII_WS);
     }
 
+    public static int asciiLower(int value) {
+        return value + (value >= 'A' && value <= 'Z' ? 'a'-'A' : 0);
+    }
+
     public static boolean isInSmall(int value, int[] a) {
         int m = a.length >> 1, firstDiff = value - a[m], diff = Math.abs(firstDiff);
         for (int i = firstDiff < 0 ? 0 : m, len = a.length; diff >= 0 && i < len; i++)

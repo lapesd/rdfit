@@ -332,6 +332,18 @@ files with invalid IRIs can be made valid wrapping the source object
    inside single-quoted lexical forms.
 5. Replace `\` with `\\` in any `\x`-escape where x is not in `tbnrf"'` (see
    [ECHAR](https://www.w3.org/TR/turtle/#grammar-production-ECHAR)).
+7. For NT/Turtle/TriG, @PREFIX and @BASE are rewritten to @prefix and @base
+8. For NT/Turtle/TriG, literals `true` and `false` with any variation in case 
+   (e.g., `True`) are replaced with the standard `true` and `false`.
+9. For NT/Turtle/TriG, a lexical form followed by an `<IRI>` without space or
+   with a number of `^` characters different from 2 is replaced with `^^<IRI>`
+10. For NT/Turtle/TriG, replace invalid unquoted plain literals with plain 
+   string literals. For this, the code assumes the invalid unquoted literal 
+   has no spaces (i.e., whitespace is a separator and never part of the 
+   invalid literal). Examples of this fix in action:
+   - `<an-iri> t:chromosome X` becomes `<an-iri> t:chromosome "X"`
+   - `<s> <p> 2e-3.4` becomes `<s> <p> "2e-3.4"` (expoent must be an integer)
+   - `<s> <p> falseful` becomes `<s> <p> "falseful"`
 
 The percent-encoding is context sensitive and assumes the input IRIs are 
 (mostly) correct IRIs. Some delimiters (e.g., /), if wrongly placed will be

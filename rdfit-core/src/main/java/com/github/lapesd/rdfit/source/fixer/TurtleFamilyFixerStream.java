@@ -99,9 +99,14 @@ public class TurtleFamilyFixerStream extends InputStream {
                 return override.get(nextOverride++) & 0xFF;
             nextOverride = override.clear().size();
             int val = delegate.read();
-            if (val == -1)
+            if (val == -1) {
+                currentParser.flush();
+                if (!override.isEmpty())
+                    return override.get(nextOverride++) & 0xFF;
                 return -1; // EOF reached
-            currentParser.feedByte(val);
+            } else {
+                currentParser = currentParser.feedByte(val);
+            }
         }
     }
 
@@ -118,9 +123,14 @@ public class TurtleFamilyFixerStream extends InputStream {
                     break;                                  // exhausted out
             }
             val = nextInputByte(len);
-            if (val >= 0)
+            if (val >= 0) {
                 currentParser = currentParser.feedByte(val);
+            } else {
+                currentParser.flush();
+                if (!override.isEmpty()) val = 0; //do not break from loop
+            }
         }
+
         int count = i - off;
         return count > 0 ? count : -1;
     }

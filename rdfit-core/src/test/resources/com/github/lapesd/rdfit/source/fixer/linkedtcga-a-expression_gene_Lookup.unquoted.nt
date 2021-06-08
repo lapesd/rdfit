@@ -1,0 +1,200 @@
+@prefix t:<http://tcga.deri.ie/schema/>. @prefix b:<http://tcga.deri.ie/>. @prefix c:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>. 
+<http://bio2rdf.org/geneid:100133144> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:100133144> t:NCBI_Replaced_Gene_Name "NA".
+<http://bio2rdf.org/geneid:100133144> t:NCBI_Replaced_Gene_Id "NA".
+<http://bio2rdf.org/geneid:100133144> t:NCBI_Gene_Symbol "UBE2Q2P3".
+<http://bio2rdf.org/geneid:100133144> t:chromosome 15 .
+<http://bio2rdf.org/geneid:100133144> t:start 83023772 .
+<http://bio2rdf.org/geneid:100133144> t:stop 83084732 .
+<http://bio2rdf.org/geneid:100133144> t:Strand "+".
+<http://bio2rdf.org/geneid:100133144> t:Alt_Coord_Chromosome "NA".
+<http://bio2rdf.org/geneid:100133144> t:Alt_Coord_Start "NA".
+<http://bio2rdf.org/geneid:100133144> t:Alt_Coord_Stop "NA".
+<http://bio2rdf.org/geneid:100133144> t:Alt_Coord_Strand "NA".
+<http://bio2rdf.org/geneid:100134869> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:100134869> t:NCBI_Replaced_Gene_Name "NA".
+<http://bio2rdf.org/geneid:100134869> t:NCBI_Replaced_Gene_Id "NA".
+<http://bio2rdf.org/geneid:100134869> t:NCBI_Gene_Symbol "UBE2Q2P2".
+<http://bio2rdf.org/geneid:100134869> t:chromosome 15 .
+<http://bio2rdf.org/geneid:100134869> t:start 82647285 .
+<http://bio2rdf.org/geneid:100134869> t:stop 82707815 .
+<http://bio2rdf.org/geneid:100134869> t:Strand "+".
+<http://bio2rdf.org/geneid:100134869> t:Alt_Coord_Chromosome "NA".
+<http://bio2rdf.org/geneid:100134869> t:Alt_Coord_Start "NA".
+<http://bio2rdf.org/geneid:100134869> t:Alt_Coord_Stop "NA".
+<http://bio2rdf.org/geneid:100134869> t:Alt_Coord_Strand "NA".
+<http://bio2rdf.org/geneid:10357> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:10357> t:NCBI_Replaced_Gene_Name "NA".
+<http://bio2rdf.org/geneid:10357> t:NCBI_Replaced_Gene_Id "NA".
+<http://bio2rdf.org/geneid:10357> t:NCBI_Gene_Symbol "HMGB1P1".
+<http://bio2rdf.org/geneid:10357> t:chromosome 20 .
+<http://bio2rdf.org/geneid:10357> t:start 56062996 .
+<http://bio2rdf.org/geneid:10357> t:stop 56064185 .
+<http://bio2rdf.org/geneid:10357> t:Strand "-".
+<http://bio2rdf.org/geneid:10357> t:Alt_Coord_Chromosome "NA".
+<http://bio2rdf.org/geneid:10357> t:Alt_Coord_Start "NA".
+<http://bio2rdf.org/geneid:10357> t:Alt_Coord_Stop "NA".
+<http://bio2rdf.org/geneid:10357> t:Alt_Coord_Strand "NA".
+<http://bio2rdf.org/geneid:10431> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:10431> t:NCBI_Replaced_Gene_Name "TIMM23B".
+<http://bio2rdf.org/geneid:10431> t:NCBI_Replaced_Gene_Id "653252".
+<http://bio2rdf.org/geneid:10431> t:NCBI_Gene_Symbol "TIMM23B".
+<http://bio2rdf.org/geneid:10431> t:chromosome 10 .
+<http://bio2rdf.org/geneid:10431> t:start 51371378 .
+<http://bio2rdf.org/geneid:10431> t:stop 51387765 .
+<http://bio2rdf.org/geneid:10431> t:Strand "+".
+<http://bio2rdf.org/geneid:10431> t:Alt_Coord_Chromosome "NA".
+<http://bio2rdf.org/geneid:10431> t:Alt_Coord_Start "NA".
+<http://bio2rdf.org/geneid:10431> t:Alt_Coord_Stop "NA".
+<http://bio2rdf.org/geneid:10431> t:Alt_Coord_Strand "NA".
+<http://bio2rdf.org/geneid:136542> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:136542> t:NCBI_Replaced_Gene_Name "MOXD2P".
+<http://bio2rdf.org/geneid:136542> t:NCBI_Replaced_Gene_Id "100289017".
+<http://bio2rdf.org/geneid:136542> t:NCBI_Gene_Symbol "MOXD2P".
+<http://bio2rdf.org/geneid:136542> t:chromosome 7 .
+<http://bio2rdf.org/geneid:136542> t:start 141940555 .
+<http://bio2rdf.org/geneid:136542> t:stop 141946885 .
+<http://bio2rdf.org/geneid:136542> t:Strand "-".
+<http://bio2rdf.org/geneid:136542> t:Alt_Coord_Chromosome "NA".
+<http://bio2rdf.org/geneid:136542> t:Alt_Coord_Start "NA".
+<http://bio2rdf.org/geneid:136542> t:Alt_Coord_Stop "NA".
+<http://bio2rdf.org/geneid:136542> t:Alt_Coord_Strand "NA".
+<http://bio2rdf.org/geneid:155060> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:155060> t:NCBI_Replaced_Gene_Name "NA".
+<http://bio2rdf.org/geneid:155060> t:NCBI_Replaced_Gene_Id "NA".
+<http://bio2rdf.org/geneid:155060> t:NCBI_Gene_Symbol "LOC155060".
+<http://bio2rdf.org/geneid:155060> t:chromosome 7 .
+<http://bio2rdf.org/geneid:155060> t:start 148982371 .
+<http://bio2rdf.org/geneid:155060> t:stop 148994402 .
+<http://bio2rdf.org/geneid:155060> t:Strand "+".
+<http://bio2rdf.org/geneid:155060> t:Alt_Coord_Chromosome "NA".
+<http://bio2rdf.org/geneid:155060> t:Alt_Coord_Start "NA".
+<http://bio2rdf.org/geneid:155060> t:Alt_Coord_Stop "NA".
+<http://bio2rdf.org/geneid:155060> t:Alt_Coord_Strand "NA".
+<http://bio2rdf.org/geneid:26823> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:26823> t:NCBI_Replaced_Gene_Name "NA".
+<http://bio2rdf.org/geneid:26823> t:NCBI_Replaced_Gene_Id "NA".
+<http://bio2rdf.org/geneid:26823> t:NCBI_Gene_Symbol "RNU12-2P".
+<http://bio2rdf.org/geneid:26823> t:chromosome X .
+<http://bio2rdf.org/geneid:26823> t:start 46992070 .
+<http://bio2rdf.org/geneid:26823> t:stop 46992222 .
+<http://bio2rdf.org/geneid:26823> t:Strand "+".
+<http://bio2rdf.org/geneid:26823> t:Alt_Coord_Chromosome "NA".
+<http://bio2rdf.org/geneid:26823> t:Alt_Coord_Start "NA".
+<http://bio2rdf.org/geneid:26823> t:Alt_Coord_Stop "NA".
+<http://bio2rdf.org/geneid:26823> t:Alt_Coord_Strand "NA".
+<http://bio2rdf.org/geneid:280660> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:280660> t:NCBI_Replaced_Gene_Name "NA".
+<http://bio2rdf.org/geneid:280660> t:NCBI_Replaced_Gene_Id "NA".
+<http://bio2rdf.org/geneid:280660> t:NCBI_Gene_Symbol "SSX9".
+<http://bio2rdf.org/geneid:280660> t:chromosome X .
+<http://bio2rdf.org/geneid:280660> t:start 48154884 .
+<http://bio2rdf.org/geneid:280660> t:stop 48165731 .
+<http://bio2rdf.org/geneid:280660> t:Strand "-".
+<http://bio2rdf.org/geneid:280660> t:Alt_Coord_Chromosome "NA".
+<http://bio2rdf.org/geneid:280660> t:Alt_Coord_Start "NA".
+<http://bio2rdf.org/geneid:280660> t:Alt_Coord_Stop "NA".
+<http://bio2rdf.org/geneid:280660> t:Alt_Coord_Strand "NA".
+<http://bio2rdf.org/geneid:317712> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:317712> t:NCBI_Replaced_Gene_Name "NA".
+<http://bio2rdf.org/geneid:317712> t:NCBI_Replaced_Gene_Id "NA".
+<http://bio2rdf.org/geneid:317712> t:NCBI_Gene_Symbol "LOC317712".
+<http://bio2rdf.org/geneid:317712> t:chromosome 4 .
+<http://bio2rdf.org/geneid:317712> t:start 70999320 .
+<http://bio2rdf.org/geneid:317712> t:stop 71012420 .
+<http://bio2rdf.org/geneid:317712> t:Strand "-".
+<http://bio2rdf.org/geneid:317712> t:Alt_Coord_Chromosome "NA".
+<http://bio2rdf.org/geneid:317712> t:Alt_Coord_Start "NA".
+<http://bio2rdf.org/geneid:317712> t:Alt_Coord_Stop "NA".
+<http://bio2rdf.org/geneid:317712> t:Alt_Coord_Strand "NA".
+<http://bio2rdf.org/geneid:340602> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:340602> t:NCBI_Replaced_Gene_Name "NA".
+<http://bio2rdf.org/geneid:340602> t:NCBI_Replaced_Gene_Id "NA".
+<http://bio2rdf.org/geneid:340602> t:NCBI_Gene_Symbol "CXorf67".
+<http://bio2rdf.org/geneid:340602> t:chromosome X .
+<http://bio2rdf.org/geneid:340602> t:start 51149772 .
+<http://bio2rdf.org/geneid:340602> t:stop 51151689 .
+<http://bio2rdf.org/geneid:340602> t:Strand "+".
+<http://bio2rdf.org/geneid:340602> t:Alt_Coord_Chromosome "NA".
+<http://bio2rdf.org/geneid:340602> t:Alt_Coord_Start "NA".
+<http://bio2rdf.org/geneid:340602> t:Alt_Coord_Stop "NA".
+<http://bio2rdf.org/geneid:340602> t:Alt_Coord_Strand "NA".
+<http://bio2rdf.org/geneid:388795> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:388795> t:NCBI_Replaced_Gene_Name "NA".
+<http://bio2rdf.org/geneid:388795> t:NCBI_Replaced_Gene_Id "NA".
+<http://bio2rdf.org/geneid:388795> t:NCBI_Gene_Symbol "EFCAB8".
+<http://bio2rdf.org/geneid:388795> t:chromosome 20 .
+<http://bio2rdf.org/geneid:388795> t:start 31446728 .
+<http://bio2rdf.org/geneid:388795> t:stop 31549414 .
+<http://bio2rdf.org/geneid:388795> t:Strand "+".
+<http://bio2rdf.org/geneid:388795> t:Alt_Coord_Chromosome "NA".
+<http://bio2rdf.org/geneid:388795> t:Alt_Coord_Start "NA".
+<http://bio2rdf.org/geneid:388795> t:Alt_Coord_Stop "NA".
+<http://bio2rdf.org/geneid:388795> t:Alt_Coord_Strand "NA".
+<http://bio2rdf.org/geneid:390284> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:390284> t:NCBI_Replaced_Gene_Name "NA".
+<http://bio2rdf.org/geneid:390284> t:NCBI_Replaced_Gene_Id "NA".
+<http://bio2rdf.org/geneid:390284> t:NCBI_Gene_Symbol "SRP14P1".
+<http://bio2rdf.org/geneid:390284> t:chromosome 12 .
+<http://bio2rdf.org/geneid:390284> t:start 6547640 .
+<http://bio2rdf.org/geneid:390284> t:stop 6548302 .
+<http://bio2rdf.org/geneid:390284> t:Strand "+".
+<http://bio2rdf.org/geneid:390284> t:Alt_Coord_Chromosome "NA".
+<http://bio2rdf.org/geneid:390284> t:Alt_Coord_Start "NA".
+<http://bio2rdf.org/geneid:390284> t:Alt_Coord_Stop "NA".
+<http://bio2rdf.org/geneid:390284> t:Alt_Coord_Strand "NA".
+<http://bio2rdf.org/geneid:391343> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:391343> t:NCBI_Replaced_Gene_Name "NA".
+<http://bio2rdf.org/geneid:391343> t:NCBI_Replaced_Gene_Id "NA".
+<http://bio2rdf.org/geneid:391343> t:NCBI_Gene_Symbol "C2orf90".
+<http://bio2rdf.org/geneid:391343> t:chromosome 2 .
+<http://bio2rdf.org/geneid:391343> t:start 905297 .
+<http://bio2rdf.org/geneid:391343> t:stop 905944 .
+<http://bio2rdf.org/geneid:391343> t:Strand "-".
+<http://bio2rdf.org/geneid:391343> t:Alt_Coord_Chromosome "NA".
+<http://bio2rdf.org/geneid:391343> t:Alt_Coord_Start "NA".
+<http://bio2rdf.org/geneid:391343> t:Alt_Coord_Stop "NA".
+<http://bio2rdf.org/geneid:391343> t:Alt_Coord_Strand "NA".
+<http://bio2rdf.org/geneid:391714> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:391714> t:NCBI_Replaced_Gene_Name "NA".
+<http://bio2rdf.org/geneid:391714> t:NCBI_Replaced_Gene_Id "NA".
+<http://bio2rdf.org/geneid:391714> t:NCBI_Gene_Symbol "TRIM75".
+<http://bio2rdf.org/geneid:391714> t:chromosome 4 .
+<http://bio2rdf.org/geneid:391714> t:start 165980119 .
+<http://bio2rdf.org/geneid:391714> t:stop 165981713 .
+<http://bio2rdf.org/geneid:391714> t:Strand "+".
+<http://bio2rdf.org/geneid:391714> t:Alt_Coord_Chromosome "NA".
+<http://bio2rdf.org/geneid:391714> t:Alt_Coord_Start "NA".
+<http://bio2rdf.org/geneid:391714> t:Alt_Coord_Stop "NA".
+<http://bio2rdf.org/geneid:391714> t:Alt_Coord_Strand "NA".
+<http://bio2rdf.org/geneid:404770> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:404770> t:NCBI_Replaced_Gene_Name "NA".
+<http://bio2rdf.org/geneid:404770> t:NCBI_Replaced_Gene_Id "NA".
+<http://bio2rdf.org/geneid:404770> t:NCBI_Gene_Symbol "SPATA31B1".
+<http://bio2rdf.org/geneid:404770> t:chromosome 9 .
+<http://bio2rdf.org/geneid:404770> t:start 84672561 .
+<http://bio2rdf.org/geneid:404770> t:stop 84678638 .
+<http://bio2rdf.org/geneid:404770> t:Strand "-".
+<http://bio2rdf.org/geneid:404770> t:Alt_Coord_Chromosome "NA".
+<http://bio2rdf.org/geneid:404770> t:Alt_Coord_Start "NA".
+<http://bio2rdf.org/geneid:404770> t:Alt_Coord_Stop "NA".
+<http://bio2rdf.org/geneid:404770> t:Alt_Coord_Strand "NA".
+<http://bio2rdf.org/geneid:441362> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:441362> t:NCBI_Replaced_Gene_Name "NA".
+<http://bio2rdf.org/geneid:441362> t:NCBI_Replaced_Gene_Id "NA".
+<http://bio2rdf.org/geneid:441362> t:NCBI_Gene_Symbol "REXO1L6P".
+<http://bio2rdf.org/geneid:441362> t:chromosome 8 .
+<http://bio2rdf.org/geneid:441362> t:start 86839093 .
+<http://bio2rdf.org/geneid:441362> t:stop 86840170 .
+<http://bio2rdf.org/geneid:441362> t:Strand "-".
+<http://bio2rdf.org/geneid:441362> t:Alt_Coord_Chromosome "NA".
+<http://bio2rdf.org/geneid:441362> t:Alt_Coord_Start "NA".
+<http://bio2rdf.org/geneid:441362> t:Alt_Coord_Stop "NA".
+<http://bio2rdf.org/geneid:441362> t:Alt_Coord_Strand "NA".
+<http://bio2rdf.org/geneid:442388> c:type t:expression_gene_lookup .
+<http://bio2rdf.org/geneid:442388> t:NCBI_Replaced_Gene_Name "NA".
+<http://bio2rdf.org/geneid:442388> t:NCBI_Replaced_Gene_Id "NA".
+<http://bio2rdf.org/geneid:442388> t:NCBI_Gene_Symbol "SDR16C6P".
+<http://bio2rdf.org/geneid:442388> t:chromosome 8 .
+<http://bio2rdf.org/geneid:442388> t:start 57285626 .
+<http://bio2rdf.org/geneid:442388> t:stop 57307923 .

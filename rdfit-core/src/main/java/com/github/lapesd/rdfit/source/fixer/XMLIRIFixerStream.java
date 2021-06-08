@@ -393,9 +393,14 @@ public class XMLIRIFixerStream extends InputStream {
             else if (nextCleaned != 0)
                 nextCleaned = cleaned.clear().size(); // exhausted override, clear it
             int value = delegate.read();
-            if (value < 0)
+            if (value < 0) {
+                currentState.flush();
+                if (!cleaned.isEmpty())
+                    return cleaned.get(nextCleaned++) & 0xFF;
                 return value; // EOF
-            currentState = currentState.feedByte(value); // writes to output
+            } else {
+                currentState = currentState.feedByte(value); // writes to output
+            }
         }
     }
 
@@ -412,8 +417,12 @@ public class XMLIRIFixerStream extends InputStream {
                     break;                                  // exhausted out
             }
             val = nextInputByte(len);
-            if (val >= 0)
+            if (val >= 0) {
                 currentState = currentState.feedByte(val);
+            } else {
+                currentState.flush();
+                if (!cleaned.isEmpty()) val = 0;
+            }
         }
         int count = i - off;
         return count > 0 ? count : -1;

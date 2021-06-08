@@ -18,7 +18,6 @@ package com.github.lapesd.rdfit.source.fixer;
 
 import com.github.lapesd.rdfit.RIt;
 import com.github.lapesd.rdfit.source.RDFInputStream;
-import com.github.lapesd.rdfit.source.RDFResource;
 import com.github.lapesd.rdfit.source.syntax.RDFLangs;
 import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import org.apache.commons.io.IOUtils;
@@ -33,7 +32,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -43,6 +41,7 @@ import static com.google.common.collect.Lists.cartesianProduct;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Stream.concat;
 import static org.apache.jena.rdf.model.ModelFactory.createDefaultModel;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
@@ -56,20 +55,32 @@ public class TurtleFamilyFixerStreamTest {
         List<String> subs = asList("<a>", "_:a", "[]", "ex:a");
         List<String> preds = asList("<p>", "ex:p");
         List<String> singleObjects = asList("<c>", "_:c", "[]", "ex:c",
+                /* string literals */
                 "\"plain\"",
                 "\"lang\"@en",
                 "\"typed\"^^<http://www.w3.org/2001/XMLSchema#string>",
+
+                /* empty string literals  */
                 "\"\"",
                 "\"\"\"\"\"\"",
                 "''",
                 "''''''",
+                "\"\"@en",
+                "\"\"^^<http://www.w3.org/2001/XMLSchema#string>",
+
+                /* valid unquoted literals */
                 "2",
-                "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>",
                 "false",
-                "\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>",
                 "2.34",
-                "-2.34",
                 "+2.34",
+                "-2.34",
+                "-2.34e2",
+                ".34E2",
+                "2e-3",
+
+                /* valid non-string quoted literals */
+                "\"2\"^^<http://www.w3.org/2001/XMLSchema#integer>",
+                "\"true\"^^<http://www.w3.org/2001/XMLSchema#boolean>",
                 "\"2.34\"^^<http://www.w3.org/2001/XMLSchema#decimal>"
         );
         List<String> objs = cartesianProduct(singleObjects, singleObjects).stream()
@@ -78,6 +89,19 @@ public class TurtleFamilyFixerStreamTest {
                 .map(strings -> strings.get(0) + String.join(" ", strings.subList(1, 4)))
                 .map(string -> asList((Object) string, string))
                 .collect(toList());
+        List<List<Object>> validTurtle = Stream.of("<a> a <Class>.",
+                "_:bnode a <Class>",
+                "<x> a _:bClass",
+                "<http://example.org/object> a ex:Class.",
+                "<x> a [rdfs:subClassOf ex:Class].",
+                "<x> a  [ rdfs:subClassOf ex:Class ] .",
+                "<x> a  [ rdfs:subClassOf ex:Class, <other> ] .",
+                "<x> a  [ rdfs:subClassOf ex:Class, <other>; rdfs:label \"asd\" ] .",
+                "<x> a  [ rdfs:subClassOf ex:Class, <other> ; rdfs:label \"asd\" ] .",
+                "<x> a  [ rdfs:subClassOf ex:Class, <other>;rdfs:label \"asd\" ] .",
+                "@prefix a:<http://example.org/a>.\n<s> a a: .",
+                "@prefix a:<http://example.org/a>.\n<s> a a: ; a <C>."
+        ).map(s -> asList((Object) s, s)).collect(toList());
 
         List<List<String>> fixedPairs = asList(
                 asList("<asd qwe>", "<asd%20qwe>"),
@@ -101,7 +125,14 @@ public class TurtleFamilyFixerStreamTest {
                 asList("<http://www.mon~deca.com>", "<http://www.mon~deca.com>"),
                 asList("<http://www.mon ~ deca.com>", "<http://www.mon%20~%20deca.com>"),
                 asList("<http://www.mon:deca.com>", "<http://www.mon%3Adeca.com>"),
-                asList("<http://www.mondeca.com ~ http://www.lalic.paris4.sorbonne.fr/>", "<http://www.mondeca.com%20~%20http%3A//www.lalic.paris4.sorbonne.fr/>")
+                asList("<http://www.mondeca.com ~ http://www.lalic.paris4.sorbonne.fr/>", "<http://www.mondeca.com%20~%20http%3A//www.lalic.paris4.sorbonne.fr/>"),
+                asList("\"missing hat\"^<http://www.w3.org/2001/XMLSchema#string>", "\"missing hat\"^^<http://www.w3.org/2001/XMLSchema#string>"),
+                asList("\"extra hat\"^^^<http://www.w3.org/2001/XMLSchema#string>", "\"extra hat\"^^<http://www.w3.org/2001/XMLSchema#string>"),
+                asList("X", "\"X\""),
+                asList("FALSE", "false"),
+                asList("True", "true"),
+                asList("true1", "\"true1\""),
+                asList("b-c", "\"b-c\"")
         );
         List<List<Object>> invalidData = new ArrayList<>();
         for (String preamble : preambles) {
@@ -119,7 +150,7 @@ public class TurtleFamilyFixerStreamTest {
                 }
             }
         }
-        return Stream.concat(validData.stream(), invalidData.stream())
+        return concat(concat(validData.stream(), validTurtle.stream()), invalidData.stream())
                      .map(List::toArray).toArray(Object[][]::new);
     }
 
@@ -166,7 +197,9 @@ public class TurtleFamilyFixerStreamTest {
 
     @DataProvider public @Nonnull Object[][] resourceFilesData() {
         return Stream.of(
-                asList("lmdb-subset.bad-space.nt", "lmdb-subset.nt")
+                asList("lmdb-subset.bad-space.nt", "lmdb-subset.nt"),
+                asList("linkedtcga-a-expression_gene_Lookup.unquoted.nt",
+                       "linkedtcga-a-expression_gene_Lookup.nt")
         ).map(List::toArray).toArray(Object[][]::new);
     }
 
@@ -188,7 +221,8 @@ public class TurtleFamilyFixerStreamTest {
         return Stream.of(
                 "geonames-1.n3",
                 "geonames-2.n3",
-                "skos_categories_en.uchar.nt"
+                "skos_categories_en.uchar.nt",
+                "TCGA-BF-A1PU-01A-11D-A18Z-02_BC0VYMACXX---TCGA-BF-A1PU-10A-01D-A18Z-02_BC0VYMACXX---Segment.tsv.n3"
         ).map(s -> new Object[]{s}).toArray(Object[][]::new);
     }
 
