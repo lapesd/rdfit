@@ -65,7 +65,7 @@ public class RDFItException extends RuntimeException {
      * @param cause the original {@link Throwable}
      */
     public RDFItException(@Nonnull Object source, @Nonnull Throwable cause) {
-        this(source, cause.getMessage(), cause);
+        this(source, cause.getMessage() + " at source="+source, cause);
     }
 
     /**
