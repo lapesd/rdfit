@@ -115,6 +115,8 @@ public class TurtleFamilyDetector implements LangDetector {
                             subState = new Body();
                             return feedAll(data, data.length, false, false);
                         }
+                    } else if (value < ' ' && value != '\t' && value != '\r') {
+                        return UNKNOWN; // binary data
                     }
                 } else if (value == '@') {
                     return TRIG;

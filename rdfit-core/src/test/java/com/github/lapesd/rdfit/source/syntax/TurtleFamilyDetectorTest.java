@@ -20,6 +20,7 @@ import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import com.github.lapesd.rdfit.source.syntax.impl.TurtleFamilyDetector;
 import com.github.lapesd.rdfit.util.Utils;
 import com.google.common.collect.Lists;
+import org.apache.commons.compress.utils.IOUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
@@ -267,25 +268,44 @@ public class TurtleFamilyDetectorTest {
     }
 
     @Test
+    public void testBz2FileIsNotTurtle() throws IOException {
+        String path = "com/github/lapesd/rdfit/source/single_a.bz2";
+        int bytes;
+        try (InputStream in = openResource(path)) {
+            bytes = IOUtils.toByteArray(in).length;
+        }
+        try (InputStream in = openResource(path)) {
+            assertEquals(runDetector(in, bytes, UNKNOWN).end(false), UNKNOWN);
+            assertEquals(runDetector(in, bytes, UNKNOWN).end(true), UNKNOWN);
+        }
+    }
+
+    private @Nonnull LangDetector.State runDetector(@Nonnull InputStream in, int bytes,
+                                                    @Nonnull RDFLang expected) throws IOException {
+        LangDetector.State state = new TurtleFamilyDetector().createState();
+        RDFLang detected = null;
+        for (int i = 0; i < bytes; i++) {
+            int val = in.read();
+            if (val >= 0) {
+                RDFLang lang = state.feedByte((byte) val);
+                if (detected != null)
+                    assertEquals(lang, detected);
+                if (lang != null) {
+                    detected = lang;
+                    assertEquals(lang, expected);
+                }
+            }
+        }
+        return state;
+    }
+
+    @Test
     public void testLMDBRegression() throws IOException {
         String path = "com/github/lapesd/rdfit/source/fixer/lmdb-subset.nt";
         for (Integer bytes : asList(140, 141, 301, 180, 302, 400, 463, 8192)) {
             RDFLang expected = bytes == 8192 ? NT : bytes < 302 ? TRIG : NQ;
             try (InputStream in = openResource(path)) {
-                LangDetector.State s = new TurtleFamilyDetector().createState();
-                RDFLang detected = null;
-                for (int i = 0; i < bytes; i++) {
-                    int value = in.read();
-                    if (value < 0)
-                        break;
-                    RDFLang lang = s.feedByte((byte) value);
-                    if (detected != null)
-                        assertEquals(lang, detected);
-                    if (lang != null) {
-                        detected = lang;
-                        assertEquals(lang, NT);
-                    }
-                }
+                LangDetector.State s = runDetector(in, bytes, expected);
                 assertEquals(s.end(bytes  == 8192), expected, "bytes="+bytes);
             }
         }
