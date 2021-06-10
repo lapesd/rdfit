@@ -135,10 +135,7 @@ public class RDF4JInputStreamParser extends BaseListenerParser {
                         throw new InterruptParsingException();
                 }
             });
-            if (ris.hasBaseIRI())
-                parser.parse(ris.getInputStream(), ris.getBaseIRI());
-            else
-                parser.parse(ris.getInputStream());
+            parser.parse(ris.getInputStream(), ris.getBaseIRI());
         } catch (EndParseException ignored) {
         } catch (InterruptParsingException e) {
             throw e;
