@@ -44,6 +44,7 @@ public class XMLIRIFixerStreamTest {
                 "eswc-2009-complete+comment.rdf",
                 "eswc-2009-complete+DOCTYPE.rdf",
                 "eswc-2009-complete+encoding.rdf",
+                "eswc-2009-complete+everything.bad-xml.rdf",
                 "eswc-2009-complete+everything.rdf",
                 "eswc-2009-complete.rdf",
                 "LDOW-2008-complete.rdf",

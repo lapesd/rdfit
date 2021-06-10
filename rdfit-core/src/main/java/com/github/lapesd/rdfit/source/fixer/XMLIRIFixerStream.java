@@ -63,6 +63,11 @@ public class XMLIRIFixerStream extends InputStream {
     private enum Construct {
         NONE,
         LT,
+        LT_Q,
+        LT_Q_X,
+        LT_Q_XM,
+        XML,
+        XML_Q,
         LT_EX,
         LT_EX_D,
         LT_EX_B,
@@ -86,17 +91,42 @@ public class XMLIRIFixerStream extends InputStream {
             return NONE;
         }
 
+        @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+        public boolean isXMLProcessorTag() {
+            switch (this) {
+                case LT:
+                case LT_Q:
+                case LT_Q_X:
+                case LT_Q_XM:
+                case XML:
+                case XML_Q:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         public @Nonnull Construct next(int value, @Nullable String context) {
             switch (this) {
                 case NONE:
                     return value == '<' ? LT : NONE;
                 case LT:
-                    return value == '!' ? LT_EX : TAG;
+                    return value == '!' ? LT_EX : (value == '?' ? LT_Q : TAG);
+                case LT_Q:
+                    return value == 'X' || value == 'x' ? LT_Q_X : TAG;
+                case LT_Q_X:
+                    return value == 'M' || value == 'm' ? LT_Q_XM : TAG;
+                case LT_Q_XM:
+                    return value == 'L' || value == 'l' ? XML : TAG;
+                case XML:
+                    return value == '?' ? XML_Q : XML;
+                case XML_Q:
+                    return value == '>' ? NONE : XML;
                 case LT_EX:
                     switch (value) {
-                        case '-':   return LT_EX_D;
-                        case '[':   return LT_EX_B;
-                        default: return badStart(context, "comment/CDATA", "<!", value);
+                        case '-': return LT_EX_D;
+                        case '[': return LT_EX_B;
+                        default : return TAG;
                     }
                 case LT_EX_D:
                     return value == '-' ? COMMENT : badStart(context, "comment", "<!-", value);
@@ -138,7 +168,7 @@ public class XMLIRIFixerStream extends InputStream {
         private final @Nonnull int[] matchedCol;
         private boolean hadMatch = false;
         private int matchedRow = -1;
-        private @Nonnull Construct construct = Construct.NONE;
+        protected @Nonnull Construct construct = Construct.NONE;
 
         public AttributeFixerParser(@Nonnull byte[][] expected) {
             this.expected = expected;
@@ -211,6 +241,8 @@ public class XMLIRIFixerStream extends InputStream {
 
 
     private class NamespaceExtractor extends AttributeFixerParser {
+        private @Nonnull Construct shadowConstruct = Construct.NONE;
+        private boolean forbidProcessorTag = false;
         private boolean pastEquals, atIRI;
         private int owlMatched, rdfMatched;
         private final GrowableByteBuffer key = new GrowableByteBuffer();
@@ -229,7 +261,42 @@ public class XMLIRIFixerStream extends InputStream {
 
         @Override public @Nonnull FixerParser reset() {
             owlKey = rdfKey = null;
+            forbidProcessorTag = false;
             return super.reset();
+        }
+
+        @Override public @Nonnull FixerParser feedByte(int value) {
+            boolean forbidProcessorTag = this.forbidProcessorTag;
+            if (forbidProcessorTag && construct == Construct.NONE) {
+                // we are parsing a <?xml ... ?> tag or value could start one
+                Construct old = shadowConstruct;
+                shadowConstruct = shadowConstruct.next(value, context);
+                if (old == Construct.NONE && shadowConstruct == Construct.NONE) {
+                    cleaned.add(value); // whitespace or tag contents
+                    return this;
+                } else if (old != Construct.XML_Q && !shadowConstruct.isXMLProcessorTag()) {
+                    // whatever we were parsing was not a <?xml ?> tag:
+                    // "output" bytes we were hiding and pass parsing control to superclass
+                    if (old == Construct.LT)
+                        cleaned.add('<');
+                    else if (old == Construct.LT_Q)
+                        cleaned.add('<').add('?');
+                    else if (old == Construct.LT_Q_X)
+                        cleaned.add('<').add('?').add('x');
+                    else if (old == Construct.LT_Q_XM)
+                        cleaned.add('<').add('?').add('x').add('m');
+                    else
+                        assert false : "Unexpected transition from old to !isXMLProcessorTag()";
+                    construct = old;
+                    shadowConstruct = Construct.NONE;
+                } else {
+                    return this; // still looks like <?xml ... ?>
+                }
+            }
+            FixerParser successor = super.feedByte(value);
+            if (!forbidProcessorTag && !construct.isXMLProcessorTag())
+                this.forbidProcessorTag = true; // we just read somehting that is not <?xml ... ?>
+            return successor;
         }
 
         @Override protected @Nonnull FixerParser onMatch(int matchedRow) {
