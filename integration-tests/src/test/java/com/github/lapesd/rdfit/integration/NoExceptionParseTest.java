@@ -25,17 +25,11 @@ import com.github.lapesd.rdfit.iterator.RDFIt;
 import com.github.lapesd.rdfit.listener.RDFListenerBase;
 import com.github.lapesd.rdfit.source.RDFFile;
 import com.github.lapesd.rdfit.source.RDFInputStream;
-import com.github.lapesd.rdfit.source.RDFInputStreamSupplier;
 import com.github.lapesd.rdfit.source.RDFResource;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.jena.atlas.io.NullOutputStream;
 import org.apache.jena.graph.Triple;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.riot.Lang;
-import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.sparql.core.Quad;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -48,13 +42,13 @@ import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
 import static com.github.lapesd.rdfit.util.Utils.openResource;
 import static java.util.Arrays.asList;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class NoExceptionParseTest {
     private @Nullable File tempDir;

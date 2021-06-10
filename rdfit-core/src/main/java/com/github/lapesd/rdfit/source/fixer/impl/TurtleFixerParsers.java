@@ -66,6 +66,7 @@ public class TurtleFixerParsers {
         private final @Nonnull NumberLiteral number;
         private final @Nonnull BoolLiteral bool;
         private final @Nonnull UnquotedStringLiteral unquoted;
+        private final @Nonnull Comment comment;
 
         /**
          * Create a Start state
@@ -80,6 +81,7 @@ public class TurtleFixerParsers {
             this.unquoted = new UnquotedStringLiteral(this, this.string, this.iri);
             this.number = new NumberLiteral(this, this.unquoted);
             this.bool = new BoolLiteral(this, this.unquoted);
+            this.comment = new Comment(this);
         }
 
         @Override public @Nonnull FixerParser feedByte(int value) {
@@ -87,6 +89,7 @@ public class TurtleFixerParsers {
             if      (value ==  '<')                 return iri.reset();
             else if (value ==  '"')                 return string.reset('"');
             else if (value == '\'')                 return string.reset('\'');
+            else if (value ==  '#')                 return comment.reset();
             else if (isInSmall(value, ETHER_CHARS)) return this;
 
             output.removeLast(); // the following states buffer
@@ -218,6 +221,20 @@ public class TurtleFixerParsers {
         @Override public @Nonnull FixerParser feedByte(int byteValue) {
             output.add(byteValue);
             return byteValue == '<' ? iri.reset() : this;
+        }
+    }
+
+    public static class Comment extends State {
+        private final @Nonnull Start start;
+
+        public Comment(@Nonnull Start start) {
+            super(start.output);
+            this.start = start;
+        }
+
+        @Override public @Nonnull FixerParser feedByte(int byteValue) {
+            output.add(byteValue);
+            return byteValue == '\n' ? start : this;
         }
     }
 
@@ -522,6 +539,7 @@ public class TurtleFixerParsers {
                     return start;
                 } else if (value == '\\') {
                     slashed = true;
+                    return this;
                 }
             }
             return super.feedByte(value);
