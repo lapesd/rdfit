@@ -33,6 +33,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -326,6 +327,19 @@ public class TurtleFamilyDetectorTest {
             try (InputStream in = openResource(path)) {
                 LangDetector.State s = runDetector(in, bytes, expected);
                 assertEquals(s.end(bytes  == 8192), expected, "bytes="+bytes);
+            }
+        }
+    }
+
+    @Test
+    public void testDBpediaRegression() throws IOException {
+        String path = "com/github/lapesd/rdfit/source/fixer/dbpedia-nyt_links.nt";
+        int inSize = IOUtils.toString(openResource(path), UTF_8).length();
+        for (Integer bytes : asList(1, 497, 500, 628, 629, 630, 631, inSize)) {
+            boolean hardEnd = bytes == inSize;
+            try (InputStream in = openResource(path)) {
+                LangDetector.State state = runDetector(in, bytes, TRIG);
+                assertEquals(state.end(hardEnd), hardEnd ? TTL : TRIG);
             }
         }
     }

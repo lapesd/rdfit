@@ -78,6 +78,7 @@ public class NoExceptionParseTest {
 
     @DataProvider public @Nonnull Object[][] testData() throws IOException {
         List<String> names = asList(
+                "dbpedia-nyt_links.nt",
                 "eswc-2006-complete.bad-host.rdf",
                 "eswc-2006-complete.rdf",
                 "eswc-2009-complete+comment.rdf",

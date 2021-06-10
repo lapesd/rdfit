@@ -29,7 +29,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.github.lapesd.rdfit.source.syntax.RDFLangs.*;
-import static java.lang.Character.isSpaceChar;
 import static java.lang.Character.isWhitespace;
 import static java.util.stream.Collectors.toSet;
 
@@ -112,7 +111,7 @@ public class TurtleFamilyDetector implements LangDetector {
                         if (str.startsWith("PREFIX") || str.startsWith("BASE")) {
                             return TRIG;
                         } else if (!str.startsWith("#")) {
-                            subState = new Body();
+                            subState = new Body(hadComment);
                             return feedAll(data, data.length, false, false);
                         }
                     } else if (value < ' ' && value != '\t' && value != '\r') {
@@ -125,7 +124,7 @@ public class TurtleFamilyDetector implements LangDetector {
                     active = true;
                     hadComment |= value == '#';
                 } else if (!Utils.isAsciiSpace(value)) { //body has started
-                    subState = new Body();
+                    subState = new Body(hadComment);
                     return feedByte(value);
                 }
                 return null;
@@ -146,7 +145,7 @@ public class TurtleFamilyDetector implements LangDetector {
             private final StringBuilder buffer = new StringBuilder();
             private final LiteralParser litParser = new LiteralParser();
             private byte begin = 0;
-            boolean needsSpace = false, bNodeSubject = false, xmlFirst = false;
+            boolean needsSpace = false, bNodeSubject = false, xmlFirst = false, forceTTL;
             int termIndex = 0, triples = 0;
             int xmlTagIdx = 0;
 
@@ -163,6 +162,10 @@ public class TurtleFamilyDetector implements LangDetector {
                 set.add((byte)'_');
                 set.add((byte)'.');
                 BNODE_CHARS = set;
+            }
+
+            public Body(boolean forceTTL) {
+                this.forceTTL = forceTTL;
             }
 
             @Override public @Nullable RDFLang feed(byte value) {
@@ -330,13 +333,13 @@ public class TurtleFamilyDetector implements LangDetector {
                         // that  an incomplete triple follows the fully parsed ones (termIndex
                         // != 0 || begin != 0). Nevertheless report the input as NT and let
                         // the actual parsers spew out an error message over invalid input
-                        return NT;
+                        return forceTTL ? TTL : NT;
                     }
                     // Else, could be a TRIG, NT or NQ.
                     // However, if it were a TRIG file the most likely scenario is that it
                     // would've been detected (prefixes, ',', ';' or '[') by now. Guess NQ since
                     // any NT file is also an NQ file
-                    return triples > 1 ? NQ : TRIG;
+                    return triples > 1 && !forceTTL ? NQ : TRIG;
                 } else if (hardEnd && termIndex == 0 && begin == 0) {
                     return TTL; //empty input
                 } else if (hardEnd && termIndex < 2) {
@@ -356,6 +359,7 @@ public class TurtleFamilyDetector implements LangDetector {
         private @Nonnull SubState subState = new BOM();
         private @Nullable RDFLang detected = null;
 
+        @SuppressWarnings("SameParameterValue")
         private @Nullable RDFLang feedAll(byte[] data, int size, boolean callEnd, boolean hardEnd) {
             for (int i = 0; i < size; i++) {
                 RDFLang lang = feedByte(data[i]);

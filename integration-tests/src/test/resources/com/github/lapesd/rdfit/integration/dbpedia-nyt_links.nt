@@ -1,0 +1,20 @@
+################################################################################
+# This material is licensed under a Creative Commons Attribution 3.0
+# United States License available at:
+# 
+# http://creativecommons.org/licenses/by/3.0/us/
+# 
+# Disclaimer: The New York Times Linked Data service is in Beta and The
+# New York Times Company retains the right to modify or discontinue this
+# service at its discretion.
+################################################################################
+
+<http://dbpedia.org/resource/Abaco_Islands> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/36492150692641534821> .
+<http://dbpedia.org/resource/Abilene%2C_Texas> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/81952714548746232661> .
+<http://dbpedia.org/resource/Abingdon%2C_Virginia> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/N10704774532269701641> .
+<http://dbpedia.org/resource/Abkhazia> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/9297659012232629181> .
+<http://dbpedia.org/resource/Abruzzo> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/56956707573575971071> .
+<http://dbpedia.org/resource/Abu_Dhabi> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/N44159832225027055781> .
+<http://dbpedia.org/resource/Baghdad_Central_Prison> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/35584965218565160351> .
+<http://dbpedia.org/resource/Acadia_National_Park> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/N83026597717654855121> .
+<http://dbpedia.org/resource/Acadian_Peninsula> <http://www.w3.org/2002/07/owl#sameAs> <http://data.nytimes.com/58534283240795407241> .
