@@ -296,7 +296,7 @@ public class TurtleFamilyDetector implements LangDetector {
                         if (value == 'a' || value == 'G') buffer.append((char) value);
                         else                              return UNKNOWN;
                     } else if (termIndex >= 2) {
-                        if (LIT_BEGIN.contains(value)) buffer.append((char) value);
+                        if (LIT_BEGIN.contains(value)) return TRIG;
                         else                           return UNKNOWN;
                     }
                 }

@@ -222,7 +222,8 @@ public class TurtleFamilyFixerStreamTest {
                 "geonames-1.n3",
                 "geonames-2.n3",
                 "skos_categories_en.uchar.nt",
-                "TCGA-BF-A1PU-01A-11D-A18Z-02_BC0VYMACXX---TCGA-BF-A1PU-10A-01D-A18Z-02_BC0VYMACXX---Segment.tsv.n3"
+                "TCGA-BF-A1PU-01A-11D-A18Z-02_BC0VYMACXX---TCGA-BF-A1PU-10A-01D-A18Z-02_BC0VYMACXX---Segment.tsv.n3",
+                "nationwidechildrens.org_biospecimen_tumor_sample_lgg.nt"
         ).map(s -> new Object[]{s}).toArray(Object[][]::new);
     }
 

@@ -18,9 +18,8 @@ package com.github.lapesd.rdfit.source.syntax;
 
 import com.github.lapesd.rdfit.source.syntax.impl.RDFLang;
 import com.github.lapesd.rdfit.source.syntax.impl.TurtleFamilyDetector;
-import com.github.lapesd.rdfit.util.Utils;
 import com.google.common.collect.Lists;
-import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
@@ -34,9 +33,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import static com.github.lapesd.rdfit.source.syntax.RDFLangs.*;
@@ -112,6 +110,7 @@ public class TurtleFamilyDetectorTest {
                 "'''<c> <d>'''@en",
                 "\"<c> <d>\"^^<http://www.w3.org/2001/XMLSchema#int>"
         );
+        Set<String> forbiddenInNQ = new HashSet<>(asList("a", "1", "false"));
         // positive examples
         for (List<String> ss : Lists.cartesianProduct(subjects, predicates, objects)) {
             String line = ss.get(0) + " " + ss.get(1) + " " + ss.get(2) + ".";
@@ -151,7 +150,8 @@ public class TurtleFamilyDetectorTest {
             rows.add(asList(null, line, TRIG));
 
             // NQ examples
-            if (!ss.get(0).startsWith("_") && !ss.get(1).equals("a")) {
+            if (!ss.get(0).startsWith("_") && !ss.get(1).equals("a")
+                                           && !forbiddenInNQ.contains(ss.get(2))) {
                 line = ss.get(0) + " " + ss.get(1) + " " + ss.get(2) + " " + ss.get(0) + ".\n";
                 rows.add(asList(null, line, NQ));
                 line = ss.get(0) + "\t" + ss.get(1) + "\t" + ss.get(2) + "\n\t" + ss.get(0) + ".";
@@ -257,6 +257,23 @@ public class TurtleFamilyDetectorTest {
     }
 
     @Test
+    public void testUnquotedImpliesTRIG() throws IOException {
+        List<Supplier<ByteArrayInputStream>> ins = asList(
+                () -> new ByteArrayInputStream("<a> <b> 200.".getBytes(UTF_8)),
+                () -> new ByteArrayInputStream("<a> <b> <c>.\n<a> <b> 200.".getBytes(UTF_8)),
+                () -> new ByteArrayInputStream("<a> <b> <c>, 200.".getBytes(UTF_8)),
+                () -> new ByteArrayInputStream("<a> <b> <c>, false.".getBytes(UTF_8)),
+                () -> new ByteArrayInputStream("<a> <b> <c>, 2.3.".getBytes(UTF_8))
+        );
+        for (Supplier<ByteArrayInputStream> supplier : ins) {
+            String string = IOUtils.toString(supplier.get(), UTF_8);
+            int partial = string.length() - 2;
+            assertEquals(runDetector(supplier.get(), partial, TRIG).end(false), TRIG);
+            assertEquals(runDetector(supplier.get(), partial+3, TRIG).end(true), TRIG);
+        }
+    }
+
+    @Test
     public void testJSONLDAmbiguity() {
         doTest(null, "[].", TRIG, true);
         doTest(null, "[].", TRIG, false);
@@ -294,6 +311,8 @@ public class TurtleFamilyDetectorTest {
                     detected = lang;
                     assertEquals(lang, expected);
                 }
+            } else {
+                break;
             }
         }
         return state;
