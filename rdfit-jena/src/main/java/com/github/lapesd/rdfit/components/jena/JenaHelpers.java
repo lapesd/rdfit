@@ -42,8 +42,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class JenaHelpers {
-    public static @Nullable Lang toJenaLang(RDFLang lang) {
-        if      (lang.equals(RDFLangs.NT     )) return Lang.NT;
+    public static @Nullable Lang toJenaLang(@Nullable RDFLang lang) {
+        if      (lang == null                 ) return null;
+        else if (lang.equals(RDFLangs.NT     )) return Lang.NT;
         else if (lang.equals(RDFLangs.NQ     )) return Lang.NQ;
         else if (lang.equals(RDFLangs.TTL    )) return Lang.TTL;
         else if (lang.equals(RDFLangs.TRIG   )) return Lang.TRIG;
@@ -56,8 +57,9 @@ public class JenaHelpers {
         else                                    return null;
     }
 
-    public static @Nullable RDFLang fromJenaLang(Lang lang) {
-        if      (lang.equals(Lang.NT       )) return RDFLangs.NT;
+    public static @Nullable RDFLang fromJenaLang(@Nullable Lang lang) {
+        if      (lang == null               ) return null;
+        else if (lang.equals(Lang.NT       )) return RDFLangs.NT;
         else if (lang.equals(Lang.NQ       )) return RDFLangs.NQ;
         else if (lang.equals(Lang.TTL      )) return RDFLangs.TTL;
         else if (lang.equals(Lang.TRIG     )) return RDFLangs.TRIG;

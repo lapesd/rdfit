@@ -33,7 +33,7 @@ public class RDF4JFormat {
      * @param lang a {@link RDFLang}
      * @return a {@link RDFFormat} or null if there is no equivalent
      */
-    public static @Nullable RDFFormat toRDF4J(@Nonnull RDFLang lang) {
+    public static @Nullable RDFFormat toRDF4J(@Nullable RDFLang lang) {
         if      (RDFLangs.RDFXML.equals(lang))  return RDFFormat.RDFXML;
         else if (RDFLangs.NT.equals(lang))      return RDFFormat.NTRIPLES;
         else if (RDFLangs.TTL.equals(lang))     return RDFFormat.TURTLE;
@@ -53,8 +53,9 @@ public class RDF4JFormat {
      * @param format a {@link RDFFormat}
      * @return a {@link RDFLang} or null if there is no equivalent
      */
-    public static @Nullable RDFLang fromRDF4j(@Nonnull RDFFormat format) {
-        if      (format.equals(RDFFormat.RDFXML))     return RDFLangs.RDFXML;
+    public static @Nullable RDFLang fromRDF4j(@Nullable RDFFormat format) {
+        if      (format == null)                      return null;
+        else if (format.equals(RDFFormat.RDFXML))     return RDFLangs.RDFXML;
         else if (format.equals(RDFFormat.NTRIPLES))   return RDFLangs.NT;
         else if (format.equals(RDFFormat.TURTLE))     return RDFLangs.TTL;
         else if (format.equals(RDFFormat.TURTLESTAR)) return RDFLangs.TTL;

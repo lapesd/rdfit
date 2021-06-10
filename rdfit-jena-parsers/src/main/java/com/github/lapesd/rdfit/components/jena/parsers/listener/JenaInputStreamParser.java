@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
@@ -78,7 +79,7 @@ public class JenaInputStreamParser extends BaseListenerParser {
         boolean ok = false;
         try (RDFInputStream ris = (RDFInputStream) source) {
             RDFLang lang = ris.getOrDetectLang();
-            Lang jLang = JenaHelpers.toJenaLang(lang);
+            Lang jLang = JenaHelpers.toJenaLang(RDFLangs.generalize(lang));
             ListenerStreamRDF adaptor = new ListenerStreamRDF(listener, source, ris.getBaseIRI());
             if (ris.hasBaseIRI())
                 RDFDataMgr.parse(adaptor, ris.getInputStream(), ris.getBaseIRI(), jLang);

@@ -130,6 +130,12 @@ public class RDFLangs {
         return lang != null && (lang.equals(NT) || lang.equals(NQ));
     }
 
+    public static @Nullable RDFLang generalize(@Nullable RDFLang lang) {
+        if      (lang == null)                        return null;
+        else if (lang.equals(NT) || lang.equals(TTL)) return TRIG;
+        else                                          return lang;
+    }
+
     /**
      * Get all {@link RDFLang} instances registered
      * @return non-null and non-empty list of languages

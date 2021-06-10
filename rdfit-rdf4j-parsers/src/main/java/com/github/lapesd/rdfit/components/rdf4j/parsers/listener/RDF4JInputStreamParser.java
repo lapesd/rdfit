@@ -113,7 +113,7 @@ public class RDF4JInputStreamParser extends BaseListenerParser {
                       @Nonnull RDFListener<?, ?> listener) throws InterruptParsingException {
         try (RDFListenerHandler handler = new RDFListenerHandler(listener, source)) {
             RDFInputStream ris = (RDFInputStream) source;
-            RDFFormat fmt = RDF4JFormat.toRDF4J(ris.getOrDetectLang());
+            RDFFormat fmt = RDF4JFormat.toRDF4J(RDFLangs.generalize(ris.getOrDetectLang()));
             RDFParser parser = Rio.createParser(fmt);
             for (RioSetting<?> setting : nonFatalErrors)
                 parser.getParserConfig().addNonFatalError(setting);
