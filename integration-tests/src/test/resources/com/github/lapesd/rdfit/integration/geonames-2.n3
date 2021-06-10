@@ -1,0 +1,23 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix gn: <http://www.geonames.org/ontology#> .
+@prefix wgs84_pos: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+
+
+<http://sws.geonames.org/6459389/> a gn:Feature ;
+	rdfs:isDefinedBy "http://sws.geonames.org/6459389/about.rdf" ;
+	gn:name "\"glen" ;
+	gn:officialName "Ъглен"@bg ;
+	gn:alternateName "\"glen"@en ;
+	gn:featureClass gn:A ;
+	gn:featureCode <http://www.geonames.org/ontology#A.ADM3> ;
+	gn:countryCode "BG" ;
+	wgs84_pos:lat "43.16667" ;
+	wgs84_pos:long "24.35556" ;
+	gn:parentFeature <http://sws.geonames.org/729506/> ;
+	gn:parentCountry <http://sws.geonames.org/732800/> ;
+	gn:parentADM1 <http://sws.geonames.org/729560/> ;
+	gn:parentADM2 <http://sws.geonames.org/729506/> ;
+	gn:parentADM3 <http://sws.geonames.org/6459389/> ;
+	gn:childrenFeatures <http://sws.geonames.org/6459389/contains.rdf> ;
+	gn:locationMap <http://www.geonames.org/6459389/%22glen.html> .
+

@@ -1,0 +1,100 @@
+<http://tcga.deri.ie/TCGA-CS-6290> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/tumor_sample>.
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-CS-6290>.
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/bcr_sample_uuid> "6148f31e-cdba-481b-bcd7-b3aee05925b1" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/tumor_necrosis_percent> "0" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/tumor_nuclei_percent> "70" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/tumor_weight> 200 .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/vial_number> "1" .
+<http://tcga.deri.ie/TCGA-DU-5847> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/tumor_sample>.
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-DU-5847>.
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/bcr_sample_uuid> "c68fc12c-c538-4a89-9f6e-c0800a5a6b53" .
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/tumor_necrosis_percent> "0" .
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/tumor_nuclei_percent> "90" .
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/tumor_weight> 200 .
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/vial_number> "1" .
+<http://tcga.deri.ie/TCGA-DU-5849> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/tumor_sample>.
+<http://tcga.deri.ie/TCGA-DU-5849> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-DU-5849>.
+<http://tcga.deri.ie/TCGA-DU-5849> <http://tcga.deri.ie/schema/bcr_sample_uuid> "9e0e239f-ced4-4cf3-bf3c-5ec8224d760b" .
+<http://tcga.deri.ie/TCGA-DU-5849> <http://tcga.deri.ie/schema/tumor_necrosis_percent> "1" .
+<http://tcga.deri.ie/TCGA-DU-5849> <http://tcga.deri.ie/schema/tumor_nuclei_percent> "85" .
+<http://tcga.deri.ie/TCGA-DU-5849> <http://tcga.deri.ie/schema/tumor_weight> 500 .
+<http://tcga.deri.ie/TCGA-DU-5849> <http://tcga.deri.ie/schema/vial_number> "1" .
+<http://tcga.deri.ie/TCGA-DU-5852> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/tumor_sample>.
+<http://tcga.deri.ie/TCGA-DU-5852> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-DU-5852>.
+<http://tcga.deri.ie/TCGA-DU-5852> <http://tcga.deri.ie/schema/bcr_sample_uuid> "101aaa90-fe0a-42b7-bcc7-4f44e29883ec" .
+<http://tcga.deri.ie/TCGA-DU-5852> <http://tcga.deri.ie/schema/tumor_necrosis_percent> "0" .
+<http://tcga.deri.ie/TCGA-DU-5852> <http://tcga.deri.ie/schema/tumor_nuclei_percent> "85" .
+<http://tcga.deri.ie/TCGA-DU-5852> <http://tcga.deri.ie/schema/tumor_weight> 500 .
+<http://tcga.deri.ie/TCGA-DU-5852> <http://tcga.deri.ie/schema/vial_number> "1" .
+<http://tcga.deri.ie/TCGA-DU-5854> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/tumor_sample>.
+<http://tcga.deri.ie/TCGA-DU-5854> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-DU-5854>.
+<http://tcga.deri.ie/TCGA-DU-5854> <http://tcga.deri.ie/schema/bcr_sample_uuid> "d5baa53a-958c-4163-a388-d3c957c891f9" .
+<http://tcga.deri.ie/TCGA-DU-5854> <http://tcga.deri.ie/schema/tumor_necrosis_percent> "0" .
+<http://tcga.deri.ie/TCGA-DU-5854> <http://tcga.deri.ie/schema/tumor_nuclei_percent> "80" .
+<http://tcga.deri.ie/TCGA-DU-5854> <http://tcga.deri.ie/schema/tumor_weight> 400 .
+<http://tcga.deri.ie/TCGA-DU-5854> <http://tcga.deri.ie/schema/vial_number> "1" .
+<http://tcga.deri.ie/TCGA-DU-5855> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/tumor_sample>.
+<http://tcga.deri.ie/TCGA-DU-5855> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-DU-5855>.
+<http://tcga.deri.ie/TCGA-DU-5855> <http://tcga.deri.ie/schema/bcr_sample_uuid> "66633b7c-7fd9-437e-9ab0-b01c354514b4" .
+<http://tcga.deri.ie/TCGA-DU-5855> <http://tcga.deri.ie/schema/tumor_necrosis_percent> "0" .
+<http://tcga.deri.ie/TCGA-DU-5855> <http://tcga.deri.ie/schema/tumor_nuclei_percent> "95" .
+<http://tcga.deri.ie/TCGA-DU-5855> <http://tcga.deri.ie/schema/tumor_weight> 1000 .
+<http://tcga.deri.ie/TCGA-DU-5855> <http://tcga.deri.ie/schema/vial_number> "1" .
+<http://tcga.deri.ie/TCGA-DU-5870> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/tumor_sample>.
+<http://tcga.deri.ie/TCGA-DU-5870> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-DU-5870>.
+<http://tcga.deri.ie/TCGA-DU-5870> <http://tcga.deri.ie/schema/bcr_sample_uuid> "25e75875-4a84-4c29-9030-0e0922bd6567" .
+<http://tcga.deri.ie/TCGA-DU-5870> <http://tcga.deri.ie/schema/tumor_necrosis_percent> "5" .
+<http://tcga.deri.ie/TCGA-DU-5870> <http://tcga.deri.ie/schema/tumor_nuclei_percent> "90" .
+<http://tcga.deri.ie/TCGA-DU-5870> <http://tcga.deri.ie/schema/tumor_weight> 400 .
+<http://tcga.deri.ie/TCGA-DU-5870> <http://tcga.deri.ie/schema/vial_number> "1" .
+<http://tcga.deri.ie/TCGA-DU-5870> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/tumor_sample>.
+<http://tcga.deri.ie/TCGA-DU-5870> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-DU-5870>.
+<http://tcga.deri.ie/TCGA-DU-5870> <http://tcga.deri.ie/schema/bcr_sample_uuid> "97132594-2F4F-4E47-B301-F9895301632D" .
+<http://tcga.deri.ie/TCGA-DU-5870> <http://tcga.deri.ie/schema/tumor_necrosis_percent> "0" .
+<http://tcga.deri.ie/TCGA-DU-5870> <http://tcga.deri.ie/schema/tumor_nuclei_percent> "90" .
+<http://tcga.deri.ie/TCGA-DU-5870> <http://tcga.deri.ie/schema/tumor_weight> 300 .
+<http://tcga.deri.ie/TCGA-DU-5870> <http://tcga.deri.ie/schema/vial_number> "1" .
+<http://tcga.deri.ie/TCGA-DU-5871> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/tumor_sample>.
+<http://tcga.deri.ie/TCGA-DU-5871> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-DU-5871>.
+<http://tcga.deri.ie/TCGA-DU-5871> <http://tcga.deri.ie/schema/bcr_sample_uuid> "85df37a7-8752-4a2e-831f-5ce639ce9190" .
+<http://tcga.deri.ie/TCGA-DU-5871> <http://tcga.deri.ie/schema/tumor_necrosis_percent> "0" .
+<http://tcga.deri.ie/TCGA-DU-5871> <http://tcga.deri.ie/schema/tumor_nuclei_percent> "90" .
+<http://tcga.deri.ie/TCGA-DU-5871> <http://tcga.deri.ie/schema/tumor_weight> 1000 .
+<http://tcga.deri.ie/TCGA-DU-5871> <http://tcga.deri.ie/schema/vial_number> "1" .
+<http://tcga.deri.ie/TCGA-DU-5872> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/tumor_sample>.
+<http://tcga.deri.ie/TCGA-DU-5872> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-DU-5872>.
+<http://tcga.deri.ie/TCGA-DU-5872> <http://tcga.deri.ie/schema/bcr_sample_uuid> "048550ee-189d-483d-b07f-b77f10278420" .
+<http://tcga.deri.ie/TCGA-DU-5872> <http://tcga.deri.ie/schema/tumor_necrosis_percent> "2" .
+<http://tcga.deri.ie/TCGA-DU-5872> <http://tcga.deri.ie/schema/tumor_nuclei_percent> "75" .
+<http://tcga.deri.ie/TCGA-DU-5872> <http://tcga.deri.ie/schema/tumor_weight> 700 .
+<http://tcga.deri.ie/TCGA-DU-5872> <http://tcga.deri.ie/schema/vial_number> "1" .
+<http://tcga.deri.ie/TCGA-DU-5872> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/tumor_sample>.
+<http://tcga.deri.ie/TCGA-DU-5872> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-DU-5872>.
+<http://tcga.deri.ie/TCGA-DU-5872> <http://tcga.deri.ie/schema/bcr_sample_uuid> "2288D604-4B72-4BD1-B024-62405DDAED1C" .
+<http://tcga.deri.ie/TCGA-DU-5872> <http://tcga.deri.ie/schema/tumor_necrosis_percent> "20" .
+<http://tcga.deri.ie/TCGA-DU-5872> <http://tcga.deri.ie/schema/tumor_nuclei_percent> "60" .
+<http://tcga.deri.ie/TCGA-DU-5872> <http://tcga.deri.ie/schema/tumor_weight> 300 .
+<http://tcga.deri.ie/TCGA-DU-5872> <http://tcga.deri.ie/schema/vial_number> "1" .
+<http://tcga.deri.ie/TCGA-DU-5874> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/tumor_sample>.
+<http://tcga.deri.ie/TCGA-DU-5874> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-DU-5874>.
+<http://tcga.deri.ie/TCGA-DU-5874> <http://tcga.deri.ie/schema/bcr_sample_uuid> "3c7ce3d5-f9e4-4fae-b033-2058446ed7f3" .
+<http://tcga.deri.ie/TCGA-DU-5874> <http://tcga.deri.ie/schema/tumor_necrosis_percent> "0" .
+<http://tcga.deri.ie/TCGA-DU-5874> <http://tcga.deri.ie/schema/tumor_nuclei_percent> "90" .
+<http://tcga.deri.ie/TCGA-DU-5874> <http://tcga.deri.ie/schema/tumor_weight> 600 .
+<http://tcga.deri.ie/TCGA-DU-5874> <http://tcga.deri.ie/schema/vial_number> "1" .
+<http://tcga.deri.ie/TCGA-DU-6392> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/tumor_sample>.
+<http://tcga.deri.ie/TCGA-DU-6392> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-DU-6392>.
+<http://tcga.deri.ie/TCGA-DU-6392> <http://tcga.deri.ie/schema/bcr_sample_uuid> "14780bb2-67a9-4aca-bce4-12793fb1808e" .
+<http://tcga.deri.ie/TCGA-DU-6392> <http://tcga.deri.ie/schema/tumor_necrosis_percent> "0" .
+<http://tcga.deri.ie/TCGA-DU-6392> <http://tcga.deri.ie/schema/tumor_nuclei_percent> "80" .
+<http://tcga.deri.ie/TCGA-DU-6392> <http://tcga.deri.ie/schema/tumor_weight> 500 .
+<http://tcga.deri.ie/TCGA-DU-6392> <http://tcga.deri.ie/schema/vial_number> "1" .
+<http://tcga.deri.ie/TCGA-DU-6393> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/tumor_sample>.
+<http://tcga.deri.ie/TCGA-DU-6393> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-DU-6393>.
+<http://tcga.deri.ie/TCGA-DU-6393> <http://tcga.deri.ie/schema/bcr_sample_uuid> "220f9665-623d-4709-9a29-6fbd263a24ea" .
+<http://tcga.deri.ie/TCGA-DU-6393> <http://tcga.deri.ie/schema/tumor_necrosis_percent> "0" .
+<http://tcga.deri.ie/TCGA-DU-6393> <http://tcga.deri.ie/schema/tumor_nuclei_percent> "100" .
+<http://tcga.deri.ie/TCGA-DU-6393> <http://tcga.deri.ie/schema/tumor_weight> 400 .
+<http://tcga.deri.ie/TCGA-DU-6393> <http://tcga.deri.ie/schema/vial_number> "1" .
+<http://tcga.deri.ie/TCGA-DU-6394> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/tumor_sample>.
+<http://tcga.deri.ie/TCGA-DU-6394> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-DU-6394>.
