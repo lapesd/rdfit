@@ -436,7 +436,6 @@ public class TurtleFixerParsers {
 
     public static class LangTag extends State {
         private final @Nonnull Start start;
-        private boolean silence = false;
         private final @Nullable String context;
 
         public LangTag(@Nonnull Start start, @Nullable String context) {
@@ -445,29 +444,20 @@ public class TurtleFixerParsers {
             this.context = context;
         }
 
-        @Override public @Nonnull LangTag reset() {
-            super.reset();
-            silence = false;
-            return this;
-        }
-
         @Override public @Nonnull FixerParser feedByte(int value) {
+            output.add(value);
             if (Utils.isAsciiSpace(value) || Utils.isInSmall(value, TRIPLE_SEP)) {
-                silence = false; // we should output the byte as it is not part of the lang tag
-                output.add(value);
                 return start; // lang tag finished
-            } else if (value == '_' || value == '-') {
-                logger.warn("{}Erasing {}-suffix from lang tag.",
-                            context == null ? "" : context + ": ", (char)value);
-                silence = true; // bad lang tag, ignore _ and anything after it
-            } else if (!silence) {
-                output.add(value);
+            } else if (value == '_') {
+                logger.warn("{}replacing _ with - in lang tag.",
+                        context == null ? "" : context + ": ");
+                output.removeLast().add('-');
+            } else if (value != '-' && !Utils.isAsciiAlphaNum(value)) {
+                logger.warn("{}erasing unexpected char {} (codePoint={}) from lang tag",
+                            context == null ? "" : context + ": ", (char) value, value);
+                output.removeLast();
             }
             return this;
-        }
-
-        @Override public String toString() {
-            return "LangTagState{silence=" + silence + '}';
         }
     }
 

@@ -62,8 +62,8 @@ public class CompressNormalizerTest {
     @DataProvider public static Object[][] testData() {
         List<String> contents = asList("", "file_a\n", "file_b\n", "file_c\n");
         List<String> decoratedContents = asList(
-                "<http://example.org/A%201> <http://example.org/p> \"lang{}\"@fr.",
-                "@prefix ex: <http://example.org>.\n[] ex:p <http://example.org/A%20%7B1%7D>, \"lang\"@pt."
+                "<http://example.org/A%201> <http://example.org/p> \"lang{}\"@fr-1234.",
+                "@prefix ex: <http://example.org>.\n[] ex:p <http://example.org/A%20%7B1%7D>, \"lang\"@pt-BR."
         );
         return Stream.of(
                 asList("test_1.tar.gz", contents),

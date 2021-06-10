@@ -41,6 +41,7 @@ public class XMLIRIFixerStream extends InputStream {
     private static final byte[] RESOURCE = "resource".getBytes(UTF_8);
     private static final byte[] DATATYPE = "datatype".getBytes(UTF_8);
     private static final byte[] IRI = "IRI".getBytes(UTF_8);
+    private static final byte[] XML_LANG_ATTR = "xml:lang=\"".getBytes(UTF_8);
 
 
     /* --- --- --- input state --- --- --- */
@@ -309,7 +310,7 @@ public class XMLIRIFixerStream extends InputStream {
                 logger.warn("No OWL nor RDF namespaces detected! will use \"rdf\" " +
                         "and \"owl\" as default prefix names");
             }
-            return new AssertionIRIsFixer(rdfKey, owlKey);
+            return new ActiveAttributeFixerParser(rdfKey, owlKey);
         }
 
         @Override protected @Nonnull FixerParser onAfterMatch(int matchedRow, int byteValue) {
@@ -361,24 +362,37 @@ public class XMLIRIFixerStream extends InputStream {
         }
     }
 
-    private class AssertionIRIsFixer extends AttributeFixerParser {
-        public AssertionIRIsFixer(@Nullable byte[] rdfKey, @Nullable byte[] owlKey) {
-            super(createIRIAttributeExpressions(rdfKey, owlKey));
+    private class ActiveAttributeFixerParser extends AttributeFixerParser {
+        public ActiveAttributeFixerParser(@Nullable byte[] rdfKey, @Nullable byte[] owlKey) {
+            super(createFixableAttributeExpressions(rdfKey, owlKey));
         }
 
         @Override protected @Nonnull FixerParser onMatch(int matchedRow) {
-            iriFixer.reset();
+            if (matchedRow == 4) {
+                assert Arrays.equals(expected[matchedRow], XML_LANG_ATTR);
+            } else {
+                iriFixer.reset();
+            }
             return super.onMatch(matchedRow);
         }
 
         @Override protected @Nonnull FixerParser onAfterMatch(int matchedRow, int byteValue) {
-            cleaned.removeLast();
-            if (byteValue == '"') {
-                iriFixer.flush();
-                clearMatches();
-                cleaned.add('"');
+            if (matchedRow == 4) {
+                if (byteValue == '"') {
+                    clearMatches();
+                } else if (byteValue == '_') {
+                    cleaned.removeLast();
+                    cleaned.add('-');
+                }
             } else {
-                iriFixer.feedByte(byteValue);
+                cleaned.removeLast();
+                if (byteValue == '"') {
+                    iriFixer.flush();
+                    clearMatches();
+                    cleaned.add('"');
+                } else {
+                    iriFixer.feedByte(byteValue);
+                }
             }
             return this;
         }
@@ -398,14 +412,15 @@ public class XMLIRIFixerStream extends InputStream {
         return expression;
     }
 
-    private static byte[][] createIRIAttributeExpressions(byte[] rdfKey, byte[] owlKey) {
+    private static byte[][] createFixableAttributeExpressions(byte[] rdfKey, byte[] owlKey) {
         rdfKey = rdfKey == null ? RDF_KEY : rdfKey;
         owlKey = owlKey == null ? OWL_KEY : owlKey;
         return new byte[][] {
-                toAttributeExpression(rdfKey, ABOUT),
-                toAttributeExpression(rdfKey, RESOURCE),
-                toAttributeExpression(rdfKey, DATATYPE),
-                toAttributeExpression(owlKey, IRI)
+                toAttributeExpression(rdfKey, ABOUT),    // 0
+                toAttributeExpression(rdfKey, RESOURCE), // 1
+                toAttributeExpression(rdfKey, DATATYPE), // 2
+                toAttributeExpression(owlKey, IRI),      // 3
+                XML_LANG_ATTR                            // 4
         };
     }
 

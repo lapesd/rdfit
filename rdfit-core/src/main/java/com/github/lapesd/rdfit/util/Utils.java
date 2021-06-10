@@ -41,6 +41,14 @@ public class Utils {
         return isInSmall(value, ASCII_WS);
     }
 
+    public static boolean isAsciiAlpha(int v) {
+        return (v >= 'A' && v <= 'Z') || (v >= 'a' && v <= 'z');
+    }
+
+    public static boolean isAsciiAlphaNum(int v) {
+        return (v >= 'A' && v <= 'Z') || (v >= 'a' && v <= 'z') || (v >= '0' && v <= '9');
+    }
+
     public static int asciiLower(int value) {
         return value + (value >= 'A' && value <= 'Z' ? 'a'-'A' : 0);
     }

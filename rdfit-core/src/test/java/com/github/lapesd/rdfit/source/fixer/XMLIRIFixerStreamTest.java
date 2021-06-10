@@ -53,7 +53,9 @@ public class XMLIRIFixerStreamTest {
                 "iswc-2008-complete.rdf",
                 "owled-2007-complete+everything.rdf",
                 "owled-2007-complete.rdf",
-                "time.rdf"
+                "time.rdf",
+                "nyt-locations.bad-lang.rdf",
+                "nyt-locations.rdf"
         );
         List<List<String>> data = filenames.stream().filter(n -> !n.contains(".bad-"))
                                             .map(n -> asList(n, n)).collect(Collectors.toList());

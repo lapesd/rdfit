@@ -326,8 +326,7 @@ files with invalid IRIs can be made valid wrapping the source object
 2. Erase invalid character encodings (when the binary representation is 
    so messed up it does not appear as the wrong character but is straight up 
    invalid UTF-8)
-3. For NT/Turtle/TriG, erase language tag suffixes starting with _ or - 
-   (e.g., fr_1234 or pt_BR). 
+3. Replace '_' in language tags with '-' (e.g., `en_US` becomes `en-US`) 
 4. For NT/Turtle/TriG, `\`-escape occurrences of `\r` (0x0D) and `\n` (0x0A)
    inside single-quoted lexical forms.
 5. Replace `\` with `\\` in any `\x`-escape where x is not in `tbnrf"'` (see

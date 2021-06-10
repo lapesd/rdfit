@@ -1,0 +1,893 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+This material is licensed under a Creative Commons Attribution 3.0
+United States License available at:
+
+http://creativecommons.org/licenses/by/3.0/us/
+
+This material is protected by copyright, and owned or controlled by The
+New York Times Company.
+
+Disclaimer: The New York Times Linked Data service is in Beta and The
+New York Times Company retains the right to modify or discontinue this
+service at its discretion.
+-->
+
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:nyt="http://data.nytimes.com/elements/"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:cc="http://creativecommons.org/ns#"
+    xmlns:fb="http://rdf.freebase.com/ns/"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:dc="http://purl.org/dc/elements/1.1/"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:geonames="http://www.geonames.org/ontology#"
+    xmlns:time="http://www.w3.org/2006/time#"
+    xmlns:geo="http://www.w3.org/2003/01/geo/wgs84_pos#" > 
+  <rdf:Description rdf:about="http://data.nytimes.com/N13463766342949717891">
+    <geo:long rdf:datatype="http://www.w3.org/2001/XMLSchema#double">-94.6255127</geo:long>
+    <nyt:latest_use rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-09-14</nyt:latest_use>
+    <skos:prefLabel xml:lang="en">Oregon Trail</skos:prefLabel>
+    <nyt:search_api_query rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://api.nytimes.com/svc/search/v1/article?query=+nytd_geo_facet%3A%5BOregon+Trail%5D&amp;rank=newest&amp;fields=abstract,author,body,byline,classifiers_facet,column_facet,date,day_of_week_facet,des_facet,desk_facet,fee,geo_facet,lead_paragraph,material_type_facet,multimedia,nytd_byline,nytd_des_facet,nytd_geo_facet,nytd_lead_paragraph,nytd_org_facet,nytd_per_facet,nytd_section_facet,nytd_title,nytd_works_mentioned_facet,org_facet,page_facet,per_facet,publication_day,publication_month,publication_year,section_page_facet,small_image_height,small_image_url,small_image_width,source_facet,title,url,word_count,works_mentioned_facet</nyt:search_api_query>
+    <skos:inScheme rdf:resource="http://data.nytimes.com/elements/nytd_geo"/>
+    <owl:sameAs rdf:resource="http://dbpedia.org/resource/Oregon_Trail"/>
+    <nyt:associated_article_count rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</nyt:associated_article_count>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <owl:sameAs rdf:resource="http://sws.geonames.org/4276727/"/>
+    <owl:sameAs rdf:resource="http://rdf.freebase.com/ns/en.oregon_trail"/>
+    <geo:lat rdf:datatype="http://www.w3.org/2001/XMLSchema#double">39.0166723</geo:lat>
+    <owl:sameAs rdf:resource="http://data.nytimes.com/oregon_trail_geo"/>
+    <nyt:number_of_variants rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</nyt:number_of_variants>
+    <nyt:first_use rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-09-14</nyt:first_use>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/N12930380387917339601">
+    <nyt:first_use rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2004-09-26</nyt:first_use>
+    <owl:sameAs rdf:resource="http://sws.geonames.org/1796236/"/>
+    <owl:sameAs rdf:resource="http://dbpedia.org/resource/Shanghai"/>
+    <nyt:associated_article_count rdf:datatype="http://www.w3.org/2001/XMLSchema#int">124</nyt:associated_article_count>
+    <owl:sameAs rdf:resource="http://data.nytimes.com/shanghai_china_geo"/>
+    <geo:long rdf:datatype="http://www.w3.org/2001/XMLSchema#double">121.4580556</geo:long>
+    <nyt:latest_use rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-06-07</nyt:latest_use>
+    <skos:inScheme rdf:resource="http://data.nytimes.com/elements/nytd_geo"/>
+    <skos:prefLabel xml:lang="en">Shanghai (China)</skos:prefLabel>
+    <nyt:number_of_variants rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</nyt:number_of_variants>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <geo:lat rdf:datatype="http://www.w3.org/2001/XMLSchema#double">31.2222222</geo:lat>
+    <owl:sameAs rdf:resource="http://rdf.freebase.com/ns/en.shanghai"/>
+    <nyt:search_api_query rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://api.nytimes.com/svc/search/v1/article?query=+nytd_geo_facet%3A%5BShanghai+%28China%29%5D&amp;rank=newest&amp;fields=abstract,author,body,byline,classifiers_facet,column_facet,date,day_of_week_facet,des_facet,desk_facet,fee,geo_facet,lead_paragraph,material_type_facet,multimedia,nytd_byline,nytd_des_facet,nytd_geo_facet,nytd_lead_paragraph,nytd_org_facet,nytd_per_facet,nytd_section_facet,nytd_title,nytd_works_mentioned_facet,org_facet,page_facet,per_facet,publication_day,publication_month,publication_year,section_page_facet,small_image_height,small_image_url,small_image_width,source_facet,title,url,word_count,works_mentioned_facet</nyt:search_api_query>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/N268254687191771581">
+    <nyt:associated_article_count rdf:datatype="http://www.w3.org/2001/XMLSchema#int">5</nyt:associated_article_count>
+    <nyt:search_api_query rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://api.nytimes.com/svc/search/v1/article?query=+nytd_geo_facet%3A%5BSteamboat+Springs+%28Colo%29%5D&amp;rank=newest&amp;fields=abstract,author,body,byline,classifiers_facet,column_facet,date,day_of_week_facet,des_facet,desk_facet,fee,geo_facet,lead_paragraph,material_type_facet,multimedia,nytd_byline,nytd_des_facet,nytd_geo_facet,nytd_lead_paragraph,nytd_org_facet,nytd_per_facet,nytd_section_facet,nytd_title,nytd_works_mentioned_facet,org_facet,page_facet,per_facet,publication_day,publication_month,publication_year,section_page_facet,small_image_height,small_image_url,small_image_width,source_facet,title,url,word_count,works_mentioned_facet</nyt:search_api_query>
+    <nyt:first_use rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2004-10-08</nyt:first_use>
+    <owl:sameAs rdf:resource="http://data.nytimes.com/steamboat_springs_colo_geo"/>
+    <skos:inScheme rdf:resource="http://data.nytimes.com/elements/nytd_geo"/>
+    <owl:sameAs rdf:resource="http://sws.geonames.org/5582371/"/>
+    <owl:sameAs rdf:resource="http://rdf.freebase.com/ns/en.steamboat_springs"/>
+    <skos:prefLabel xml:lang="en">Steamboat Springs (Colo)</skos:prefLabel>
+    <owl:sameAs rdf:resource="http://dbpedia.org/resource/Steamboat_Springs%2C_Colorado"/>
+    <geo:long rdf:datatype="http://www.w3.org/2001/XMLSchema#double">-106.8317158</geo:long>
+    <geo:lat rdf:datatype="http://www.w3.org/2001/XMLSchema#double">40.4849769</geo:lat>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <nyt:number_of_variants rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</nyt:number_of_variants>
+    <nyt:latest_use rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2008-12-03</nyt:latest_use>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://sws.geonames.org/3439705/">
+    <geonames:wikipediaArticle rdf:resource="http://ro.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName xml:lang="an">Uruguai</geonames:alternateName>
+    <geonames:alternateName xml:lang="tet">Uruguai</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://eu.wikipedia.org/wiki/Uruguai"/>
+    <geonames:alternateName xml:lang="sq">Uruguai</geonames:alternateName>
+    <geonames:alternateName xml:lang="pt">Uruguai</geonames:alternateName>
+    <geonames:alternateName xml:lang="oc">Uruguai</geonames:alternateName>
+    <geonames:alternateName xml:lang="gl">Uruguai</geonames:alternateName>
+    <geonames:alternateName xml:lang="eu">Uruguai</geonames:alternateName>
+    <geonames:alternateName xml:lang="ca">Uruguai</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://gd.wikipedia.org/wiki/Uruguaidh"/>
+    <geonames:featureCode rdf:resource="http://www.geonames.org/ontology#A.PCLI"/>
+    <geonames:wikipediaArticle rdf:resource="http://es.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName>Banda Oriental</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://az.wikipedia.org/wiki/Uruqvay"/>
+    <geonames:wikipediaArticle rdf:resource="http://ku.wikipedia.org/wiki/%C3%9Br%C3%BBg%C3%BBay"/>
+    <geonames:wikipediaArticle rdf:resource="http://vi.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName xml:lang="bn">উরুগোয়ে</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://ar.wikipedia.org/wiki/%D8%A3%D9%88%D8%B1%D9%88%D8%AC%D9%88%D8%A7%D9%8A"/>
+    <geonames:wikipediaArticle rdf:resource="http://hr.wikipedia.org/wiki/Urugvaj"/>
+    <geonames:name>Uruguay</geonames:name>
+    <geonames:wikipediaArticle rdf:resource="http://mk.wikipedia.org/wiki/%D0%A3%D1%80%D1%83%D0%B3%D0%B2%D0%B0%D1%98"/>
+    <geonames:wikipediaArticle rdf:resource="http://gl.wikipedia.org/wiki/Uruguai_-_Uruguay"/>
+    <geonames:alternateName xml:lang="am">ኡራጓይ</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://cy.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://lv.wikipedia.org/wiki/Urugvaja"/>
+    <geonames:wikipediaArticle rdf:resource="http://wo.wikipedia.org/wiki/Uruguwaay"/>
+    <geonames:wikipediaArticle rdf:resource="http://cv.wikipedia.org/wiki/%D0%A3%D1%80%D1%83%D0%B3%D0%B2%D0%B0%D0%B9"/>
+    <geonames:alternateName xml:lang="se">Uruguay</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://kw.wikipedia.org/wiki/Urugway"/>
+    <geonames:alternateName xml:lang="ro">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="rm">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="pam">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="uk">Уруґвай</geonames:alternateName>
+    <geonames:alternateName xml:lang="no">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="nn">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="nl">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="nds">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="nb">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="ms">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="it">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="io">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="ilo">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="id">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="ko">우루과이</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://nl.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName xml:lang="ia">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="hu">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="fr">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="ml">ഉറുഗ്വ</geonames:alternateName>
+    <geonames:alternateName xml:lang="es">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="en">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="de">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="da">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="cy">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="cs">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="af">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="et">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="fi">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="sv">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="link">http://en.wikipedia.org/wiki/Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="sw">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="tl">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="tr">Uruguay</geonames:alternateName>
+    <geonames:alternateName xml:lang="vi">Uruguay</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://ceb.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName xml:lang="es">República Oriental del Uruguay</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://da.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName xml:lang="bn">উরুগোয়ে</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://lt.wikipedia.org/wiki/Urugvajus"/>
+    <geonames:wikipediaArticle rdf:resource="http://co.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName xml:lang="ga">Uragua</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://vec.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://sa.wikipedia.org/wiki/%E0%A4%89%E0%A4%B0%E0%A5%81%E0%A4%97%E0%A5%8D%E0%A4%B5%E0%A4%BE%E0%A4%AF"/>
+    <geonames:wikipediaArticle rdf:resource="http://cs.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName>Republica del Uruguay</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://dv.wikipedia.org/wiki/%DE%87%DE%AA%DE%83%DE%AA%DE%8E%DE%AA%DE%87%DE%AD"/>
+    <geonames:alternateName xml:lang="fo">Uruguei</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://fa.wikipedia.org/wiki/%D8%A7%D8%B1%D9%88%DA%AF%D9%88%D8%A6%D9%87"/>
+    <geonames:wikipediaArticle rdf:resource="http://lij.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://yi.wikipedia.org/wiki/%D7%90%D7%95%D7%A8%D7%95%D7%92%D7%95%D7%95%D7%99%D7%99"/>
+    <geonames:alternateName xml:lang="km">អ៊ុយរុយហ្គាយ</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://ht.wikipedia.org/wiki/Irigwe"/>
+    <geonames:alternateName xml:lang="vi">U-ru-goay</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://tet.wikipedia.org/wiki/Uruguai"/>
+    <geonames:wikipediaArticle rdf:resource="http://sr.wikipedia.org/wiki/%D0%A3%D1%80%D1%83%D0%B3%D0%B2%D0%B0%D1%98"/>
+    <geonames:alternateName xml:lang="sw">Urugwai</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://nah.wikipedia.org/wiki/Uruhuay%C4%81n"/>
+    <geonames:wikipediaArticle rdf:resource="http://la.wikipedia.org/wiki/Uruguaia"/>
+    <geonames:wikipediaArticle rdf:resource="http://fr.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://io.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName xml:lang="gl">Uruguai - Uruguay</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://tg.wikipedia.org/wiki/%D0%A3%D1%80%D1%83%D0%B3%D1%83%D0%B0%D0%B9"/>
+    <geonames:wikipediaArticle rdf:resource="http://ps.wikipedia.org/wiki/%D9%8A%D9%88%D8%B1%D8%A7%DA%AB%D9%88%D8%A7%DB%8C"/>
+    <geonames:wikipediaArticle rdf:resource="http://ast.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://ml.wikipedia.org/wiki/%E0%B4%89%E0%B4%B1%E0%B5%81%E0%B4%97%E0%B5%8D%E0%B4%B5%E0%B5%87"/>
+    <geo:lat>-33.0</geo:lat>
+    <geonames:wikipediaArticle rdf:resource="http://qu.wikipedia.org/wiki/Uruwayi"/>
+    <geonames:wikipediaArticle rdf:resource="http://nah.wikipedia.org/wiki/Uruhuay"/>
+    <geonames:alternateName xml:lang="vi">U-ru-goay (Uruguay)</geonames:alternateName>
+    <geonames:alternateName xml:lang="ar">أورجواي</geonames:alternateName>
+    <geonames:alternateName xml:lang="az">Uruqvay</geonames:alternateName>
+    <geonames:alternateName xml:lang="is">Úrúgvæ</geonames:alternateName>
+    <geonames:alternateName xml:lang="ur">ہوراگوئے</geonames:alternateName>
+    <geonames:alternateName xml:lang="hi">उरूग्वे</geonames:alternateName>
+    <geo:long>-56.0</geo:long>
+    <geonames:wikipediaArticle rdf:resource="http://af.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://is.wikipedia.org/wiki/%C3%9Ar%C3%BAgv%C3%A6"/>
+    <geonames:featureClass rdf:resource="http://www.geonames.org/ontology#A"/>
+    <geonames:wikipediaArticle rdf:resource="http://ga.wikipedia.org/wiki/Uragua"/>
+    <geonames:wikipediaArticle rdf:resource="http://et.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName xml:lang="th">อุรุกวัย</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://lb.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName xml:lang="ja">ウルグアイ</geonames:alternateName>
+    <geonames:alternateName xml:lang="sa">उरुग्वाय</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://kn.wikipedia.org/wiki/%E0%B2%89%E0%B2%B0%E0%B3%81%E0%B2%97%E0%B3%8D%E0%B2%B5%E0%B3%86"/>
+    <geonames:wikipediaArticle rdf:resource="http://crh.wikipedia.org/wiki/Urugvay"/>
+    <geonames:wikipediaArticle rdf:resource="http://hu.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName xml:lang="sq">Uruguaj</geonames:alternateName>
+    <geonames:alternateName xml:lang="sk">Uruguaj</geonames:alternateName>
+    <geonames:alternateName xml:lang="he">אורוגוואי</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://ko.wikipedia.org/wiki/%EC%9A%B0%EB%A3%A8%EA%B3%BC%EC%9D%B4"/>
+    <geonames:wikipediaArticle rdf:resource="http://ta.wikipedia.org/wiki/%E0%AE%89%E0%AE%B0%E0%AF%81%E0%AE%95%E0%AF%81%E0%AE%B5%E0%AF%87"/>
+    <rdf:type rdf:resource="http://www.geonames.org/ontology#Feature"/>
+    <geonames:alternateName xml:lang="tg">Уругуай</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://bs.wikipedia.org/wiki/Urugvaj"/>
+    <geonames:alternateName xml:lang="mt">Urugwaj</geonames:alternateName>
+    <geonames:alternateName xml:lang="pl">Urugwaj</geonames:alternateName>
+    <geonames:alternateName xml:lang="ka">ურუგვაი</geonames:alternateName>
+    <geonames:alternateName xml:lang="ta">உருகுவே</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://it.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://ilo.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://nn.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://vo.wikipedia.org/wiki/Luruguy%C3%A4n"/>
+    <geonames:alternateName xml:lang="hi">युरूगुए</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://pt.wikipedia.org/wiki/Uruguai"/>
+    <geonames:wikipediaArticle rdf:resource="http://nov.wikipedia.org/wiki/Uruguay"/>
+    <owl:sameAs rdf:resource="http://dbpedia.org/resource/Uruguay"/>
+    <geonames:neighbouringFeatures rdf:resource="http://sws.geonames.org/3439705/neighbours.rdf"/>
+    <geonames:wikipediaArticle rdf:resource="http://sq.wikipedia.org/wiki/Uruguai"/>
+    <geonames:wikipediaArticle rdf:resource="http://oc.wikipedia.org/wiki/Uruguai"/>
+    <geonames:alternateName xml:lang="fa">اروگوئه</geonames:alternateName>
+    <geonames:alternateName xml:lang="link">http://ru.wikipedia.org/wiki/%D0%A3%D1%80%D1%83%D0%B3%D0%B2%D0%B0%D0%B9</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://sh.wikipedia.org/wiki/Urugvaj"/>
+    <geonames:wikipediaArticle rdf:resource="http://ms.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://zh.wikipedia.org/wiki/%E4%B9%8C%E6%8B%89%E5%9C%AD"/>
+    <geonames:alternateName xml:lang="ps">یوروګوای</geonames:alternateName>
+    <geonames:alternateName xml:lang="ar">أوروغواي</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://pag.wikipedia.org/wiki/Uruguay"/>
+    <geonames:childrenFeatures rdf:resource="http://sws.geonames.org/3439705/contains.rdf"/>
+    <geonames:alternateName xml:lang="bs">Urugvaj</geonames:alternateName>
+    <geonames:alternateName xml:lang="hr">Urugvaj</geonames:alternateName>
+    <geonames:alternateName xml:lang="sh">Urugvaj</geonames:alternateName>
+    <geonames:alternateName xml:lang="sl">Urugvaj</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://sk.wikipedia.org/wiki/Uruguaj"/>
+    <geonames:wikipediaArticle rdf:resource="http://he.wikipedia.org/wiki/%D7%90%D7%95%D7%A8%D7%95%D7%92%D7%95%D7%95%D7%90%D7%99"/>
+    <geonames:wikipediaArticle rdf:resource="http://gn.wikipedia.org/wiki/Urugu%C3%A1i"/>
+    <geonames:wikipediaArticle rdf:resource="http://fi.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName xml:lang="fa">اوروگوئه</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://ru.wikipedia.org/wiki/%D0%A3%D1%80%D1%83%D0%B3%D0%B2%D0%B0%D0%B9"/>
+    <geonames:alternateName xml:lang="sr">Уругвај</geonames:alternateName>
+    <geonames:alternateName xml:lang="mk">Уругвај</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://se.wikipedia.org/wiki/Uruguay"/>
+    <geonames:countryCode>UY</geonames:countryCode>
+    <geonames:wikipediaArticle rdf:resource="http://an.wikipedia.org/wiki/Uruguai"/>
+    <geonames:alternateName xml:lang="ht">Irigwe</geonames:alternateName>
+    <geonames:alternateName xml:lang="bo">ཨུ་རུ་གྷེ།</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://kk.wikipedia.org/wiki/%D0%A3%D1%80%D1%83%D0%B3%D1%83%D0%B0%D0%B9"/>
+    <geonames:locationMap rdf:resource="http://www.geonames.org/3439705/oriental-republic-of-uruguay.html"/>
+    <geonames:alternateName xml:lang="hy">Ուրուգվայ</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://dsb.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName xml:lang="th">ประเทศอุรุกวัย</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://sl.wikipedia.org/wiki/Urugvaj"/>
+    <geonames:population>3477000</geonames:population>
+    <geonames:alternateName xml:lang="ga">Urugua</geonames:alternateName>
+    <geonames:alternateName xml:lang="lt">Urugvajus</geonames:alternateName>
+    <geonames:alternateName xml:lang="kw">Urugway</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://pl.wikipedia.org/wiki/Urugwaj"/>
+    <geonames:wikipediaArticle rdf:resource="http://uk.wikipedia.org/wiki/%D0%A3%D1%80%D1%83%D0%B3%D0%B2%D0%B0%D0%B9"/>
+    <geonames:alternateName xml:lang="uk">Уругвай</geonames:alternateName>
+    <geonames:alternateName xml:lang="ru">Уругвай</geonames:alternateName>
+    <geonames:alternateName xml:lang="bg">Уругвай</geonames:alternateName>
+    <geonames:alternateName xml:lang="be">Уругвай</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://de.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://el.wikipedia.org/wiki/%CE%9F%CF%85%CF%81%CE%BF%CF%85%CE%B3%CE%BF%CF%85%CE%AC%CE%B7"/>
+    <geonames:alternateName xml:lang="lo">ລູກວຍອຸຣ</geonames:alternateName>
+    <geonames:alternateName xml:lang="ku">Ûrûgûay</geonames:alternateName>
+    <geonames:alternateName xml:lang="ja">ウルグアイ共和国</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://ka.wikipedia.org/wiki/%E1%83%A3%E1%83%A0%E1%83%A3%E1%83%92%E1%83%95%E1%83%90%E1%83%98"/>
+    <geonames:wikipediaArticle rdf:resource="http://nds.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://gv.wikipedia.org/wiki/Yn_Ooraguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://br.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName xml:lang="he">אורגוואי</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://ca.wikipedia.org/wiki/Uruguai"/>
+    <geonames:alternateName xml:lang="ar">اروغواي</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://bpy.wikipedia.org/wiki/%E0%A6%89%E0%A6%B0%E0%A7%81%E0%A6%97%E0%A7%81%E0%A6%AF%E0%A6%BC%E0%A7%87"/>
+    <geonames:alternateName xml:lang="qu">Uruwayi</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://sw.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://tl.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://th.wikipedia.org/wiki/%E0%B8%9B%E0%B8%A3%E0%B8%B0%E0%B9%80%E0%B8%97%E0%B8%A8%E0%B8%AD%E0%B8%B8%E0%B8%A3%E0%B8%B8%E0%B8%81%E0%B8%A7%E0%B8%B1%E0%B8%A2"/>
+    <geonames:alternateName xml:lang="lv">Urugvaja</geonames:alternateName>
+    <geonames:inCountry rdf:resource="http://www.geonames.org/countries/#UY"/>
+    <geonames:wikipediaArticle rdf:resource="http://bg.wikipedia.org/wiki/%D0%A3%D1%80%D1%83%D0%B3%D0%B2%D0%B0%D0%B9"/>
+    <geonames:wikipediaArticle rdf:resource="http://diq.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://no.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://en.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://id.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName xml:lang="el">Ουρουγουάη</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://eo.wikipedia.org/wiki/Urugvajo"/>
+    <geonames:alternateName xml:lang="yi">אורוגװיי</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://rm.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://pms.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName xml:lang="ug">ئۇرۇگۋاي</geonames:alternateName>
+    <geonames:alternateName xml:lang="eo">Urugvajo</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://pdc.wikipedia.org/wiki/Uruguay"/>
+    <geonames:wikipediaArticle rdf:resource="http://ne.wikipedia.org/wiki/%E0%A4%89%E0%A4%B0%E0%A5%81%E0%A4%97%E0%A5%8D%E0%A4%B5%E0%A4%BE%E0%A4%87"/>
+    <geonames:wikipediaArticle rdf:resource="http://ay.wikipedia.org/wiki/Uruwayi"/>
+    <geonames:wikipediaArticle rdf:resource="http://pam.wikipedia.org/wiki/Uruguay"/>
+    <geonames:parentFeature rdf:resource="http://sws.geonames.org/6255150/"/>
+    <geonames:wikipediaArticle rdf:resource="http://ln.wikipedia.org/wiki/Ulugwai"/>
+    <geonames:wikipediaArticle rdf:resource="http://tr.wikipedia.org/wiki/Uruguay"/>
+    <geonames:alternateName xml:lang="zh">乌拉圭</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://bn.wikipedia.org/wiki/%E0%A6%89%E0%A6%B0%E0%A7%81%E0%A6%97%E0%A7%81%E0%A6%AF%E0%A6%BC%E0%A7%87"/>
+    <geonames:wikipediaArticle rdf:resource="http://ja.wikipedia.org/wiki/%E3%82%A6%E3%83%AB%E3%82%B0%E3%82%A2%E3%82%A4"/>
+    <geonames:alternateName xml:lang="la">Uruguaia</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://sv.wikipedia.org/wiki/Uruguay"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://sws.geonames.org/4049979/">
+    <geonames:wikipediaArticle rdf:resource="http://fa.wikipedia.org/wiki/%D8%A8%D8%B1%D9%85%DB%8C%D9%86%DA%AF%D9%87%D9%85%D8%8C_%D8%A2%D9%84%D8%A7%D8%A8%D8%A7%D9%85%D8%A7"/>
+    <geonames:alternateName xml:lang="post">35246</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35221</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35217</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://ia.wikipedia.org/wiki/Birmingham%2C_Alabama"/>
+    <geonames:wikipediaArticle rdf:resource="http://sk.wikipedia.org/wiki/Birmingham_%28Alabama%29"/>
+    <geonames:alternateName xml:lang="post">35218</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35237</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35230</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35290</geonames:alternateName>
+    <geo:long>-86.80249</geo:long>
+    <geonames:wikipediaArticle rdf:resource="http://nl.wikipedia.org/wiki/Birmingham_%28Alabama%29"/>
+    <rdf:type rdf:resource="http://www.geonames.org/ontology#Feature"/>
+    <geonames:wikipediaArticle rdf:resource="http://sl.wikipedia.org/wiki/Birmingham%2C_Alabama"/>
+    <geonames:wikipediaArticle rdf:resource="http://ja.wikipedia.org/wiki/%E3%83%90%E3%83%BC%E3%83%9F%E3%83%B3%E3%82%B0%E3%83%8F%E3%83%A0_%28%E3%82%A2%E3%83%A9%E3%83%90%E3%83%9E%E5%B7%9E%29"/>
+    <geonames:countryCode>US</geonames:countryCode>
+    <geonames:alternateName xml:lang="ja">バーミンハム</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35208</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35220</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35285</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35299</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://fi.wikipedia.org/wiki/Birmingham_%28Alabama%29"/>
+    <geonames:wikipediaArticle rdf:resource="http://id.wikipedia.org/wiki/Birmingham%2C_Alabama"/>
+    <geonames:alternateName xml:lang="post">35255</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35201</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35215</geonames:alternateName>
+    <geonames:name>Birmingham</geonames:name>
+    <geonames:alternateName xml:lang="post">35223</geonames:alternateName>
+    <geonames:postalCode>35201</geonames:postalCode>
+    <owl:sameAs rdf:resource="http://dbpedia.org/resource/Birmingham%2C_Alabama"/>
+    <geonames:alternateName xml:lang="post">35280</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35282</geonames:alternateName>
+    <geonames:alternateName xml:lang="nn">Birmingham i Alabama</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://sv.wikipedia.org/wiki/Birmingham%2C_Alabama"/>
+    <geonames:alternateName xml:lang="post">35266</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35283</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://ar.wikipedia.org/wiki/%D8%A8%D8%B1%D9%85%D9%86%D8%BA%D9%87%D8%A7%D9%85%D8%8C_%D8%A3%D9%84%D8%A7%D8%A8%D8%A7%D9%85%D8%A7"/>
+    <geonames:wikipediaArticle rdf:resource="http://sr.wikipedia.org/wiki/%D0%91%D0%B5%D1%80%D0%BC%D0%B8%D0%BD%D0%B3%D0%B0%D0%BC_%28%D0%90%D0%BB%D0%B0%D0%B1%D0%B0%D0%BC%D0%B0%29"/>
+    <geonames:alternateName xml:lang="post">35222</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://ga.wikipedia.org/wiki/Birmingham%2C_Alabama"/>
+    <geonames:alternateName xml:lang="post">35209</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://de.wikipedia.org/wiki/Birmingham_%28Alabama%29"/>
+    <geonames:wikipediaArticle rdf:resource="http://uk.wikipedia.org/wiki/%D0%91%D1%96%D1%80%D0%BC%D1%96%D0%BD%D0%B3%D0%B5%D0%BC_%28%D0%90%D0%BB%D0%B0%D0%B1%D0%B0%D0%BC%D0%B0%29"/>
+    <geonames:alternateName xml:lang="post">35210</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://ro.wikipedia.org/wiki/Birmingham%2C_Alabama"/>
+    <geonames:parentFeature rdf:resource="http://sws.geonames.org/4069696/"/>
+    <geonames:alternateName xml:lang="post">35205</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35219</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35231</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35291</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://bg.wikipedia.org/wiki/%D0%91%D0%B8%D1%80%D0%BC%D0%B8%D0%BD%D0%B3%D0%B0%D0%BC_%28%D0%90%D0%BB%D0%B0%D0%B1%D0%B0%D0%BC%D0%B0%29"/>
+    <geonames:wikipediaArticle rdf:resource="http://da.wikipedia.org/wiki/Birmingham_%28Alabama%29"/>
+    <geonames:alternateName xml:lang="post">35225</geonames:alternateName>
+    <geonames:alternateName xml:lang="ja">バーミングハム</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35232</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35278</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35234</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35286</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://vo.wikipedia.org/wiki/Birmingham_%28Alabama%29"/>
+    <geonames:alternateName xml:lang="post">35202</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35287</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35293</geonames:alternateName>
+    <geonames:nearbyFeatures rdf:resource="http://sws.geonames.org/4049979/nearby.rdf"/>
+    <geonames:alternateName xml:lang="ru">Бирмингем</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35277</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35243</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35203</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://es.wikipedia.org/wiki/Birmingham_%28Alabama%29"/>
+    <geonames:alternateName xml:lang="post">35294</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35224</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35289</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35233</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35296</geonames:alternateName>
+    <geonames:alternateName xml:lang="uk">Бірмінгем</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35245</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35259</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35212</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35229</geonames:alternateName>
+    <geonames:alternateName xml:lang="zh">伯明翰</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://zh.wikipedia.org/wiki/%E4%BC%AF%E6%98%8E%E7%BF%B0_%28%E4%BA%9A%E6%8B%89%E5%B7%B4%E9%A9%AC%E5%B7%9E%29"/>
+    <geonames:wikipediaArticle rdf:resource="http://eo.wikipedia.org/wiki/Birmingham_%28Alabamo%29"/>
+    <geonames:wikipediaArticle rdf:resource="http://vi.wikipedia.org/wiki/Birmingham%2C_Alabama"/>
+    <geonames:wikipediaArticle rdf:resource="http://he.wikipedia.org/wiki/%D7%91%D7%A8%D7%9E%D7%99%D7%A0%D7%92%D7%94%D7%90%D7%9D_%28%D7%90%D7%9C%D7%91%D7%9E%D7%94%29"/>
+    <geonames:wikipediaArticle rdf:resource="http://pt.wikipedia.org/wiki/Birmingham_%28Alabama%29"/>
+    <geonames:wikipediaArticle rdf:resource="http://pl.wikipedia.org/wiki/Birmingham_%28Alabama%29"/>
+    <geonames:alternateName xml:lang="post">35238</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35240</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://nn.wikipedia.org/wiki/Birmingham_i_Alabama"/>
+    <geonames:wikipediaArticle rdf:resource="http://hr.wikipedia.org/wiki/Birmingham%2C_Alabama"/>
+    <geonames:alternateName xml:lang="sv">Birmingham</geonames:alternateName>
+    <geonames:alternateName xml:lang="sl">Birmingham</geonames:alternateName>
+    <geonames:alternateName xml:lang="pt">Birmingham</geonames:alternateName>
+    <geonames:alternateName xml:lang="pl">Birmingham</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35211</geonames:alternateName>
+    <geonames:alternateName xml:lang="no">Birmingham</geonames:alternateName>
+    <geonames:alternateName xml:lang="nl">Birmingham</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35206</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35261</geonames:alternateName>
+    <geonames:alternateName xml:lang="it">Birmingham</geonames:alternateName>
+    <geonames:alternateName xml:lang="id">Birmingham</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35297</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35263</geonames:alternateName>
+    <geonames:alternateName xml:lang="hr">Birmingham</geonames:alternateName>
+    <geonames:alternateName xml:lang="ga">Birmingham</geonames:alternateName>
+    <geonames:alternateName xml:lang="fr">Birmingham</geonames:alternateName>
+    <geonames:alternateName xml:lang="fi">Birmingham</geonames:alternateName>
+    <geonames:alternateName xml:lang="es">Birmingham</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35253</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35226</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35207</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35213</geonames:alternateName>
+    <geonames:alternateName xml:lang="en">Birmingham</geonames:alternateName>
+    <geonames:alternateName xml:lang="de">Birmingham</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35298</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35228</geonames:alternateName>
+    <geonames:alternateName xml:lang="da">Birmingham</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://no.wikipedia.org/wiki/Birmingham_%28Alabama%29"/>
+    <geonames:featureCode rdf:resource="http://www.geonames.org/ontology#P.PPL"/>
+    <geonames:alternateName xml:lang="link">http://en.wikipedia.org/wiki/Birmingham%2C_Alabama</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35279</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://fr.wikipedia.org/wiki/Birmingham_%28Alabama%29"/>
+    <geonames:alternateName xml:lang="post">35292</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35254</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35214</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35249</geonames:alternateName>
+    <geonames:inCountry rdf:resource="http://www.geonames.org/countries/#US"/>
+    <geonames:alternateName xml:lang="post">35216</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35235</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://it.wikipedia.org/wiki/Birmingham_%28Alabama%29"/>
+    <geonames:alternateName xml:lang="post">35236</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35288</geonames:alternateName>
+    <geo:lat>33.5206608</geo:lat>
+    <geonames:alternateName xml:lang="post">35260</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://en.wikipedia.org/wiki/Birmingham%2C_Alabama"/>
+    <geonames:population>231621</geonames:population>
+    <geonames:locationMap rdf:resource="http://www.geonames.org/4049979/birmingham.html"/>
+    <geonames:alternateName xml:lang="post">35244</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35204</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://lmo.wikipedia.org/wiki/Birmingham%2C_Alabama"/>
+    <geonames:featureClass rdf:resource="http://www.geonames.org/ontology#P"/>
+    <geonames:alternateName xml:lang="post">35281</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">35295</geonames:alternateName>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/49303925247662736191">
+    <skos:prefLabel xml:lang="en">Taormina (Italy)</skos:prefLabel>
+    <skos:inScheme rdf:resource="http://data.nytimes.com/elements/nytd_geo"/>
+    <nyt:number_of_variants rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</nyt:number_of_variants>
+    <geo:lat rdf:datatype="http://www.w3.org/2001/XMLSchema#double">37.8535765820369</geo:lat>
+    <owl:sameAs rdf:resource="http://rdf.freebase.com/ns/en.taormina"/>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <owl:sameAs rdf:resource="http://data.nytimes.com/taormina_italy_geo"/>
+    <owl:sameAs rdf:resource="http://dbpedia.org/resource/Taormina"/>
+    <geo:long rdf:datatype="http://www.w3.org/2001/XMLSchema#double">15.2885055541992</geo:long>
+    <nyt:search_api_query rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://api.nytimes.com/svc/search/v1/article?query=+nytd_geo_facet%3A%5BTaormina+%28Italy%29%5D&amp;rank=newest&amp;fields=abstract,author,body,byline,classifiers_facet,column_facet,date,day_of_week_facet,des_facet,desk_facet,fee,geo_facet,lead_paragraph,material_type_facet,multimedia,nytd_byline,nytd_des_facet,nytd_geo_facet,nytd_lead_paragraph,nytd_org_facet,nytd_per_facet,nytd_section_facet,nytd_title,nytd_works_mentioned_facet,org_facet,page_facet,per_facet,publication_day,publication_month,publication_year,section_page_facet,small_image_height,small_image_url,small_image_width,source_facet,title,url,word_count,works_mentioned_facet</nyt:search_api_query>
+    <nyt:associated_article_count rdf:datatype="http://www.w3.org/2001/XMLSchema#int">0</nyt:associated_article_count>
+    <owl:sameAs rdf:resource="http://sws.geonames.org/2522975/"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/50533509955312517121.rdf">
+    <foaf:primaryTopic rdf:resource="http://data.nytimes.com/50533509955312517121"/>
+    <dcterms:rightsHolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dcterms:rightsHolder>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-06-22</dcterms:modified>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2009-11-17</dcterms:created>
+    <dc:creator rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dc:creator>
+    <nyt:mapping_strategy rdf:resource="http://data.nytimes.com/elements/manual"/>
+    <cc:license rdf:resource="http://creativecommons.org/licenses/by/3.0/us/"/>
+    <cc:attributionURL rdf:resource="http://data.nytimes.com/50533509955312517121"/>
+    <cc:attributionName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</cc:attributionName>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/59436162775130469831">
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <nyt:latest_use rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-06-14</nyt:latest_use>
+    <owl:sameAs rdf:resource="http://rdf.freebase.com/ns/en.pakistan"/>
+    <owl:sameAs rdf:resource="http://sws.geonames.org/1168579/"/>
+    <geo:long rdf:datatype="http://www.w3.org/2001/XMLSchema#double">70.0</geo:long>
+    <geo:lat rdf:datatype="http://www.w3.org/2001/XMLSchema#double">30.0</geo:lat>
+    <skos:inScheme rdf:resource="http://data.nytimes.com/elements/nytd_geo"/>
+    <owl:sameAs rdf:resource="http://dbpedia.org/resource/Pakistan"/>
+    <nyt:number_of_variants rdf:datatype="http://www.w3.org/2001/XMLSchema#int">3</nyt:number_of_variants>
+    <skos:prefLabel xml:lang="en">Pakistan</skos:prefLabel>
+    <nyt:associated_article_count rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1450</nyt:associated_article_count>
+    <nyt:first_use rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2004-09-02</nyt:first_use>
+    <owl:sameAs rdf:resource="http://data.nytimes.com/pakistan_geo"/>
+    <nyt:search_api_query rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://api.nytimes.com/svc/search/v1/article?query=+nytd_geo_facet%3A%5BPakistan%5D&amp;rank=newest&amp;fields=abstract,author,body,byline,classifiers_facet,column_facet,date,day_of_week_facet,des_facet,desk_facet,fee,geo_facet,lead_paragraph,material_type_facet,multimedia,nytd_byline,nytd_des_facet,nytd_geo_facet,nytd_lead_paragraph,nytd_org_facet,nytd_per_facet,nytd_section_facet,nytd_title,nytd_works_mentioned_facet,org_facet,page_facet,per_facet,publication_day,publication_month,publication_year,section_page_facet,small_image_height,small_image_url,small_image_width,source_facet,title,url,word_count,works_mentioned_facet</nyt:search_api_query>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://sws.geonames.org/3713954/">
+    <rdf:type rdf:resource="http://www.geonames.org/ontology#Feature"/>
+    <geonames:locationMap rdf:resource="http://www.geonames.org/3713954/provincia-de-bocas-del-toro.html"/>
+    <geo:lat>8.9</geo:lat>
+    <geonames:parentFeature rdf:resource="http://sws.geonames.org/3703430/"/>
+    <geonames:name>Provincia de Bocas del Toro</geonames:name>
+    <geonames:featureCode rdf:resource="http://www.geonames.org/ontology#A.ADM1"/>
+    <geo:long>-82.125</geo:long>
+    <geonames:inCountry rdf:resource="http://www.geonames.org/countries/#PA"/>
+    <geonames:featureClass rdf:resource="http://www.geonames.org/ontology#A"/>
+    <geonames:alternateName>Bocas del Toro</geonames:alternateName>
+    <geonames:countryCode>PA</geonames:countryCode>
+    <geonames:childrenFeatures rdf:resource="http://sws.geonames.org/3713954/contains.rdf"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://sws.geonames.org/2658898/">
+    <geonames:wikipediaArticle rdf:resource="http://nl.wikipedia.org/wiki/Saas-Fee"/>
+    <geo:lat>46.1134677211565</geo:lat>
+    <geonames:nearbyFeatures rdf:resource="http://sws.geonames.org/2658898/nearby.rdf"/>
+    <geonames:population>1611</geonames:population>
+    <geonames:parentFeature rdf:resource="http://sws.geonames.org/7287008/"/>
+    <geonames:wikipediaArticle rdf:resource="http://es.wikipedia.org/wiki/Saas-Fee"/>
+    <geo:long>7.93487548828125</geo:long>
+    <geonames:countryCode>CH</geonames:countryCode>
+    <owl:sameAs rdf:resource="http://dbpedia.org/resource/Saas-Fee"/>
+    <geonames:name>Saas-Fee</geonames:name>
+    <geonames:locationMap rdf:resource="http://www.geonames.org/2658898/saas-fee.html"/>
+    <geonames:wikipediaArticle rdf:resource="http://pt.wikipedia.org/wiki/Saas-Fee"/>
+    <geonames:inCountry rdf:resource="http://www.geonames.org/countries/#CH"/>
+    <geonames:featureCode rdf:resource="http://www.geonames.org/ontology#P.PPL"/>
+    <geonames:wikipediaArticle rdf:resource="http://en.wikipedia.org/wiki/Saas-Fee"/>
+    <geonames:wikipediaArticle rdf:resource="http://it.wikipedia.org/wiki/Saas-Fee"/>
+    <geonames:wikipediaArticle rdf:resource="http://fr.wikipedia.org/wiki/Saas-Fee"/>
+    <geonames:wikipediaArticle rdf:resource="http://vo.wikipedia.org/wiki/Saas-Fee"/>
+    <geonames:alternateName xml:lang="link">http://en.wikipedia.org/wiki/Saas-Fee</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://de.wikipedia.org/wiki/Saas-Fee"/>
+    <geonames:wikipediaArticle rdf:resource="http://rm.wikipedia.org/wiki/Saas-Fee"/>
+    <geonames:wikipediaArticle rdf:resource="http://rm.wikipedia.org/wiki/Saas_Fee"/>
+    <geonames:featureClass rdf:resource="http://www.geonames.org/ontology#P"/>
+    <rdf:type rdf:resource="http://www.geonames.org/ontology#Feature"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://sws.geonames.org/4752031/">
+    <geonames:alternateName xml:lang="fr">Charlottesville</geonames:alternateName>
+    <geonames:alternateName xml:lang="en">Charlottesville</geonames:alternateName>
+    <geonames:alternateName xml:lang="de">Charlottesville</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://zh.wikipedia.org/wiki/%E5%A4%8F%E5%BE%8B%E7%AC%AC%E9%8E%AE"/>
+    <geonames:locationMap rdf:resource="http://www.geonames.org/4752031/charlottesville.html"/>
+    <geonames:featureClass rdf:resource="http://www.geonames.org/ontology#P"/>
+    <geonames:wikipediaArticle rdf:resource="http://sk.wikipedia.org/wiki/Charlottesville"/>
+    <geonames:alternateName xml:lang="post">22904</geonames:alternateName>
+    <geonames:alternateName xml:lang="link">http://en.wikipedia.org/wiki/Charlottesville%2C_Virginia</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://nds.wikipedia.org/wiki/Charlottesville_%28Virginia%29"/>
+    <geonames:alternateName xml:lang="post">22905</geonames:alternateName>
+    <geonames:population>34703</geonames:population>
+    <geonames:wikipediaArticle rdf:resource="http://fr.wikipedia.org/wiki/Charlottesville"/>
+    <geo:long>-78.4766781</geo:long>
+    <owl:sameAs rdf:resource="http://dbpedia.org/resource/Charlottesville%2C_Virginia"/>
+    <geonames:wikipediaArticle rdf:resource="http://id.wikipedia.org/wiki/Charlottesville%2C_Virginia"/>
+    <geonames:wikipediaArticle rdf:resource="http://en.wikipedia.org/wiki/Charlottesville%2C_Virginia"/>
+    <geonames:alternateName xml:lang="post">22903</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://vo.wikipedia.org/wiki/Charlottesville"/>
+    <geonames:alternateName xml:lang="ja">シャーロッツビル</geonames:alternateName>
+    <geonames:featureCode rdf:resource="http://www.geonames.org/ontology#P.PPL"/>
+    <geonames:alternateName xml:lang="post">22907</geonames:alternateName>
+    <geonames:nearbyFeatures rdf:resource="http://sws.geonames.org/4752031/nearby.rdf"/>
+    <geonames:name>Charlottesville</geonames:name>
+    <geonames:wikipediaArticle rdf:resource="http://ar.wikipedia.org/wiki/%D8%B4%D8%A7%D8%B1%D9%84%D9%88%D8%AA%D8%B3%D9%81%D9%8A%D9%84%D8%8C_%D9%81%D9%8A%D8%B1%D8%AC%D9%8A%D9%86%D9%8A%D8%A7"/>
+    <geonames:wikipediaArticle rdf:resource="http://ja.wikipedia.org/wiki/%E3%82%B7%E3%83%A3%E3%83%BC%E3%83%AD%E3%83%83%E3%83%84%E3%83%93%E3%83%AB"/>
+    <geonames:parentFeature rdf:resource="http://sws.geonames.org/4752046/"/>
+    <geonames:wikipediaArticle rdf:resource="http://es.wikipedia.org/wiki/Charlottesville_%28Virginia%29"/>
+    <geonames:wikipediaArticle rdf:resource="http://sv.wikipedia.org/wiki/Charlottesville"/>
+    <geonames:alternateName xml:lang="post">22902</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://ko.wikipedia.org/wiki/%EC%83%AC%EB%9F%AC%EC%B8%A0%EB%B9%8C"/>
+    <geonames:alternateName xml:lang="ru">Шарлоттсвилль</geonames:alternateName>
+    <geo:lat>38.0293059</geo:lat>
+    <geonames:alternateName xml:lang="post">22908</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://pt.wikipedia.org/wiki/Charlottesville"/>
+    <geonames:alternateName xml:lang="ko">샬러츠빌</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://nl.wikipedia.org/wiki/Charlottesville_%28Virginia%29"/>
+    <geonames:wikipediaArticle rdf:resource="http://fi.wikipedia.org/wiki/Charlottesville"/>
+    <geonames:inCountry rdf:resource="http://www.geonames.org/countries/#US"/>
+    <geonames:alternateName xml:lang="post">22910</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">22906</geonames:alternateName>
+    <geonames:countryCode>US</geonames:countryCode>
+    <geonames:postalCode>22902</geonames:postalCode>
+    <rdf:type rdf:resource="http://www.geonames.org/ontology#Feature"/>
+    <geonames:wikipediaArticle rdf:resource="http://de.wikipedia.org/wiki/Charlottesville"/>
+    <geonames:alternateName xml:lang="pt">Charlottesville</geonames:alternateName>
+    <geonames:alternateName xml:lang="sk">Charlottesville</geonames:alternateName>
+    <geonames:alternateName xml:lang="sv">Charlottesville</geonames:alternateName>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://sws.geonames.org/5850059/">
+    <geonames:featureCode rdf:resource="http://www.geonames.org/ontology#P.PPL"/>
+    <geonames:name>Lanai</geonames:name>
+    <rdf:type rdf:resource="http://www.geonames.org/ontology#Feature"/>
+    <geo:long>-156.9222222</geo:long>
+    <geonames:population>3164</geonames:population>
+    <geonames:inCountry rdf:resource="http://www.geonames.org/countries/#US"/>
+    <geonames:alternateName xml:lang="haw">Lāna‘i City</geonames:alternateName>
+    <geonames:alternateName>Lanai City</geonames:alternateName>
+    <geonames:featureClass rdf:resource="http://www.geonames.org/ontology#P"/>
+    <geonames:locationMap rdf:resource="http://www.geonames.org/5850059/lana-i-city.html"/>
+    <geonames:alternateName xml:lang="en">Lanai</geonames:alternateName>
+    <geonames:nearbyFeatures rdf:resource="http://sws.geonames.org/5850059/nearby.rdf"/>
+    <geonames:countryCode>US</geonames:countryCode>
+    <geo:lat>20.8305556</geo:lat>
+    <geonames:parentFeature rdf:resource="http://sws.geonames.org/5850871/"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/N17103216963473946611">
+    <skos:prefLabel xml:lang="en">Los Angeles (Calif)</skos:prefLabel>
+    <geo:long rdf:datatype="http://www.w3.org/2001/XMLSchema#double">-118.2436849</geo:long>
+    <geo:lat rdf:datatype="http://www.w3.org/2001/XMLSchema#double">34.0522342</geo:lat>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <nyt:topicPage rdf:resource="http://topics.nytimes.com/top/great-homes-and-destinations/destinations/southern-california/index.html"/>
+    <owl:sameAs rdf:resource="http://data.nytimes.com/los_angeles_calif_geo"/>
+    <nyt:number_of_variants rdf:datatype="http://www.w3.org/2001/XMLSchema#int">2</nyt:number_of_variants>
+    <nyt:associated_article_count rdf:datatype="http://www.w3.org/2001/XMLSchema#int">809</nyt:associated_article_count>
+    <nyt:first_use rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2004-09-05</nyt:first_use>
+    <owl:sameAs rdf:resource="http://rdf.freebase.com/ns/en.los_angeles"/>
+    <nyt:latest_use rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-06-06</nyt:latest_use>
+    <owl:sameAs rdf:resource="http://dbpedia.org/resource/Los_Angeles"/>
+    <skos:inScheme rdf:resource="http://data.nytimes.com/elements/nytd_geo"/>
+    <nyt:search_api_query rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://api.nytimes.com/svc/search/v1/article?query=+nytd_geo_facet%3A%5BLos+Angeles+%28Calif%29%5D&amp;rank=newest&amp;fields=abstract,author,body,byline,classifiers_facet,column_facet,date,day_of_week_facet,des_facet,desk_facet,fee,geo_facet,lead_paragraph,material_type_facet,multimedia,nytd_byline,nytd_des_facet,nytd_geo_facet,nytd_lead_paragraph,nytd_org_facet,nytd_per_facet,nytd_section_facet,nytd_title,nytd_works_mentioned_facet,org_facet,page_facet,per_facet,publication_day,publication_month,publication_year,section_page_facet,small_image_height,small_image_url,small_image_width,source_facet,title,url,word_count,works_mentioned_facet</nyt:search_api_query>
+    <owl:sameAs rdf:resource="http://sws.geonames.org/5368361/"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/85975670922823048091.rdf">
+    <foaf:primaryTopic rdf:resource="http://data.nytimes.com/85975670922823048091"/>
+    <dcterms:rightsHolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dcterms:rightsHolder>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-06-22</dcterms:modified>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2009-11-18</dcterms:created>
+    <dc:creator rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dc:creator>
+    <nyt:mapping_strategy rdf:resource="http://data.nytimes.com/elements/manual"/>
+    <cc:license rdf:resource="http://creativecommons.org/licenses/by/3.0/us/"/>
+    <cc:attributionURL rdf:resource="http://data.nytimes.com/85975670922823048091"/>
+    <cc:attributionName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</cc:attributionName>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/27277885549905421291.rdf">
+    <foaf:primaryTopic rdf:resource="http://data.nytimes.com/27277885549905421291"/>
+    <dcterms:rightsHolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dcterms:rightsHolder>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-06-22</dcterms:modified>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2009-11-17</dcterms:created>
+    <dc:creator rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dc:creator>
+    <nyt:mapping_strategy rdf:resource="http://data.nytimes.com/elements/manual"/>
+    <cc:license rdf:resource="http://creativecommons.org/licenses/by/3.0/us/"/>
+    <cc:attributionURL rdf:resource="http://data.nytimes.com/27277885549905421291"/>
+    <cc:attributionName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</cc:attributionName>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/40663206734909497291.rdf">
+    <foaf:primaryTopic rdf:resource="http://data.nytimes.com/40663206734909497291"/>
+    <dcterms:rightsHolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dcterms:rightsHolder>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-06-22</dcterms:modified>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2009-11-11</dcterms:created>
+    <dc:creator rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dc:creator>
+    <nyt:mapping_strategy rdf:resource="http://data.nytimes.com/elements/manual"/>
+    <cc:license rdf:resource="http://creativecommons.org/licenses/by/3.0/us/"/>
+    <cc:attributionURL rdf:resource="http://data.nytimes.com/40663206734909497291"/>
+    <cc:attributionName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</cc:attributionName>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/N33991161654321043011.rdf">
+    <foaf:primaryTopic rdf:resource="http://data.nytimes.com/N33991161654321043011"/>
+    <dcterms:rightsHolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dcterms:rightsHolder>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-06-22</dcterms:modified>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2009-11-16</dcterms:created>
+    <dc:creator rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dc:creator>
+    <nyt:mapping_strategy rdf:resource="http://data.nytimes.com/elements/manual"/>
+    <cc:license rdf:resource="http://creativecommons.org/licenses/by/3.0/us/"/>
+    <cc:attributionURL rdf:resource="http://data.nytimes.com/N33991161654321043011"/>
+    <cc:attributionName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</cc:attributionName>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/N55564434450762759111.rdf">
+    <foaf:primaryTopic rdf:resource="http://data.nytimes.com/N55564434450762759111"/>
+    <dcterms:rightsHolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dcterms:rightsHolder>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-06-22</dcterms:modified>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2009-11-12</dcterms:created>
+    <dc:creator rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dc:creator>
+    <nyt:mapping_strategy rdf:resource="http://data.nytimes.com/elements/manual"/>
+    <cc:license rdf:resource="http://creativecommons.org/licenses/by/3.0/us/"/>
+    <cc:attributionURL rdf:resource="http://data.nytimes.com/N55564434450762759111"/>
+    <cc:attributionName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</cc:attributionName>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/59436162888131788801.rdf">
+    <foaf:primaryTopic rdf:resource="http://data.nytimes.com/59436162888131788801"/>
+    <dcterms:rightsHolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dcterms:rightsHolder>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-06-22</dcterms:modified>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2009-11-12</dcterms:created>
+    <dc:creator rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dc:creator>
+    <nyt:mapping_strategy rdf:resource="http://data.nytimes.com/elements/manual"/>
+    <cc:license rdf:resource="http://creativecommons.org/licenses/by/3.0/us/"/>
+    <cc:attributionURL rdf:resource="http://data.nytimes.com/59436162888131788801"/>
+    <cc:attributionName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</cc:attributionName>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/60601611670103975091">
+    <geo:long rdf:datatype="http://www.w3.org/2001/XMLSchema#double">-110.6973571</geo:long>
+    <nyt:associated_article_count rdf:datatype="http://www.w3.org/2001/XMLSchema#int">0</nyt:associated_article_count>
+    <nyt:number_of_variants rdf:datatype="http://www.w3.org/2001/XMLSchema#int">1</nyt:number_of_variants>
+    <geo:lat rdf:datatype="http://www.w3.org/2001/XMLSchema#double">35.0241873</geo:lat>
+    <owl:sameAs rdf:resource="http://sws.geonames.org/5321473/"/>
+    <owl:sameAs rdf:resource="http://rdf.freebase.com/ns/en.winslow_arizona"/>
+    <skos:prefLabel xml:lang="en">Winslow (Ariz)</skos:prefLabel>
+    <nyt:search_api_query rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://api.nytimes.com/svc/search/v1/article?query=+nytd_geo_facet%3A%5BWinslow+%28Ariz%29%5D&amp;rank=newest&amp;fields=abstract,author,body,byline,classifiers_facet,column_facet,date,day_of_week_facet,des_facet,desk_facet,fee,geo_facet,lead_paragraph,material_type_facet,multimedia,nytd_byline,nytd_des_facet,nytd_geo_facet,nytd_lead_paragraph,nytd_org_facet,nytd_per_facet,nytd_section_facet,nytd_title,nytd_works_mentioned_facet,org_facet,page_facet,per_facet,publication_day,publication_month,publication_year,section_page_facet,small_image_height,small_image_url,small_image_width,source_facet,title,url,word_count,works_mentioned_facet</nyt:search_api_query>
+    <skos:inScheme rdf:resource="http://data.nytimes.com/elements/nytd_geo"/>
+    <owl:sameAs rdf:resource="http://data.nytimes.com/winslow_ariz_geo"/>
+    <owl:sameAs rdf:resource="http://dbpedia.org/resource/Winslow%2C_Arizona"/>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://sws.geonames.org/4839141/">
+    <geo:lat>41.3542656</geo:lat>
+    <geonames:postalCode>06355</geonames:postalCode>
+    <geonames:population>4983</geonames:population>
+    <geo:long>-71.966462</geo:long>
+    <geonames:countryCode>US</geonames:countryCode>
+    <geonames:name>Mystic</geonames:name>
+    <geonames:parentFeature rdf:resource="http://sws.geonames.org/4839420/"/>
+    <geonames:nearbyFeatures rdf:resource="http://sws.geonames.org/4839141/nearby.rdf"/>
+    <geonames:alternateName xml:lang="ca">Mystic</geonames:alternateName>
+    <geonames:inCountry rdf:resource="http://www.geonames.org/countries/#US"/>
+    <geonames:locationMap rdf:resource="http://www.geonames.org/4839141/mystic.html"/>
+    <geonames:featureClass rdf:resource="http://www.geonames.org/ontology#P"/>
+    <rdf:type rdf:resource="http://www.geonames.org/ontology#Feature"/>
+    <geonames:featureCode rdf:resource="http://www.geonames.org/ontology#P.PPL"/>
+    <geonames:alternateName xml:lang="post">06355</geonames:alternateName>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://sws.geonames.org/4962383/">
+    <geo:long>-68.6853041</geo:long>
+    <geonames:locationMap rdf:resource="http://www.geonames.org/4962383/deer-isle.html"/>
+    <geonames:featureClass rdf:resource="http://www.geonames.org/ontology#T"/>
+    <geonames:name>Deer Isle</geonames:name>
+    <rdf:type rdf:resource="http://www.geonames.org/ontology#Feature"/>
+    <geonames:featureCode rdf:resource="http://www.geonames.org/ontology#T.ISL"/>
+    <geonames:countryCode>US</geonames:countryCode>
+    <geonames:parentFeature rdf:resource="http://sws.geonames.org/4966407/"/>
+    <geo:lat>44.21008</geo:lat>
+    <geonames:nearbyFeatures rdf:resource="http://sws.geonames.org/4962383/nearby.rdf"/>
+    <geonames:inCountry rdf:resource="http://www.geonames.org/countries/#US"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/80989572077620084871.rdf">
+    <foaf:primaryTopic rdf:resource="http://data.nytimes.com/80989572077620084871"/>
+    <dcterms:rightsHolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dcterms:rightsHolder>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-06-22</dcterms:modified>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2009-11-17</dcterms:created>
+    <dc:creator rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dc:creator>
+    <nyt:mapping_strategy rdf:resource="http://data.nytimes.com/elements/manual"/>
+    <cc:license rdf:resource="http://creativecommons.org/licenses/by/3.0/us/"/>
+    <cc:attributionURL rdf:resource="http://data.nytimes.com/80989572077620084871"/>
+    <cc:attributionName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</cc:attributionName>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/N42015398622290083051.rdf">
+    <foaf:primaryTopic rdf:resource="http://data.nytimes.com/N42015398622290083051"/>
+    <dcterms:rightsHolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dcterms:rightsHolder>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-06-22</dcterms:modified>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2009-11-17</dcterms:created>
+    <dc:creator rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dc:creator>
+    <nyt:mapping_strategy rdf:resource="http://data.nytimes.com/elements/manual"/>
+    <cc:license rdf:resource="http://creativecommons.org/licenses/by/3.0/us/"/>
+    <cc:attributionURL rdf:resource="http://data.nytimes.com/N42015398622290083051"/>
+    <cc:attributionName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</cc:attributionName>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/66204804414622269441.rdf">
+    <foaf:primaryTopic rdf:resource="http://data.nytimes.com/66204804414622269441"/>
+    <dcterms:rightsHolder rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dcterms:rightsHolder>
+    <dcterms:modified rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-06-22</dcterms:modified>
+    <dcterms:created rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2009-08-20</dcterms:created>
+    <dc:creator rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</dc:creator>
+    <nyt:mapping_strategy rdf:resource="http://data.nytimes.com/elements/manual"/>
+    <cc:license rdf:resource="http://creativecommons.org/licenses/by/3.0/us/"/>
+    <cc:attributionURL rdf:resource="http://data.nytimes.com/66204804414622269441"/>
+    <cc:attributionName rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The New York Times Company</cc:attributionName>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://data.nytimes.com/N12073415054622508931">
+    <geo:long rdf:datatype="http://www.w3.org/2001/XMLSchema#double">-74.0281957</geo:long>
+    <owl:sameAs rdf:resource="http://rdf.freebase.com/ns/en.hudson_river"/>
+    <owl:sameAs rdf:resource="http://sws.geonames.org/5121521/"/>
+    <nyt:search_api_query rdf:datatype="http://www.w3.org/2001/XMLSchema#string">http://api.nytimes.com/svc/search/v1/article?query=+nytd_geo_facet%3A%5BHudson+River%5D&amp;rank=newest&amp;fields=abstract,author,body,byline,classifiers_facet,column_facet,date,day_of_week_facet,des_facet,desk_facet,fee,geo_facet,lead_paragraph,material_type_facet,multimedia,nytd_byline,nytd_des_facet,nytd_geo_facet,nytd_lead_paragraph,nytd_org_facet,nytd_per_facet,nytd_section_facet,nytd_title,nytd_works_mentioned_facet,org_facet,page_facet,per_facet,publication_day,publication_month,publication_year,section_page_facet,small_image_height,small_image_url,small_image_width,source_facet,title,url,word_count,works_mentioned_facet</nyt:search_api_query>
+    <skos:prefLabel xml:lang="en">Hudson River</skos:prefLabel>
+    <nyt:associated_article_count rdf:datatype="http://www.w3.org/2001/XMLSchema#int">163</nyt:associated_article_count>
+    <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+    <nyt:first_use rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2006-08-13</nyt:first_use>
+    <owl:sameAs rdf:resource="http://dbpedia.org/resource/Hudson_River"/>
+    <skos:inScheme rdf:resource="http://data.nytimes.com/elements/nytd_geo"/>
+    <nyt:latest_use rdf:datatype="http://www.w3.org/2001/XMLSchema#date">2010-06-13</nyt:latest_use>
+    <nyt:number_of_variants rdf:datatype="http://www.w3.org/2001/XMLSchema#int">2</nyt:number_of_variants>
+    <owl:sameAs rdf:resource="http://data.nytimes.com/hudson_river_geo"/>
+    <geo:lat rdf:datatype="http://www.w3.org/2001/XMLSchema#double">40.6967694</geo:lat>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://sws.geonames.org/2969679/">
+    <geonames:alternateName xml:lang="post">78009</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://ja.wikipedia.org/wiki/%E3%83%B4%E3%82%A7%E3%83%AB%E3%82%B5%E3%82%A4%E3%83%A6"/>
+    <geonames:nearbyFeatures rdf:resource="http://sws.geonames.org/2969679/nearby.rdf"/>
+    <geonames:wikipediaArticle rdf:resource="http://es.wikipedia.org/wiki/Versalles"/>
+    <geonames:alternateName xml:lang="post">78024</geonames:alternateName>
+    <geonames:name>Versailles</geonames:name>
+    <geonames:wikipediaArticle rdf:resource="http://pt.wikipedia.org/wiki/Versalhes"/>
+    <geonames:alternateName xml:lang="post">78010</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://de.wikipedia.org/wiki/Versailles"/>
+    <geonames:wikipediaArticle rdf:resource="http://ceb.wikipedia.org/wiki/Versailles"/>
+    <geonames:wikipediaArticle rdf:resource="http://is.wikipedia.org/wiki/Versalir"/>
+    <geonames:alternateName xml:lang="eo">Versajlo</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://lt.wikipedia.org/wiki/Versalis"/>
+    <geonames:alternateName xml:lang="he">ורסאי</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">78027</geonames:alternateName>
+    <geo:long>2.1333333</geo:long>
+    <geonames:featureClass rdf:resource="http://www.geonames.org/ontology#P"/>
+    <geonames:alternateName xml:lang="post">78011</geonames:alternateName>
+    <geonames:alternateName xml:lang="link">http://en.wikipedia.org/wiki/Versailles</geonames:alternateName>
+    <geo:lat>48.8</geo:lat>
+    <geonames:wikipediaArticle rdf:resource="http://pl.wikipedia.org/wiki/Wersal"/>
+    <geonames:alternateName xml:lang="post">78015</geonames:alternateName>
+    <geonames:alternateName xml:lang="pt">Versalhes</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">78030</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">78003</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://fi.wikipedia.org/wiki/Versailles"/>
+    <geonames:alternateName xml:lang="es">Versalles</geonames:alternateName>
+    <geonames:alternateName xml:lang="ca">Versalles</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://hr.wikipedia.org/wiki/Versailles"/>
+    <geonames:countryCode>FR</geonames:countryCode>
+    <geonames:alternateName xml:lang="post">78018</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://he.wikipedia.org/wiki/%D7%95%D7%A8%D7%A1%D7%90%D7%99"/>
+    <geonames:alternateName xml:lang="post">78033</geonames:alternateName>
+    <geonames:alternateName xml:lang="la">Versalia</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://eo.wikipedia.org/wiki/Versailles"/>
+    <geonames:alternateName xml:lang="post">78035</geonames:alternateName>
+    <geonames:alternateName xml:lang="lt">Versalis</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://la.wikipedia.org/wiki/Versaliae"/>
+    <geonames:alternateName xml:lang="post">78006</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">78008</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">78021</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://af.wikipedia.org/wiki/Versailles"/>
+    <geonames:alternateName xml:lang="la">Versaliae</geonames:alternateName>
+    <geonames:alternateName xml:lang="bg">Версай</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://vo.wikipedia.org/wiki/Versailles"/>
+    <geonames:wikipediaArticle rdf:resource="http://sl.wikipedia.org/wiki/Versailles"/>
+    <geonames:wikipediaArticle rdf:resource="http://vec.wikipedia.org/wiki/Versailles"/>
+    <geonames:alternateName xml:lang="post">78026</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://lb.wikipedia.org/wiki/Versailles"/>
+    <geonames:alternateName xml:lang="link">http://ru.wikipedia.org/wiki/%D0%92%D0%B5%D1%80%D1%81%D0%B0%D0%BB%D1%8C</geonames:alternateName>
+    <geonames:population>85416</geonames:population>
+    <geonames:alternateName xml:lang="post">78014</geonames:alternateName>
+    <owl:sameAs rdf:resource="http://dbpedia.org/resource/Versailles"/>
+    <geonames:alternateName xml:lang="ja">ヴェルサイユ</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://bg.wikipedia.org/wiki/%D0%92%D0%B5%D1%80%D1%81%D0%B0%D0%B9"/>
+    <geonames:wikipediaArticle rdf:resource="http://bs.wikipedia.org/wiki/Versaille"/>
+    <rdf:type rdf:resource="http://www.geonames.org/ontology#Feature"/>
+    <geonames:wikipediaArticle rdf:resource="http://sr.wikipedia.org/wiki/%D0%92%D0%B5%D1%80%D1%81%D0%B0%D1%98"/>
+    <geonames:alternateName xml:lang="post">78029</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">78002</geonames:alternateName>
+    <geonames:featureCode rdf:resource="http://www.geonames.org/ontology#P.PPLA2"/>
+    <geonames:wikipediaArticle rdf:resource="http://ko.wikipedia.org/wiki/%EB%B2%A0%EB%A5%B4%EC%82%AC%EC%9C%A0"/>
+    <geonames:alternateName xml:lang="post">78017</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">78019</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">78032</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">78001</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://ru.wikipedia.org/wiki/%D0%92%D0%B5%D1%80%D1%81%D0%B0%D0%BB%D1%8C"/>
+    <geonames:wikipediaArticle rdf:resource="http://zh.wikipedia.org/wiki/%E5%87%A1%E7%88%BE%E8%B3%BD%E9%8E%AE"/>
+    <geonames:alternateName xml:lang="post">78005</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">78007</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">78020</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://ro.wikipedia.org/wiki/Versailles"/>
+    <geonames:alternateName xml:lang="el">Βερσαλλίες</geonames:alternateName>
+    <geonames:alternateName xml:lang="pl">Wersal</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://ca.wikipedia.org/wiki/Versalles"/>
+    <geonames:wikipediaArticle rdf:resource="http://el.wikipedia.org/wiki/%CE%92%CE%B5%CF%81%CF%83%CE%B1%CE%BB%CE%BB%CE%AF%CE%B5%CF%82"/>
+    <geonames:wikipediaArticle rdf:resource="http://it.wikipedia.org/wiki/Versailles"/>
+    <geonames:wikipediaArticle rdf:resource="http://sv.wikipedia.org/wiki/Versailles"/>
+    <geonames:wikipediaArticle rdf:resource="http://nl.wikipedia.org/wiki/Versailles"/>
+    <geonames:alternateName xml:lang="post">78013</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://sk.wikipedia.org/wiki/Versailles"/>
+    <geonames:wikipediaArticle rdf:resource="http://oc.wikipedia.org/wiki/Versalhas"/>
+    <geonames:wikipediaArticle rdf:resource="http://cs.wikipedia.org/wiki/Versailles"/>
+    <geonames:parentFeature rdf:resource="http://sws.geonames.org/6444096/"/>
+    <geonames:alternateName xml:lang="vi">Versailles</geonames:alternateName>
+    <geonames:alternateName xml:lang="sv">Versailles</geonames:alternateName>
+    <geonames:alternateName xml:lang="ko">베르사유</geonames:alternateName>
+    <geonames:alternateName xml:lang="post">78028</geonames:alternateName>
+    <geonames:alternateName xml:lang="sk">Versailles</geonames:alternateName>
+    <geonames:alternateName xml:lang="ro">Versailles</geonames:alternateName>
+    <geonames:alternateName xml:lang="no">Versailles</geonames:alternateName>
+    <geonames:alternateName xml:lang="nn">Versailles</geonames:alternateName>
+    <geonames:alternateName xml:lang="nl">Versailles</geonames:alternateName>
+    <geonames:alternateName xml:lang="ru">Версаль</geonames:alternateName>
+    <geonames:alternateName xml:lang="lb">Versailles</geonames:alternateName>
+    <geonames:alternateName xml:lang="it">Versailles</geonames:alternateName>
+    <geonames:alternateName xml:lang="fr">Versailles</geonames:alternateName>
+    <geonames:alternateName xml:lang="fi">Versailles</geonames:alternateName>
+    <geonames:alternateName xml:lang="eo">Versailles</geonames:alternateName>
+    <geonames:alternateName xml:lang="en">Versailles</geonames:alternateName>
+    <geonames:alternateName xml:lang="af">Versailles</geonames:alternateName>
+    <geonames:alternateName xml:lang="cs">Versailles</geonames:alternateName>
+    <geonames:alternateName xml:lang="de">Versailles</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://nn.wikipedia.org/wiki/Versailles"/>
+    <geonames:inCountry rdf:resource="http://www.geonames.org/countries/#FR"/>
+    <geonames:alternateName xml:lang="post">78000</geonames:alternateName>
+    <geonames:postalCode>78000</geonames:postalCode>
+    <geonames:alternateName xml:lang="post">78004</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://sw.wikipedia.org/wiki/Versailles"/>
+    <geonames:wikipediaArticle rdf:resource="http://gl.wikipedia.org/wiki/Versalles"/>
+    <geonames:alternateName xml:lang="fr_1793">Berceau-de-la-Liberté</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://en.wikipedia.org/wiki/Versailles"/>
+    <geonames:locationMap rdf:resource="http://www.geonames.org/2969679/versailles.html"/>
+    <geonames:wikipediaArticle rdf:resource="http://no.wikipedia.org/wiki/Versailles"/>
+    <geonames:wikipediaArticle rdf:resource="http://vi.wikipedia.org/wiki/Versailles"/>
+    <geonames:alternateName xml:lang="post">78034</geonames:alternateName>
+    <geonames:wikipediaArticle rdf:resource="http://uk.wikipedia.org/wiki/%D0%92%D0%B5%D1%80%D1%81%D0%B0%D0%BB%D1%8C"/>
+  </rdf:Description>
+</rdf:RDF>
