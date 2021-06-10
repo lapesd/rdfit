@@ -303,4 +303,15 @@ public class RDFLangsTest {
         }
     }
 
+    @Test
+    public void testDOCTYPE() throws IOException {
+        String path = "com/github/lapesd/rdfit/source/fixer/eswc-2009-complete+DOCTYPE.rdf";
+        try (InputStream in = openResource(path)) {
+            assertEquals(RDFLangs.guess(in, Integer.MAX_VALUE), RDFXML);
+        }
+        try (InputStream in = openResource(path)) {
+            assertEquals(RDFLangs.guess(in, 550), RDFXML);
+        }
+    }
+
 }
