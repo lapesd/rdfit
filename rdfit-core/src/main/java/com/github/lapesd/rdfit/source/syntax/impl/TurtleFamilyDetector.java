@@ -196,10 +196,11 @@ public class TurtleFamilyDetector implements LangDetector {
                         assert buffer.toString().equals("_");
                         if (value != ':') return UNKNOWN;
                     } else if (isWhitespace(value)) {
-                        if (buffer.toString().endsWith(".") && termIndex < 2)
+                        boolean hasDot = buffer.charAt(buffer.length() - 1) == '.';
+                        if (hasDot && termIndex < 2)
                             return UNKNOWN;
                         endTerm(false);
-                        return null;
+                        return hasDot ? feedTermBegin((byte)'.') : null;
                     } else if (value == ',' || value == ';') {
                         return termIndex == 2 ? TRIG : UNKNOWN;
                     } else if (value >= 0 && !BNODE_CHARS.contains(value)) {
@@ -214,7 +215,7 @@ public class TurtleFamilyDetector implements LangDetector {
                             endTerm(false);
                             return TRIG;
                         } else {
-                            boolean hadDot = litParser.endsInDot();
+                            boolean hadDot = litParser.endsInDot() || value == '.';
                             Literal literal = litParser.endAndReset();
                             endTerm(!isWhitespace(value));
                             if (literal.isPrefixTyped()) return TRIG;
@@ -336,10 +337,9 @@ public class TurtleFamilyDetector implements LangDetector {
                         return forceTTL ? TTL : NT;
                     }
                     // Else, could be a TRIG, NT or NQ.
-                    // However, if it were a TRIG file the most likely scenario is that it
-                    // would've been detected (prefixes, ',', ';' or '[') by now. Guess NQ since
-                    // any NT file is also an NQ file
-                    return triples > 1 && !forceTTL ? NQ : TRIG;
+                    // Here we guess TRIG as it is more widespread and NQ files tend to always
+                    // have 4 terms (i.e., NQ would have been detected on the few first triples)
+                    return TRIG;
                 } else if (hardEnd && termIndex == 0 && begin == 0) {
                     return TTL; //empty input
                 } else if (hardEnd && termIndex < 2) {

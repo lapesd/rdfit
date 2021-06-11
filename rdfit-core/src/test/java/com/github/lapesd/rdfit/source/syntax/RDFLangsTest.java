@@ -295,7 +295,7 @@ public class RDFLangsTest {
     public void testLMDBRegression() throws IOException {
         String path = "com/github/lapesd/rdfit/source/fixer/lmdb-subset.nt";
         for (Integer bytes : asList(160, 161, 180, 321, 8192)) {
-            RDFLang expected = bytes == 8192 ? NT : bytes < 321 ? TRIG : NQ;
+            RDFLang expected = bytes == 8192 ? NT : TRIG;
             try (InputStream in = openResource(path)) {
                 RDFLang guess = RDFLangs.guess(in, bytes);
                 assertEquals(guess, expected);

@@ -229,6 +229,7 @@ public class TurtleFamilyFixerStreamTest {
                 "lmdb-subset.nt",
                 "TCGA-BF-A1PU-01A-11D-A18Z-02_BC0VYMACXX---TCGA-BF-A1PU-10A-01D-A18Z-02_BC0VYMACXX---Segment.tsv.n3",
                 "nationwidechildrens.org_biospecimen_tumor_sample_lgg.nt",
+                "nationwidechildrens.org_clinical_patient_lgg.nt",
                 "dbpedia-nyt_links.nt"
         ).map(s -> new Object[]{s}).toArray(Object[][]::new);
     }

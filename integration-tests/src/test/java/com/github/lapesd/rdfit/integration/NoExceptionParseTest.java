@@ -92,6 +92,7 @@ public class NoExceptionParseTest {
                 "lmdb-subset.bad-space.nt",
                 "lmdb-subset.nt",
                 "nationwidechildrens.org_biospecimen_tumor_sample_lgg.nt",
+                "nationwidechildrens.org_clinical_patient_lgg.nt",
                 "owled-2007-complete+everything.rdf",
                 "owled-2007-complete.rdf",
                 "skos_categories_en.uchar.nt",

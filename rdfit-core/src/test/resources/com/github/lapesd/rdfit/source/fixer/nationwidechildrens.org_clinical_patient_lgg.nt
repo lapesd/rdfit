@@ -1,0 +1,150 @@
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/disease_acronym> <http://tcga.deri.ie/lgg> .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/patient>.
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/CDE_ID:2673794>.
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/bcr_patient_uuid> "CDE_ID:" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/form_completion_date> "CDE_ID:" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/histologic_diagnosis> "CDE_ID:3081934" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/tumor_grade> "CDE_ID:2785839" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/laterality> "CDE_ID:827" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/tumor_site> "CDE_ID:3139375" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/supratentorial_localization> "CDE_ID:3133891" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/prospective_collection> "CDE_ID:3088492" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/retrospective_collection> "CDE_ID:3088528" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/gender> "CDE_ID:2200604" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/birth_days_to> "CDE_ID:3008233" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://dbpedia.org/ontology/race> <http://dbpedia.org/resource/CDE_ID:2192199>.
+<http://tcga.deri.ie/CDE_ID:2673794> <http://dbpedia.org/ontology/ethnicity> <http://dbpedia.org/resource/CDE_ID:2192217>.
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/history_other_malignancy> "CDE_ID:3382736" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/history_neoadjuvant_treatment> "CDE_ID:3382737" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/initial_pathologic_dx_year> "CDE_ID:2896960" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/history_ionizing_rt_to_head> "CDE_ID:3120926" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/history_seizures> "CDE_ID:3121333" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/history_headaches> "CDE_ID:3121345" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/symp_changes_mental_status> "CDE_ID:3121352" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/symp_changes_visual> "CDE_ID:3121359" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/symp_changes_sensory> "CDE_ID:3121365" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/symp_changes_motor_movement> "CDE_ID:3120991" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/related_symptom_first_present> "CDE_ID:3133911" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/first_symptom_longest_duration> "CDE_ID:3121001" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/history_asthma> "CDE_ID:3133921" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/history_eczema> "CDE_ID:3133925" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/histor_hay_fever> "CDE_ID:3133930" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/history_dust_mold_allergy> "CDE_ID:3133934" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/asthma_eczema_allergy_first_dx> "CDE_ID:3121273" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/allergy_food_dx_indicator> "CDE_ID:3121278" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/allergy_food_dx_type> "CDE_ID:3121280" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/allergy_food_dx_age> "CDE_ID:3121301" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/allergy_animals_insects_dx_indicator> "CDE_ID:3121314" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/allergy_animals_insects_dx_type> "CDE_ID:3121316" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/allergy_animals_insects_dx_age> "CDE_ID:3121318" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/history_neoadjuvant_steroid_tx> "CDE_ID:3121323" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/history_neoadjuvant_medication> "CDE_ID:3121328" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/vital_status> "CDE_ID:5" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/last_contact_days_to> "CDE_ID:3008273" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/death_days_to> "CDE_ID:3165475" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/tumor_status> "CDE_ID:2759550" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/family_history_cancer_indicator> "CDE_ID:2436860" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/family_history_brain_tumor> "CDE_ID:3133957" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/idh1_mutation_test_indicator> "CDE_ID:3133962" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/idh1_mutation_test_method> "CDE_ID:3133963" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/idh1_mutation_found> "CDE_ID:3133967" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/inherited_genetic_syndrome_indicator> "CDE_ID:3133971" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/inherited_genetic_syndrome_specified> "CDE_ID:3133974" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/karnofsky_score> "CDE_ID:2003853" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/ecog_score> "CDE_ID:88" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/performance_status_timing> "CDE_ID:2792763" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/performance_status_days_to> "CDE_ID:3479270" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/radiation_treatment_adjuvant> "CDE_ID:2005312" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/treatment_outcome_first_course> "CDE_ID:2786727" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/new_tumor_event_dx_indicator> "CDE_ID:3121376" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/days_to_initial_pathologic_diagnosis> "CDE_ID:" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/icd_10> "CDE_ID:3226287" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/icd_o_3_histology> "CDE_ID:3226275" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/icd_o_3_site> "CDE_ID:3226281" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/informed_consent_verified> "CDE_ID:2714689" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/patient_id> "CDE_ID:" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/targeted_molecular_therapy> "CDE_ID:2785850" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/tissue_source_site> "CDE_ID:" .
+<http://tcga.deri.ie/CDE_ID:2673794> <http://tcga.deri.ie/schema/tumor_tissue_site> "CDE_ID:3427536" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/disease_acronym> <http://tcga.deri.ie/lgg> .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/patient>.
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-CS-6290>.
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/bcr_patient_uuid> "42fe260f-520b-4fac-8c09-d2b31aed59fb" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/form_completion_date> "2011-9-7" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/histologic_diagnosis> "Astrocytoma" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/tumor_grade> "G3" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/laterality> "Left" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/tumor_site> "Supratentorial, Temporal Lobe" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/supratentorial_localization> "Cerebral Cortex" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/prospective_collection> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/retrospective_collection> "YES" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/gender> "MALE" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/birth_days_to> "-11666" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/race> "[Not Available]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/ethnicity> "[Not Available]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/history_other_malignancy> "No" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/history_neoadjuvant_treatment> "No" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/initial_pathologic_dx_year> "2009" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/history_ionizing_rt_to_head> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/history_seizures> "YES" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/history_headaches> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/symp_changes_mental_status> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/symp_changes_visual> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/symp_changes_sensory> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/symp_changes_motor_movement> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/related_symptom_first_present> "Seizures" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/first_symptom_longest_duration> "0 - 30 Days" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/history_asthma> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/history_eczema> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/histor_hay_fever> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/history_dust_mold_allergy> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/asthma_eczema_allergy_first_dx> "[Not Available]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/allergy_food_dx_indicator> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/allergy_food_dx_type> "[Not Available]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/allergy_food_dx_age> "[Not Available]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/allergy_animals_insects_dx_indicator> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/allergy_animals_insects_dx_type> "[Not Available]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/allergy_animals_insects_dx_age> "[Not Available]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/history_neoadjuvant_steroid_tx> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/history_neoadjuvant_medication> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/vital_status> "Alive" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/last_contact_days_to> "546" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/death_days_to> "[Not Applicable]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/tumor_status> "[Not Available]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/family_history_cancer_indicator> "YES" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/family_history_brain_tumor> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/idh1_mutation_test_indicator> "NO" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/idh1_mutation_test_method> "[Not Available]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/idh1_mutation_found> "[Not Available]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/inherited_genetic_syndrome_indicator> "[Not Available]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/inherited_genetic_syndrome_specified> "[Not Available]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/karnofsky_score> "90" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/ecog_score> "1" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/performance_status_timing> "Pre-Operative" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/performance_status_days_to> "-1" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/radiation_treatment_adjuvant> "[Not Available]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/treatment_outcome_first_course> "[Not Available]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/new_tumor_event_dx_indicator> "[Not Available]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/age_at_initial_pathologic_diagnosis> 31 .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/days_to_initial_pathologic_diagnosis> "0" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/icd_10> "C71.9" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/icd_o_3_histology> "9400/3" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/icd_o_3_site> "C71.9" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/informed_consent_verified> "YES" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/patient_id> "6290" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/targeted_molecular_therapy> "[Not Available]" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/tissue_source_site> "CS" .
+<http://tcga.deri.ie/TCGA-CS-6290> <http://tcga.deri.ie/schema/tumor_tissue_site> "Central nervous system" .
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/disease_acronym> <http://tcga.deri.ie/lgg> .
+<http://tcga.deri.ie/TCGA-DU-5847> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://tcga.deri.ie/schema/patient>.
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/bcr_patient_barcode> <http://tcga.deri.ie/TCGA-DU-5847>.
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/bcr_patient_uuid> "92a7c445-2217-400a-bdcd-df41502416b6" .
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/form_completion_date> "2011-6-21" .
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/histologic_diagnosis> "Astrocytoma" .
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/tumor_grade> "G3" .
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/laterality> "Right" .
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/tumor_site> "Supratentorial, Frontal Lobe" .
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/supratentorial_localization> "White Matter" .
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/prospective_collection> "YES" .
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/retrospective_collection> "NO" .
+<http://tcga.deri.ie/TCGA-DU-5847> <http://tcga.deri.ie/schema/gender> "FEMALE" .

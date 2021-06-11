@@ -33,7 +33,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
@@ -150,6 +149,15 @@ public class TurtleFamilyDetectorTest {
             line = ss.get(0) + " " + ss.get(1) + " []";
             rows.add(asList(null, line, TRIG));
 
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < 3; i++) {
+                builder.append(ss.get(0)).append(' ').append(ss.get(1)).append(' ')
+                        .append(ss.get(2)).append(".\n");
+            }
+            rows.add(asList(null, builder.toString(), TRIG));
+            builder.setLength(builder.length()-2);
+            rows.add(asList(null, builder.toString(), TRIG));
+
             // NQ examples
             if (!ss.get(0).startsWith("_") && !ss.get(1).equals("a")
                                            && !forbiddenInNQ.contains(ss.get(2))) {
@@ -165,15 +173,6 @@ public class TurtleFamilyDetectorTest {
                 line = ss.get(0) + " " + ss.get(1) + " " + ss.get(0) + ".\n" +
                        ss.get(0) + " " + ss.get(1) + " " + ss.get(2) + " " + ss.get(0);
                 rows.add(asList(null, line, NQ));
-
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < 3; i++) {
-                    builder.append(ss.get(0)).append(' ').append(ss.get(1)).append(' ')
-                           .append(ss.get(2)).append(".\n");
-                }
-                rows.add(asList(null, builder.toString(), NQ));
-                builder.setLength(builder.length()-2);
-                rows.add(asList(null, builder.toString(), NQ));
             }
         }
 
@@ -323,7 +322,7 @@ public class TurtleFamilyDetectorTest {
     public void testLMDBRegression() throws IOException {
         String path = "com/github/lapesd/rdfit/source/fixer/lmdb-subset.nt";
         for (Integer bytes : asList(140, 141, 301, 180, 302, 400, 463, 8192)) {
-            RDFLang expected = bytes == 8192 ? NT : bytes < 302 ? TRIG : NQ;
+            RDFLang expected = bytes == 8192 ? NT : TRIG;
             try (InputStream in = openResource(path)) {
                 LangDetector.State s = runDetector(in, bytes, expected);
                 assertEquals(s.end(bytes  == 8192), expected, "bytes="+bytes);
@@ -340,6 +339,30 @@ public class TurtleFamilyDetectorTest {
             try (InputStream in = openResource(path)) {
                 LangDetector.State state = runDetector(in, bytes, TRIG);
                 assertEquals(state.end(hardEnd), hardEnd ? TTL : TRIG);
+            }
+        }
+    }
+
+    @Test
+    public void testLinkedTCGARegression() throws IOException {
+        String path = "com/github/lapesd/rdfit/source/fixer/nationwidechildrens.org_biospecimen_tumor_sample_lgg.nt";
+        int inSize = IOUtils.toString(openResource(path), UTF_8).length();
+        for (Integer bytes : asList(100, inSize)) {
+            try (InputStream in = openResource(path)) {
+                LangDetector.State state = runDetector(in, bytes, TRIG);
+                assertEquals(state.end(bytes == inSize), TRIG);
+            }
+        }
+    }
+
+    @Test
+    public void testLinkedTCGARegression2() throws IOException {
+        String path = "com/github/lapesd/rdfit/source/fixer/nationwidechildrens.org_clinical_patient_lgg.nt";
+        int inSize = IOUtils.toString(openResource(path), UTF_8).length();
+        for (Integer bytes : asList(100, 8192, inSize)) {
+            try (InputStream in = openResource(path)) {
+                LangDetector.State state = runDetector(in, bytes, TRIG);
+                assertEquals(state.end(bytes == inSize), TRIG, "bytes="+bytes);
             }
         }
     }
