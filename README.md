@@ -329,8 +329,15 @@ files with invalid IRIs can be made valid wrapping the source object
 3. Replace '_' in language tags with '-' (e.g., `en_US` becomes `en-US`) 
 4. For NT/Turtle/TriG, `\`-escape occurrences of `\r` (0x0D) and `\n` (0x0A)
    inside single-quoted lexical forms.
-5. Replace `\` with `\\` in any `\x`-escape where x is not in `tbnrf"'` (see
-   [ECHAR](https://www.w3.org/TR/turtle/#grammar-production-ECHAR)).
+5. For NT/Turtle/TriG, replace `\` with `\\` in any `\x`-escape where x is not
+   in `tbnrf"'` (see [ECHAR](https://www.w3.org/TR/turtle/#grammar-production-ECHAR)).
+6. For NT/Turtle/TriG, identify [UCHAR](https://www.w3.org/TR/turtle/#grammar-production-UCHAR))
+   escape sequences that repsent an UTF-8 encoding instead of an unicode 
+   code point. Such sequences are composed of only byte-sized code points,
+   which value sequence correspond to a valid UTF-8 sequence and where at 
+   least one such byte has a value that is the code point of a control 
+   character in unicode. Given such conditions, the sequence of UCHARs is 
+   replaced by a single UCHAR for the character encoded in UTF-8.
 7. For NT/Turtle/TriG, @PREFIX and @BASE are rewritten to @prefix and @base
 8. For NT/Turtle/TriG, literals `true` and `false` with any variation in case 
    (e.g., `True`) are replaced with the standard `true` and `false`.

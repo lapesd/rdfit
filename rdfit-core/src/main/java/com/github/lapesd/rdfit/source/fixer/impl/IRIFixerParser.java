@@ -45,7 +45,6 @@ public class IRIFixerParser implements FixerParser {
 
     private static final byte[] URN = "urn".getBytes(UTF_8);
     private static final byte[] FILE_SCHEME = "file:".getBytes(UTF_8);
-    private static final byte[] HEX_DIGITS = "0123456789ABCDEF".getBytes(UTF_8);
     private static final byte[] SUBDELIMS = "!$&'()*+,;=".getBytes(UTF_8); //sorted
     private static final byte[] PATHSUBDELIMS = "!$&'()*+,/:;=@".getBytes(UTF_8); //sorted
     private static final byte[] FRAGMENTCHARS = "!$&'()*+,/:;=?@".getBytes(UTF_8); //sorted
@@ -145,24 +144,10 @@ public class IRIFixerParser implements FixerParser {
         if (result.isOverflow()) {
             throw new RuntimeException("Unexpected overflow of u8Out");
         } else if (result.isUnderflow()) {
-            int nChars = u8DecoderOut.position();
-            if      (nChars == 0) {
-                return -1;
-            } else if (nChars == 1) {
+            int code = Utils.toCodePoint(u8DecoderOut);
+            if (code >= 0)
                 u8DecoderIn.clear();
-                return u8DecoderOut.get(0);
-            } else if (nChars == 2) {
-                u8DecoderIn.clear();
-                char high = u8DecoderOut.get(0), low = u8DecoderOut.get(1);
-                if (Character.isHighSurrogate(high) && Character.isLowerCase(low))
-                    return Character.toCodePoint(high, low);
-                else if (Character.isHighSurrogate(low) && Character.isLowerCase(high))
-                    return Character.toCodePoint(low, high);
-                else // impossible, if thrown is a bug in this class
-                    throw new IllegalStateException("two Unicode chars decoded at once.");
-            } else { // impossible
-                throw new IllegalStateException("Too many chars in buffer!");
-            }
+            return code;
         } else {
             throw new RuntimeException("Unexpected CoderResult "+result);
         }
@@ -245,7 +230,7 @@ public class IRIFixerParser implements FixerParser {
                 writeCodePoint(codePoint);
             } else {
                 if (codePoint < 128) {
-                    output.add('%').add(HEX_DIGITS[codePoint/16]).add(HEX_DIGITS[codePoint%16]);
+                    Utils.writeHexByte(output.add('%'), codePoint);
                 } else {
                     logger.warn("{}Erasing char '{}' (codePoint={}): not allowed in RFC 3987 {}",
                                 getContextPrefix("Unexpected non-ASCII char "),

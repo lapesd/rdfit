@@ -57,10 +57,12 @@ public class TurtleFamilyFixerStreamTest {
         List<String> singleObjects = asList("_:c", "[]", "ex:c",
                 /* <>-IRIs */
                 "<c>",
-                "<http://dbpedia.org/resource/Fucking_\\u00C3\\u0085m\\u00C3\\u00A5l>",
+                "<http://dbpedia.org/resource/Fucking_\\u00C5m\\u00E5l>",
 
                 /* string literals */
                 "\"plain\"",
+                "\"x\\u00C5x\"",
+                "\"\\\"\\u2014And He Built a Crooked House\\u2014\\\"\"@en",
                 "\"lang\"@en",
                 "\"typed\"^^<http://www.w3.org/2001/XMLSchema#string>",
 
@@ -108,6 +110,7 @@ public class TurtleFamilyFixerStreamTest {
         ).map(s -> asList((Object) s, s)).collect(toList());
 
         List<List<String>> fixedPairs = asList(
+                /* IRIs with spaces and not allowed characters */
                 asList("<asd qwe>", "<asd%20qwe>"),
                 asList("<asd >", "<asd%20>"),
                 asList("<as d>", "<as%20d>"),
@@ -115,9 +118,22 @@ public class TurtleFamilyFixerStreamTest {
                 asList("< asd>", "<%20asd>"),
                 asList("<asd{}>", "<asd%7B%7D>"),
                 asList("<asd%3E.`>", "<asd%3E.%60>"),
+
+                /* handling of UCHAR */
+                // this weird error occrus in the LMDB dataset from LargeRDFBench. The
+                // \\u-escapes are encoding the bytes of the UTF-8 encoding, and not the unicode
+                // code page. This is detectable as U+85 is a control character U+E5 is not a
+                // control character, thus, due to ambiguity we assume the input is correct
+                asList("<http://dbpedia.org/resource/Fucking_\\u00C3\\u0085m\\u00C3\\u00A5l>",
+                       "<http://dbpedia.org/resource/Fucking_\\u00C5m\\u00C3\\u00A5l>"),
+                asList("\"(\\u00C3\\u0085)\"", "\"(\\u00C5)\""),
+
+                /* bad lang tags */
                 asList("\"fr-1\"@fr_123", "\"fr-1\"@fr-123"),
                 asList("\"fr-2\"@fr-xx", "\"fr-2\"@fr-xx"),
                 asList("\"en-1\"@en_US", "\"en-1\"@en-US"),
+
+                /* bad \-escapes */
                 asList("\"line\nbreak\"", "\"line\\nbreak\""),
                 asList("'line\n\r break'", "'line\\n\\r break'"),
                 asList("'\tallow\ttab and\b'", "'\tallow\ttab and\b'"),
@@ -125,13 +141,19 @@ public class TurtleFamilyFixerStreamTest {
                 asList("\"allow\\\"escapes\"^^<http://www.w3.org/2001/XMLSchema#>", "\"allow\\\"escapes\"^^<http://www.w3.org/2001/XMLSchema#>"),
                 asList("\"fix\\ non-escapes\\x\\y\\W\\N\"", "\"fix\\\\ non-escapes\\\\x\\\\y\\\\W\\\\N\""),
                 asList("'preserve\\'valid\\t escapes\\\"'", "'preserve\\'valid\\t escapes\\\"'"),
+
+                /* WTF IRIs from SWDFood in LargeRDFBench */
                 asList("<http://www.mon deca.com>", "<http://www.mon%20deca.com>"),
                 asList("<http://www.mon~deca.com>", "<http://www.mon~deca.com>"),
                 asList("<http://www.mon ~ deca.com>", "<http://www.mon%20~%20deca.com>"),
                 asList("<http://www.mon:deca.com>", "<http://www.mon%3Adeca.com>"),
                 asList("<http://www.mondeca.com ~ http://www.lalic.paris4.sorbonne.fr/>", "<http://www.mondeca.com%20~%20http%3A//www.lalic.paris4.sorbonne.fr/>"),
+
+                /* Missing/extra ^ before datatype */
                 asList("\"missing hat\"^<http://www.w3.org/2001/XMLSchema#string>", "\"missing hat\"^^<http://www.w3.org/2001/XMLSchema#string>"),
                 asList("\"extra hat\"^^^<http://www.w3.org/2001/XMLSchema#string>", "\"extra hat\"^^<http://www.w3.org/2001/XMLSchema#string>"),
+
+                /* unquoted literals */
                 asList("X", "\"X\""),
                 asList("FALSE", "false"),
                 asList("True", "true"),
@@ -230,7 +252,8 @@ public class TurtleFamilyFixerStreamTest {
                 "TCGA-BF-A1PU-01A-11D-A18Z-02_BC0VYMACXX---TCGA-BF-A1PU-10A-01D-A18Z-02_BC0VYMACXX---Segment.tsv.n3",
                 "nationwidechildrens.org_biospecimen_tumor_sample_lgg.nt",
                 "nationwidechildrens.org_clinical_patient_lgg.nt",
-                "dbpedia-nyt_links.nt"
+                "dbpedia-nyt_links.nt",
+                "dbpedia-labels_en.nt"
         ).map(s -> new Object[]{s}).toArray(Object[][]::new);
     }
 

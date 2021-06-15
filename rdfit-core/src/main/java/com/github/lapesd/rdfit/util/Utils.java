@@ -22,19 +22,64 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.CharBuffer;
+import java.nio.charset.CharsetDecoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public class Utils {
     private static final @Nonnull Pattern ANY_UP_STEP_RX = Pattern.compile("(^|/)\\.\\.(/|$)");
     private static final @Nonnull Pattern UP_STEP_RX = Pattern.compile("\\.\\./");
-    private static final byte[] ASCII_WS = new byte[] {'\t', '\n', '\r', ' '};
+    public static final byte[] HEX_DIGITS = "0123456789ABCDEF".getBytes(UTF_8);
+    public static final byte[] ASCII_WS = new byte[] {'\t', '\n', '\r', ' '};
 
-    public static boolean isInSmall(int value, byte[] a) {
-        int m = a.length >> 1, firstDiff = value - a[m], diff = Math.abs(firstDiff);
-        for (int i = firstDiff < 0 ? 0 : m, len = a.length; diff > 0 && i < len; i++)
-            diff = value - a[i];
-        return diff == 0;
+    public static boolean isHexDigit(int c) {
+        if ((c & ~0x7F) != 0)
+            return false;
+        return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+    }
+
+    public static @Nonnull GrowableByteBuffer writeHexByte(@Nonnull GrowableByteBuffer out, int value) {
+        assert (value & ~0xFF) == 0;
+        return out.add(HEX_DIGITS[value/16]).add(HEX_DIGITS[value%16]);
+    }
+
+    public static int parseHexByte(int hiCodePoint, int loCodePoint) {
+        int hiIdx = indexInSmall(asciiUpper(hiCodePoint), HEX_DIGITS);
+        int loIdx = indexInSmall(asciiUpper(loCodePoint), HEX_DIGITS);
+        return (hiIdx < 0 || loIdx < 0) ? -1 : hiIdx * 16 + loIdx;
+    }
+
+
+    /**
+     * Given a {@link CharBuffer} just written to by a {@link CharsetDecoder},
+     * return the code point of the single decoded character.
+     *
+     * @param singleCodePointOutBuffer the buffer written by a {@link CharsetDecoder}.
+     * @return -1 if the buffer is empty or the code point (either the value of the single char
+     *         or the combination of a high and low surrogate java chars.
+     * @throws IllegalStateException if the given buffer contains more than one unicode character
+     *                               (i.e., more than 2 java chars)
+     */
+    public static int toCodePoint(@Nonnull CharBuffer singleCodePointOutBuffer) {
+        int nChars = singleCodePointOutBuffer.position();
+        if      (nChars == 0) {
+            return -1;
+        } else if (nChars == 1) {
+            return singleCodePointOutBuffer.get(0);
+        } else if (nChars == 2) {
+            char high = singleCodePointOutBuffer.get(0), low = singleCodePointOutBuffer.get(1);
+            if (Character.isHighSurrogate(high) && Character.isLowerCase(low))
+                return Character.toCodePoint(high, low);
+            else if (Character.isHighSurrogate(low) && Character.isLowerCase(high))
+                return Character.toCodePoint(low, high);
+            else
+                throw new IllegalStateException("two Unicode chars decoded at once.");
+        } else {
+            throw new IllegalStateException("Too many chars in buffer!");
+        }
     }
 
     public static boolean isAsciiSpace(int value) {
@@ -53,11 +98,17 @@ public class Utils {
         return value + (value >= 'A' && value <= 'Z' ? 'a'-'A' : 0);
     }
 
-    public static boolean isInSmall(int value, int[] a) {
-        int m = a.length >> 1, firstDiff = value - a[m], diff = Math.abs(firstDiff);
-        for (int i = firstDiff < 0 ? 0 : m, len = a.length; diff >= 0 && i < len; i++)
-            diff = value - a[i];
-        return diff == 0;
+    public static int asciiUpper(int value) {
+        return value - (value >= 'a' && value <= 'z' ? 'a'-'A' : 0);
+    }
+
+    public static boolean isInSmall(int value, byte[] a) { return indexInSmall(value, a) >= 0; }
+
+    public static int indexInSmall(int value, byte[] a) {
+        int m = a.length>>1, i = (value < a[m] ? 0 : m)-1, diff = 1;
+        for (int last = a.length-1; diff > 0 && i < last; )
+            diff = value - a[++i];
+        return diff == 0 ? i : -1;
     }
 
     public static @Nonnull String compactClass(@Nullable Class<?> cls) {
@@ -309,11 +360,5 @@ public class Utils {
             for (int n = in.read(buf); n >= 0; n = in.read(buf))
                 out.write(buf, 0, n);
         }
-    }
-
-    public static boolean isHexDigit(int c) {
-        if ((c & ~0x7F) != 0)
-            return false;
-        return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
     }
 }

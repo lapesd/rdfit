@@ -29,9 +29,7 @@ import java.util.Base64;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @SuppressWarnings("UnusedReturnValue")
-public class GrowableByteBuffer  {
-    private static final @Nonnull Base64.Encoder BASE64_ENCODER = Base64.getEncoder();
-
+public class GrowableByteBuffer {
     private @Nonnull byte[] buf;
     private int size = 0;
 
@@ -436,7 +434,9 @@ public class GrowableByteBuffer  {
     }
 
     @Override public String toString() {
-        final ByteBuffer wrap = ByteBuffer.wrap(buf, 0, size);
-        return new String(BASE64_ENCODER.encode(wrap).array(), UTF_8);
+        StringBuilder b = new StringBuilder();
+        for (int i = 0; i < size; i++)
+            b.append((char)Utils.HEX_DIGITS[buf[i]/16]).append((char)Utils.HEX_DIGITS[buf[i]%16]);
+        return b.toString();
     }
 }
