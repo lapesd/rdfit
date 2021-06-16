@@ -34,6 +34,7 @@ import java.nio.charset.CoderResult;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
+import static com.github.lapesd.rdfit.util.Utils.isAsciiSpace;
 import static com.github.lapesd.rdfit.util.Utils.isInSmall;
 import static java.nio.charset.CodingErrorAction.IGNORE;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -45,9 +46,10 @@ public class IRIFixerParser implements FixerParser {
 
     private static final byte[] URN = "urn".getBytes(UTF_8);
     private static final byte[] FILE_SCHEME = "file:".getBytes(UTF_8);
-    private static final byte[] SUBDELIMS = "!$&'()*+,;=".getBytes(UTF_8); //sorted
-    private static final byte[] PATHSUBDELIMS = "!$&'()*+,/:;=@".getBytes(UTF_8); //sorted
-    private static final byte[] FRAGMENTCHARS = "!$&'()*+,/:;=?@".getBytes(UTF_8); //sorted
+    private static final byte[] SCHEME_MID = "0123456789+-._".getBytes(UTF_8);       //sorted
+    private static final byte[] SUBDELIMS = "!$&'()*+,;=".getBytes(UTF_8);          //sorted
+    private static final byte[] PATHSUBDELIMS = "!$&'()*+,/:;=@".getBytes(UTF_8);   //sorted
+    private static final byte[] FRAGMENTCHARS = "!$&'()*+,/:;=?@".getBytes(UTF_8);  //sorted
     private static final byte[] USERINFOSUBDELIMS = "!$&'()*+,:;=".getBytes(UTF_8); //sorted
     private static final int[] UNRESERVED_BEGINS = {
             '-', '0', 'A', '_', 'a', '~',
@@ -286,20 +288,92 @@ public class IRIFixerParser implements FixerParser {
      * <a href="https://datatracker.ietf.org/doc/html/rfc3987#section-2.2">RFC 3987</a>.
      */
     private class Scheme extends BufferingComponentState {
-        @Override public @Nonnull ComponentState feedByte(int byteValue) {
-            if (isAlpha(byteValue) || (isDigit(byteValue) && !internal.isEmpty())) {
-                internal.add(byteValue); //looking good...
+        private boolean leadingSpace = false;
+        private int effectiveStart = 0;
+        private int parsedPctBytes = 0;
+
+        @Override public @Nonnull ComponentState reset() {
+            leadingSpace = false;
+            effectiveStart = parsedPctBytes = 0;
+            return super.reset();
+        }
+
+        @Override public void flush() {
+            doFlush();
+        }
+
+        private @Nonnull ComponentState doFlush() {
+            ComponentState next = runFrom(path.reset(), internal, 0);
+            internal.clear();
+            return next;
+        }
+
+        private @Nullable ComponentState handleLeadingSpaces(int value) {
+            if (!internal.isEmpty() && !leadingSpace)
+                return null; //not handling leading spaces
+            if (Utils.isAsciiSpace(value)) {
+                internal.add(value);
+                leadingSpace = true;
                 return this;
-            } else if (byteValue == ':' && !internal.isEmpty()) {
-                internal.add(byteValue);
-                if (internal.startsWith(URN)) {
-                    return this; // tolerate urn: prefixes, read actual schema after it
+            }
+            // empty or leadingSpace but value is not a space. Must be part of %20, %09, %0A or %0D
+            ++parsedPctBytes;
+            if (parsedPctBytes == 1) {
+                if (!(leadingSpace = value == '%')) {
+                    effectiveStart = internal.size();
+                    return null; // finished handling leading space, value may be valid
+                }
+            } else if (parsedPctBytes == 2) {
+                leadingSpace = value == '0' || value == '2';
+            } else if (parsedPctBytes == 3) {
+                int last = internal.get(internal.size() - 1) & 0xFF;
+                int upper = Utils.asciiUpper(value);
+                if (last == '0') {
+                    leadingSpace = upper == 'A' || upper == 'D' || upper == '9';
                 } else {
-                    output.add(internal); //valid & complete scheme
-                    return (internal.endsWith(FILE_SCHEME) ? path : hierPart).reset();
+                    assert last == '2';
+                    leadingSpace = upper == '0';
+                }
+                parsedPctBytes = 0;
+            }
+            if (!leadingSpace) { // internal has %, which is invalid in scheme
+                parsedPctBytes = 0;
+                return doFlush().feedByte(value);
+            } else { // up until now, value is part of %09, %0A, %0D or %20
+                internal.add(value);
+                return this;
+            }
+        }
+
+        @Override public @Nonnull ComponentState feedByte(int value) {
+            ComponentState leadingSpaceResult = handleLeadingSpaces(value);
+            if (leadingSpaceResult != null) {
+                return leadingSpaceResult;
+            } else if (isAlpha(value) || (!internal.isEmpty() && isInSmall(value, SCHEME_MID))) {
+                internal.add(value); //looking good...
+                return this;
+            } else if (value == '_') {
+                return this; // omit _
+            } else if (value == ':') {
+                if (effectiveStart == internal.size()) { //empty scheme, percent-encode ':'
+                    internal.add('%').add('3');
+                    return doFlush().feedByte('A');
+                } else {
+                    internal.add(value);
+                    if (internal.indexOf(URN) == effectiveStart) {
+                        return this; // tolerate urn: prefixes, read actual schema after it
+                    } else {
+                        internal.removeAll('_');
+                        // strip leading whitespace from scheme
+                        int effectiveLen = internal.size() - effectiveStart;
+                        output.add(internal.getArray(), effectiveStart, effectiveLen);
+                        ComponentState next = (internal.endsWith(FILE_SCHEME) ? path : hierPart);
+                        internal.clear();
+                        return next.reset();
+                    }
                 }
             } else { // bad scheme, assume relative IRI
-                return runFrom(path.reset(), internal, 0).feedByte(byteValue);
+                return doFlush().feedByte(value);
             }
         }
     }

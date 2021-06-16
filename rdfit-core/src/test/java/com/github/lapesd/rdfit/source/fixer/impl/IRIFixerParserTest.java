@@ -148,11 +148,20 @@ public class IRIFixerParserTest {
             asList("http://bob:pwd?%@example.org/", "http://bob:pwd%3F%25@example.org/"),
             asList("http://bob:pwd?%@example.org", "http://bob:pwd%3F%25@example.org")
         ).map(l -> asList((Object) l.get(0).getBytes(UTF_8), l.get(1))).collect(toList());
+        List<List<Object>> badScheme = Stream.of(
+                asList("bio2rdf_dataset:bio2rdf-affymetrix-20121004", "bio2rdfdataset:bio2rdf-affymetrix-20121004"),
+                asList(" http://example.org/x", "http://example.org/x"),
+                asList("some_file", "some_file"),
+                asList("  http://example.org/x", "http://example.org/x"),
+                asList(" \t\r\n http://example.org/x", "http://example.org/x"),
+                asList("%20http://example.org/x", "http://example.org/x"),
+                asList("%09%0A%0D %20http://example.org/x", "http://example.org/x")
+        ).map(l -> asList((Object) l.get(0).getBytes(UTF_8), l.get(1))).collect(toList());
 
         // ensure all "fixed" URIs/IRIs/URNs are valid
         assertTrue(
                 Stream.of(notPercentEscapedPath, notPercentEscapedHost,
-                          notPercentEscapedUserInfo, badPort, badUTF8
+                          notPercentEscapedUserInfo, badPort, badUTF8, badScheme
                 ).flatMap(List::stream).map(l -> (String)l.get(1))
                         .map(IRIFactory.iriImplementation()::create)
                         .allMatch(Objects::nonNull)
@@ -161,7 +170,7 @@ public class IRIFixerParserTest {
         return Stream.of(
                 conventionalURIs, validURIs, validIRIs, validURNs,
                 notPercentEscapedPath, notPercentEscapedHost, notPercentEscapedUserInfo,
-                badPort, badUTF8
+                badPort, badUTF8, badScheme
         ).flatMap(List::stream)
                 .map(l -> new Object[] {l.get(1), l.get(0)})
                 .toArray(Object[][]::new);

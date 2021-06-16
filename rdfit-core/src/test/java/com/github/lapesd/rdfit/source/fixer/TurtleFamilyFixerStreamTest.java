@@ -116,6 +116,10 @@ public class TurtleFamilyFixerStreamTest {
                 asList("<as d>", "<as%20d>"),
                 asList("<a sd>", "<a%20sd>"),
                 asList("< asd>", "<%20asd>"),
+                asList("< bull+shit://asd>", "<%20bull+shit://asd>"),
+                asList("< what_ever:x>", "<whatever:x>"),
+                asList("< http://example.org/x>", "<http://example.org/x>"),
+                asList("<  \t\nhttp://example.org/x>", "<http://example.org/x>"),
                 asList("<asd{}>", "<asd%7B%7D>"),
                 asList("<asd%3E.`>", "<asd%3E.%60>"),
 

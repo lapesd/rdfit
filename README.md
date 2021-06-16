@@ -350,6 +350,8 @@ files with invalid IRIs can be made valid wrapping the source object
    - `<an-iri> t:chromosome X` becomes `<an-iri> t:chromosome "X"`
    - `<s> <p> 2e-3.4` becomes `<s> <p> "2e-3.4"` (expoent must be an integer)
    - `<s> <p> falseful` becomes `<s> <p> "falseful"`
+11. Strip leading whitespace, `%20`, `%09`, `%0A` `%0D` and strip `_`s at 
+    any position from IRI schemes. Use case: LargeRDFBench/Affymetrix and Jamendo
 
 The percent-encoding is context sensitive and assumes the input IRIs are 
 (mostly) correct IRIs. Some delimiters (e.g., /), if wrongly placed will be

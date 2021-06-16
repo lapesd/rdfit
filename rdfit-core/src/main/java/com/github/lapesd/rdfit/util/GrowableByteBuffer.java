@@ -25,6 +25,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.function.IntPredicate;
+import java.util.function.Predicate;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -95,6 +97,27 @@ public class GrowableByteBuffer {
         else
             throw new IllegalStateException("buffer is empty, cannot remove last");
         return this;
+    }
+
+    /**
+     * Remove all occurences of the given byte. Each removed byte causes the following bytes to
+     * be shifted one position to the left.
+     *
+     * @param value byte value to remove
+     * @return true iff some bytes where removed.
+     */
+    public boolean removeAll(int value) {
+        boolean change = false;
+        for (int i = 0; i < size; i++) {
+            if (buf[i] == value) {
+                if (i+1 < size)
+                    System.arraycopy(buf, i+1, buf, i, size-i-1);
+                change = true;
+                --i;
+                --size;
+            }
+        }
+        return change;
     }
 
     /**
@@ -324,7 +347,7 @@ public class GrowableByteBuffer {
         if (pos < 0 || pos >= size)
             throw new IndexOutOfBoundsException("Bad pos="+pos+" for a buffer of size "+size);
         if (len < 0) {
-            System.arraycopy(buf, pos+len, buf, pos, size-pos);
+            System.arraycopy(buf, Math.max(0, pos+len), buf, pos, size-pos);
         } else if (len > 0) {
             reserve(size+len);
             System.arraycopy(buf, pos, buf, pos+len, size-pos);
@@ -365,6 +388,29 @@ public class GrowableByteBuffer {
         if (index < 0)
             throw new IndexOutOfBoundsException("Negative index "+index);
         return index < size() && buf[index] == value;
+    }
+
+    public int indexOf(@Nonnull IntPredicate bytePredicate) {
+        for (int i = 0; i < size; i++) {
+            if (bytePredicate.test(buf[i]))
+                return i;
+        }
+        return -1;
+    }
+
+    public int indexOf(@Nonnull byte[] sequence) {
+        if (sequence.length == 0)
+            return 0;
+        int matchIndex = -1, p = 0;
+        for (int i = 0; i < size; i++) {
+            if (buf[i] != sequence[p++])
+                p = 0;
+            if (p == 1)
+                matchIndex = i;
+            if (p == sequence.length)
+                return matchIndex;
+        }
+        return -1;
     }
 
     public int indexOf(int value) {
