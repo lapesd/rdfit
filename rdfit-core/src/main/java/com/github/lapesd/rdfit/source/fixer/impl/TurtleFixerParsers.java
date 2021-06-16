@@ -555,7 +555,7 @@ public class TurtleFixerParsers {
                 if (closeCount == openCount)
                     return postString; // lexical form ended, now expect (@|^^|,|.|\\s*)
             } else { // value requires no special treatment
-                output.add(value);
+                output.add(value == '\0' ? ' ' : value);
                 closeCount = 0; // discard fake close sequence
             }
             return this; // still in the lexical form

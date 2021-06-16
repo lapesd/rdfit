@@ -146,6 +146,10 @@ public class TurtleFamilyFixerStreamTest {
                 asList("\"fix\\ non-escapes\\x\\y\\W\\N\"", "\"fix\\\\ non-escapes\\\\x\\\\y\\\\W\\\\N\""),
                 asList("'preserve\\'valid\\t escapes\\\"'", "'preserve\\'valid\\t escapes\\\"'"),
 
+                /* replace U+0000 with spaces */
+                asList("\"asd\0qwe\"", "\"asd qwe\""),
+                asList("'\"\0\"'", "'\" \"'"),
+
                 /* WTF IRIs from SWDFood in LargeRDFBench */
                 asList("<http://www.mon deca.com>", "<http://www.mon%20deca.com>"),
                 asList("<http://www.mon~deca.com>", "<http://www.mon~deca.com>"),

@@ -352,6 +352,8 @@ files with invalid IRIs can be made valid wrapping the source object
    - `<s> <p> falseful` becomes `<s> <p> "falseful"`
 11. Strip leading whitespace, `%20`, `%09`, `%0A` `%0D` and strip `_`s at 
     any position from IRI schemes. Use case: LargeRDFBench/Affymetrix and Jamendo
+12. For Turtle/NT/TriG, replace NULL characters (U+0000) in string literals 
+    with ` ` (U+0020). Use case: LargeRDFBench/Affymetrix
 
 The percent-encoding is context sensitive and assumes the input IRIs are 
 (mostly) correct IRIs. Some delimiters (e.g., /), if wrongly placed will be
