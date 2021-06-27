@@ -262,7 +262,7 @@ public class GrowableByteBuffer {
     /**
      * Set a specific byte to the given value.
      *
-     * @param pos position of the byte to be set. Must be <code>>=0</code> and <code><=size</code>
+     * @param pos position of the byte to be set. Must be <code>&gt;=0</code> and <code>&lt;=size</code>
      * @param value value to set
      * @return <code>this</code>
      */
@@ -273,7 +273,7 @@ public class GrowableByteBuffer {
     /**
      * Set a specific byte to the given value.
      *
-     * @param pos position of the byte to be set. Must be <code>>=0</code> and <code><=size</code>
+     * @param pos position of the byte to be set. Must be <code>&gt;=0</code> and <code>&lt;=size</code>
      * @param value value to set
      * @return <code>this</code>
      */
@@ -291,8 +291,8 @@ public class GrowableByteBuffer {
     /**
      * Set bytes in [pos:pos+len) to the bytes in data[from:from+len).
      *
-     * @param pos Where to start writing the bytes. Must be <code>>= 0</code>
-     *            and <code><= size</code>
+     * @param pos Where to start writing the bytes. Must be <code>&gt;= 0</code>
+     *            and <code>&lt;= size</code>
      * @param data Source of byte values
      * @param from index of the first byte in data to read from
      * @param len how many bytes to read from data.

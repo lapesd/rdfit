@@ -189,7 +189,7 @@ public class RIt {
      * Wrap the given source such that parsers tolerate bad triples in turtle-like languages.
      *
      * Examples of such bad triples are IRIs with reserved chars (i.e., the regex
-     * <code>[#x00-#x20><"}{|\^`]</code>) and lang tags with _'s (e.g., @pt_BR or @fr_2374). Such
+     * <code>[#x00-#x20&gt;&lt;"}{|\^`]</code>) and lang tags with _'s (e.g., @pt_BR or @fr_2374). Such
      * triples tend to appear in older RDF dumps from older systems. One example are the
      * LargeRDFBench dumps.
      *
