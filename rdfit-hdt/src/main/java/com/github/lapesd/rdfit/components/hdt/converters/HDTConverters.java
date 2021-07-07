@@ -174,14 +174,14 @@ public class HDTConverters {
          * @return a {@link CharSequence} with the HDT representation of the node
          * @throws ConversionException if something goes wrong.
          */
-        private @Nonnull CharSequence toHDTString(@Nonnull StringBuilder builder, @Nonnull Node node,
+        private @Nonnull String toHDTString(@Nonnull StringBuilder builder, @Nonnull Node node,
                                                   @Nonnull Triple in) throws ConversionException {
             if (node.isBlank()) {
                 builder.setLength(0);
                 String string = node.toString();
                 builder.ensureCapacity(string.length()+2);
                 builder.append('_').append(':').append(string);
-                return builder;
+                return builder.toString();
             } else if (node.isURI()) {
                 return node.getURI();
             } else if (node.isLiteral()) {
@@ -189,12 +189,12 @@ public class HDTConverters {
                 builder.setLength(0);
                 writeLexical(builder.append('"'), lex);
                 if (lang != null && !lang.isEmpty()) {
-                    return builder.append('"').append('@').append(lang);
+                    return builder.append('"').append('@').append(lang).toString();
                 } else {
                     String uri = node.getLiteralDatatypeURI();
                     if (uri == null || uri.isEmpty())
                         uri = XSDDatatype.XSDstring.getURI();
-                    return builder.append("\"^^<").append(uri).append('>');
+                    return builder.append("\"^^<").append(uri).append('>').toString();
                 }
             } else {
                 throw new ConversionException(in, this, "non-concrete node "+node);
