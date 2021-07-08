@@ -337,16 +337,19 @@ public class Utils {
                 throw new IllegalArgumentException("cls == null with relative path (has ..)");
             fullPath = resourcePath;
         } else {
+            for (Class<?> tl = cls.getEnclosingClass(); tl != null; tl = tl.getEnclosingClass())
+                cls = tl;
             Matcher matcher = UP_STEP_RX.matcher(resourcePath);
-            int stepsUp = 0;
-            while (matcher.find())
+            int stepsUp = 0, relativeStart = 0;
+            while (matcher.find()) {
+                relativeStart = matcher.end();
                 ++stepsUp;
+            }
             StringBuilder fullPathBuilder = new StringBuilder();
             String[] segments = cls.getName().split("\\.");
             for (int i = 0, size = segments.length - stepsUp - 1; i < size; i++)
                 fullPathBuilder.append(segments[i]).append('/');
-            int filenameIdx = resourcePath.lastIndexOf('/') + 1;
-            fullPathBuilder.append(resourcePath.substring(filenameIdx));
+            fullPathBuilder.append(resourcePath.substring(relativeStart));
             fullPath = fullPathBuilder.toString();
         }
         return fullPath;

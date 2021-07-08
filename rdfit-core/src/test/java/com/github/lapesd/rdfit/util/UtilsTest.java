@@ -206,4 +206,31 @@ public class UtilsTest {
         else
             assertEquals(Utils.parseHexByte(in.codePointAt(0), in.codePointAt(1)), -1);
     }
+
+    public static class Inner {
+        public static class Innermost {
+
+        }
+    }
+
+    @DataProvider public static @Nonnull Object[][] toFullResourcePathData() {
+        String root = "com/github/lapesd/rdfit/";
+        return Stream.of(
+                asList(Utils.class, "file.txt", root+"util/file.txt"),
+                asList(Utils.class, "sub/file.txt", root+"util/sub/file.txt"),
+                asList(Utils.class, "../file.txt", root+"file.txt"),
+                asList(Utils.class, "../sub/file.txt", root+"sub/file.txt"),
+                asList(Inner.class, "file.txt", root+"util/file.txt"),
+                asList(Inner.Innermost.class, "file.txt", root+"util/file.txt"),
+                asList(Inner.class, "../file.txt", root+"file.txt"),
+                asList(Inner.Innermost.class, "../file.txt", root+"file.txt")
+        ).map(List::toArray).toArray(Object[][]::new);
+    }
+
+    @Test(dataProvider = "toFullResourcePathData")
+    public void testToFullResourcePath(@Nonnull Class<?> reference, @Nonnull String relative,
+                                       @Nonnull String expected) {
+        String actual = Utils.toFullResourcePath(relative, reference);
+        assertEquals(actual, expected);
+    }
 }
